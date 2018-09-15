@@ -20,7 +20,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 	}	
 	return new Promise( function( resolve , reject ) {
 		try {
-			var findEventPathCMD = exec( "blkid" , { silent: true , async: false } );
+			var findEventPathCMD = exec( "sudo blkid" , { silent: true , async: false } );
 			if ( findEventPathCMD.stderr ) { wcl("error finding USB Hard Drive"); process.exit(1); }
 
 			var wOUT = findEventPathCMD.stdout.split("\n");
