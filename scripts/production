@@ -1,0 +1,4 @@
+
+#!/bin/bash
+export NODE_ENV="development"
+pm2 start main.js --name Box4

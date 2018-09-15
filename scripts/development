@@ -1,0 +1,3 @@
+#!/bin/bash
+export NODE_ENV="development"
+nodemon --ignore "config/" --ignore "client/js/webSocketServerAddress.js" -V main.js

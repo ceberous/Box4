@@ -1,0 +1,2 @@
+#!/bin/bash
+mopidy --config /home/morpheous/WORKSPACE/NODE/MediaBrowserRewrite/mopidy.conf
