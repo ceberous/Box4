@@ -1,4 +1,0 @@
-#!/bin/bash
-#!/bin/bash
-nodemon --ignore "config/" --ignore "client/js/webSocketServerAddress.js" -V main.js
-pm2 start main.js --name "Box4"
