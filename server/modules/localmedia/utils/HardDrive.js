@@ -65,6 +65,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 
 				}
 				//q1 = q1 + "/";
+				console.log( q1 )
 				resolve( q1 );
 				return;
 			}
@@ -150,36 +151,10 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 
 					}
 
-
-
 				}
 
 			}
 
-			// for ( var wGenre in x1 ) {
-			// 	const x1Shows = Object.keys( x1[ wGenre ] );
-			// 	if ( x1Shows.length < 1 ) { continue; }
-
-			// 	await RU.setMulti([
-			// 		[ "set" , RC.BASE + wGenre + ".TOTAL" , x1Shows.length ] ,
-			// 		[ "set" , RC.BASE + wGenre + ".CURRENT_INDEX" , 0 ] ,
-			// 	]);
-			// 	await RU.setListFromArray( RC.BASE + wGenre + ".UNEQ" , x1Shows );
-				
-			// 	for ( var wShow in x1[ wGenre ] ) { // Each Show in Genre
-			// 		const show_key = RC.HD_BASE + wGenre + "." + wShow + ".FP";
-			// 		for ( var j = 0; j < x1[ wGenre ][ wShow ].length; ++j ) {
-			// 			const season_key = show_key + "." + j.toString();
-			// 			if ( x1[ wGenre ][ wShow ][ j ].length > 0 ) { // <-- Has Episodes Stored in Season Folders
-			// 				await setMulti([
-			// 					[ "set" , RC.HD_BASE + wGenre + "." + wShow + ".TOTAL" ,  ] ,
-			// 					[ "set" , RC.HD_BASE + wGenre + "." + wShow + ".CURRENT_INDEX" ,  ]
-			// 				]);
-			// 				await RU.setListFromArray( season_key , x1[ wGenre ][ wShow ][ j ] );
-			// 			}
-			// 		}
-			// 	}
-			// }
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
