@@ -64,6 +64,8 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 
 				}
 				//q1 = q1 + "/";
+				q1 = path.resolve( q1 );
+				console.log( q1 )
 				resolve( q1 );
 				return;
 			}
@@ -83,7 +85,6 @@ function directoryTree_Stage2(){for(var e=0;e<sd.children.length;++e){fr[sd.chil
 
 
 async function BUILD_HD_REF( wMountPoint ) {
-	console.log( wMountPoint );
 	sd = directoryTree_Stage1( wMountPoint );
 	console.log( sd );
 	directoryTree_Stage2();
@@ -170,7 +171,6 @@ function REINITIALIZE_MOUNT_POINT() {
 				if ( MOUNT_CONFIG[ "UUID" ] ) {
 					wcl( "UUID: " + MOUNT_CONFIG[ "UUID" ] );
 					wLiveMountPoint = await FIND_USB_STORAGE_PATH_FROM_UUID( MOUNT_CONFIG[ "UUID" ] );
-					console.log( wLiveMountPoint );
 					if ( !wLiveMountPoint ) { wcl( "Couldn't Locate Mount Point" ); resolve( "bad_mount_point" ); return; }
 					wLiveMountPoint = wLiveMountPoint + "MEDIA_MANAGER/";
 				}
