@@ -49,7 +49,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 					if ( wUSER.stderr ) { console.log("error finding USB Hard Drive"); process.exit(1); }
 					wUSER = wUSER.stdout.trim();
 
-					var wPath = path.join( "/" , "media" , wUSER , wUUID )
+					var wPath = PATH.join( "/" , "media" , wUSER , wUUID )
 
 					var wMKDIR = exec( "sudo mkdir -p " + wPath , { silent: true , async: false } );
 					if ( wMKDIR.stderr ) { console.log("error creating USB Hard Drive Media Path"); process.exit(1); }
@@ -64,7 +64,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 
 				}
 				//q1 = q1 + "/";
-				q1 = path.resolve( q1 );
+				q1 = PATH.resolve( q1 );
 				console.log( q1 )
 				resolve( q1 );
 				return;
@@ -143,7 +143,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 						await RU.setListFromArray( RC.BASE + genres[ i ] + "." + shows[ j ] + "." + k.toString() + ".UNEQ" , episodes );
 						for ( var e = 0; e < episodes.length; ++e ) {
 
-							const fp = path.join( RC.BASE , genres[ i ] , shows[ j ] , k , episodes[ e ] );
+							const fp = PATH.join( RC.BASE , genres[ i ] , shows[ j ] , k , episodes[ e ] );
 							console.log( fp );
 
 						}
