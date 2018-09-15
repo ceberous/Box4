@@ -39,7 +39,6 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 				console.log( uuid );
 				var q1 = getPath();
 				q1 = q1.replace( "x20" , " " )
-				console.log( q1 );
 				
 				if ( q1 === "" ) {
 
@@ -65,7 +64,6 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 
 				}
 				//q1 = q1 + "/";
-				console.log( q1 )
 				resolve( q1 );
 				return;
 			}
