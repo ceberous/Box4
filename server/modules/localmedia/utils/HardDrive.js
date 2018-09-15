@@ -172,6 +172,7 @@ function REINITIALIZE_MOUNT_POINT() {
 				if ( MOUNT_CONFIG[ "UUID" ] ) {
 					wcl( "UUID: " + MOUNT_CONFIG[ "UUID" ] );
 					wLiveMountPoint = await FIND_USB_STORAGE_PATH_FROM_UUID( MOUNT_CONFIG[ "UUID" ] );
+					console.log( wLiveMountPoint );
 					if ( !wLiveMountPoint ) { wcl( "Couldn't Locate Mount Point" ); resolve( "bad_mount_point" ); return; }
 					wLiveMountPoint = wLiveMountPoint + "MEDIA_MANAGER/";
 				}
