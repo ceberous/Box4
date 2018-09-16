@@ -39,6 +39,7 @@ const RMU = require( "redis-manager-utils" );
 			break;
 	}
 	module.exports.config = config;
+	console.log( config.youtube );
 
 	// Personal
 	let personal = require( "./personal.js" );
