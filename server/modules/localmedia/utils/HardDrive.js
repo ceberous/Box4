@@ -85,50 +85,49 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			
 			// Scan Mount_Point
 			//const x1 = await BUILD_HD_REF( wMountPoint );
-			const x1 = require( "./ScanDirectory.js" )( wMountPoint );
-			console.log( x1 );
+			const x1 = require( "./ScanDirectory.js" ).scan( wMountPoint );
 
 			// Each Genre
 			const genres = Object.keys( x1 );
 			if ( genres.length < 1 ) { resolve( "empty" ); return; }
-			await RU.setMulti([
+			await Redis.keySetMulti([
 				[ "set" , RC.BASE + "GENRES" + ".TOTAL" , genres.length ] ,
 				[ "set" , RC.BASE + "GENRES" + ".CURRENT_INDEX" , 0 ] ,
 			]);
-			await RU.setListFromArray( RC.BASE + "GENRES" , genres );
+			await Redis.listSetFromArray( RC.BASE + "GENRES" , genres );
 			for ( var i = 0; i < genres.length; ++i ) {
 				
 				// Each Show In Genre
 				const shows = Object.keys( genres[ i ] );
 				if ( shows.length < 1 ) { continue; }
-				await RU.setMulti([
+				await Redis.keySetMulti([
 					[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".TOTAL_SHOWS" , shows.length ] ,
 					[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".CURRENT_INDEX" , 0 ] ,
 				]);
-				await RU.setListFromArray( RC.BASE + "GENRES."  + genres[ i ] + ".SHOWS" , shows );
+				await Redis.listSetFromArray( RC.BASE + "GENRES."  + genres[ i ] + ".SHOWS" , shows );
 				for ( var j = 0; j < genres[ i ][ shows[ j ] ].length; ++j ) {
 
 					// Each Season in Show
 					const seasons = Object.keys( genres[ i ][ shows[ j ] ] );
 					if ( seasons.length < 1 ) { continue; }
-					await RU.setMulti([
+					await Redis.keySetMulti([
 						[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".TOTAL_SEASONS" , seasons.length ] ,
 						[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".CURRENT_INDEX" , 0 ] ,
 					]);
-					await RU.setListFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".SEASONS" , seasons );
+					await Redis.listSetFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".SEASONS" , seasons );
 					for ( var k = 0; k < seasons.length; ++k ) {
 
 						// Each Episode in Season
 						const episodes = Object.keys( genres[ i ][ shows[ j ] ][ seasons[ k ] ] );
 						if ( episodes.length < 1 ) { continue; }
-						await RU.setMulti([
-							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + "." + k.toString() + ".TOTAL_EPISODES" , seasons.length ] ,
-							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + "." + k.toString() + ".CURRENT_INDEX" , 0 ] ,
+						await Redis.keySetMulti([
+							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".TOTAL_EPISODES" , seasons.length ] ,
+							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".CURRENT_INDEX" , 0 ] ,
 						]);
-						await RU.setListFromArray( RC.BASE + genres[ i ] + "." + shows[ j ] + "." + k.toString() + ".EPISODES" , episodes );
+						await Redis.listSetFromArray( RC.BASE + genres[ i ] + "." + shows[ j ]  + ".EPISODES" , episodes );
 						for ( var e = 0; e < episodes.length; ++e ) {
 
-							const fp = path.join( RC.BASE , genres[ i ] , shows[ j ] , k , episodes[ e ] );
+							const fp = path.join( RC.BASE , genres[ i ] , shows[ j ] , k.toString() , episodes[ e ] );
 							console.log( fp );
 
 						}
