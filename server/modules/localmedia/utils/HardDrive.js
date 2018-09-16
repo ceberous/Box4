@@ -98,17 +98,17 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			for ( var i = 0; i < genres.length; ++i ) {
 				
 				// Each Show In Genre
-				const shows = Object.keys( genres[ i ] );
+				const shows = Object.keys( x1[ genres[ i ] ] );
 				if ( shows.length < 1 ) { continue; }
 				await Redis.keySetMulti([
 					[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".TOTAL_SHOWS" , shows.length ] ,
 					[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".CURRENT_INDEX" , 0 ] ,
 				]);
 				await Redis.listSetFromArray( RC.BASE + "GENRES."  + genres[ i ] + ".SHOWS" , shows );
-				for ( var j = 0; j < genres[ i ][ shows[ j ] ].length; ++j ) {
+				for ( var j = 0; j < x1[ genres[ i ] ][ shows[ j ] ].length; ++j ) {
 
 					// Each Season in Show
-					const seasons = Object.keys( genres[ i ][ shows[ j ] ] );
+					const seasons = Object.keys( x1[ genres[ i ] ][ shows[ j ] ] );
 					if ( seasons.length < 1 ) { continue; }
 					await Redis.keySetMulti([
 						[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".TOTAL_SEASONS" , seasons.length ] ,
@@ -118,7 +118,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					for ( var k = 0; k < seasons.length; ++k ) {
 
 						// Each Episode in Season
-						const episodes = Object.keys( genres[ i ][ shows[ j ] ][ seasons[ k ] ] );
+						const episodes = Object.keys( x1[ genres[ i ] ][ shows[ j ] ][ seasons[ k ] ] );
 						if ( episodes.length < 1 ) { continue; }
 						await Redis.keySetMulti([
 							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".TOTAL_EPISODES" , seasons.length ] ,
