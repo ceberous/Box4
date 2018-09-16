@@ -97,6 +97,7 @@ function CustomDirTreeFilter( path ) {
 	console.log( "Trying to Build Tree from --> " );
 	console.log( path );
 	const tree = dirTree( path );
+	console.log( tree );
 
 	var Tree = {
 		"audiobooks": {} ,
