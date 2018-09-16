@@ -110,7 +110,6 @@ function CustomDirTreeFilter( path ) {
 		"podcasts": {} ,
 	}
 	var finalGenres = {};
-	if ( !tree.children ) { continue; }
 	for ( var i = 0; i < tree.children.length; ++i ) { 
 
 		let genre = tree.children[ i ].name.toLowerCase();
