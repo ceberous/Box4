@@ -3,7 +3,7 @@ const path = require( "path" );
 const dirTree = require( "directory-tree" );
 
 module.exports = function( path ) {
-	const tree = dirTree( TestPath );
+	const tree = dirTree( path );
 
 	var Tree = {
 		"audiobooks": {} ,
