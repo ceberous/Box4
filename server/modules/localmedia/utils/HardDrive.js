@@ -68,7 +68,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 
 				}
 				q1 = path.resolve( q1 );
-				console.log( q1 )
+				//console.log( q1 )
 				resolve( q1 );
 				return;
 			}
