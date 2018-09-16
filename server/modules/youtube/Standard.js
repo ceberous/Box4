@@ -90,6 +90,7 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 	return new Promise( async function( resolve , reject ) {
 		try { 
 			var current_followers = await Redis.setGetFull( RC.FOLLOWERS );
+			console.log( current_followers );
 			if ( current_followers ) { resolve( "no followers" ); return; }
 			if ( current_followers.length > 0 ) { resolve( "no followers" ); return; }
 
