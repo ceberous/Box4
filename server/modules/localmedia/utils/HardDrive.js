@@ -114,7 +114,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 						[ "set" , RC.BASE + "GENRES." + genre + "." + show + ".TOTAL_SEASONS" , total_seasons ] ,
 						[ "set" , RC.BASE + "GENRES." + genre + "." + show + ".CURRENT_INDEX" , 0 ] ,
 					]);	
-					for ( var season = 0; i < x1[ genre ][ show ].length; ++season\ ) { // Each 'Season'
+					for ( var season = 0; i < x1[ genre ][ show ].length; ++season ) { // Each 'Season'
 						//console.log( "\t\t--> " + ( i + 1 ).toString() );
 
 						const season_key = RC.BASE + "GENRES."  + genre + ".SHOWS." + show + ".SEASON." + ( season + 1 ).toString();
