@@ -97,7 +97,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					console.log( "\t--> " + show );
 
 					for ( var i = 0; i < x1[ genre ][ show ].length; ++i ) { // Each 'Season'
-						console.log( "\t\t--> " + i.toString() );
+						console.log( "\t\t--> " + ( i + 1 ).toString() );
 
 						for ( var j = 0; j < x1[ genre ][ show ][ i ].length; ++j ) {
 							console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].name );
