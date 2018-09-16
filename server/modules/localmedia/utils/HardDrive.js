@@ -89,6 +89,26 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			console.log( x1 );
 
 			// Each Genre
+
+			for ( genre in x1 ) {
+				console.log( "\n--> " + genres );
+
+				for ( show in x1[ genre ] ) {
+					console.log( "\t--> " + show );
+
+					for ( var i = 0; i < x1[ genre ][ show ].length; ++i ) {
+						console.log( "\t\t--> " + x1[ genre ][ show ][ i ] );
+					}
+
+				}
+
+			}
+
+
+
+
+
+
 			const genres = Object.keys( x1 );
 			if ( genres.length < 1 ) { resolve( "empty" ); return; }
 			await Redis.keySetMulti([
@@ -129,7 +149,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".TOTAL_EPISODES" , seasons.length ] ,
 							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".CURRENT_INDEX" , 0 ] ,
 						]);
-						await Redis.listSetFromArray( RC.BASE + genres[ i ] + "." + shows[ j ]  + ".EPISODES" , episodes );
+						await Redis.listSetFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".EPISODES" , episodes );
 						for ( var e = 0; e < episodes.length; ++e ) {
 
 							if ( !episodes[ e ] ) { continue; }
