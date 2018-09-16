@@ -2,8 +2,9 @@ const fs = require( "fs" );
 const path = require( "path" );
 const dirTree = require( "directory-tree" );
 
-module.exports = function( path ) {
-	const tree = dirTree( path );
+module.exports = function( wPath ) {
+	console.log( "Searching --> " + path.resolve( wPath ) );
+	const tree = dirTree( path.resolve( wPath ) );
 
 	var Tree = {
 		"audiobooks": {} ,
