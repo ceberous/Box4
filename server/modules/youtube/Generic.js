@@ -22,9 +22,9 @@ function FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED( wNewIDS ) {
 					}
 				}
 			}
-			await RU.delKey( temp_skipped_key );
-			await RU.delKey( temp_watched_key );
-			await RU.delKey( temp_blacklist_key );
+			await Redis.keyDel( temp_skipped_key );
+			await Redis.keyDel( temp_watched_key );
+			await Redis.keyDel( temp_blacklist_key );
 			resolve( final_ids );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
