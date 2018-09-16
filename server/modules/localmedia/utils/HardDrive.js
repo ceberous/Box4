@@ -93,10 +93,10 @@ module.exports.findAndMountUSB_From_UUID = FIND_USB_STORAGE_PATH_FROM_UUID;
 // }
 // module.exports.buildHardDriveReference = BUILD_HD_REF;
 
-function CustomDirTreeFilter( path ) {
+function CustomDirTreeFilter( wPath ) {
 	console.log( "Trying to Build Tree from --> " );
-	console.log( path );
-	let tree = dirTree( path );
+	console.log( wPath );
+	let tree = dirTree( path.resolve( wPath ) );
 	console.log( tree );
 
 	var Tree = {
