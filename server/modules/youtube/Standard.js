@@ -94,6 +94,7 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 			if ( current_followers.length > 0 ) { resolve( "no followers" ); return; }
 
 			var latest = await map( current_followers , userId => STANDARD_FOLLOWERS_FETCH_XML( userId ) );
+			console.log( latest );
 			var all_new = null;
 			if ( current_followers && latest ) {
 				if ( current_followers.length === latest.length ) {
