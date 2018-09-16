@@ -1,6 +1,6 @@
 const fs = require( "fs" );
 const path = require( "path" );
-const dirTree = require( "directory-tree" );
+var dirTree = require( "directory-tree" );
 console.log( dirTree );
 
 module.exports = function( wPath ) {
