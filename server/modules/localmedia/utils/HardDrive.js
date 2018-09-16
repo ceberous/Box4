@@ -96,7 +96,7 @@ module.exports.findAndMountUSB_From_UUID = FIND_USB_STORAGE_PATH_FROM_UUID;
 function CustomDirTreeFilter( path ) {
 	console.log( "Trying to Build Tree from --> " );
 	console.log( path );
-	const tree = dirTree( path );
+	let tree = dirTree( path );
 	console.log( tree );
 
 	var Tree = {
