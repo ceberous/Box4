@@ -22,21 +22,25 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 	}	
 	return new Promise( function( resolve , reject ) {
 		try {
-			var findEventPathCMD = exec( "sudo blkid" , { silent: true , async: false } );
+			//var findEventPathCMD = exec( "sudo blkid" , { silent: true , async: false } );
+			var findEventPathCMD = exec( "ls -l /dev/disk/by-uuid" , { silent: true , async: false } );
 			if ( findEventPathCMD.stderr ) { wcl("error finding USB Hard Drive"); process.exit(1); }
 
 			var wOUT = findEventPathCMD.stdout.split("\n");
 			for ( var i = 0; i < wOUT.length; ++i ) {
 
-				var uuid = wOUT[ i ].indexOf( "UUID=" );
-				if ( uuid === -1 ) { continue; }
+				// var uuid = wOUT[ i ].indexOf( "UUID=" );
+				// if ( uuid === -1 ) { continue; }
 
-				uuid = wOUT[ i ].split( "UUID=" )[ 1 ];
-				uuid = uuid.split( " " )[ 0 ];
-				if ( uuid.indexOf( "-" ) !== -1 ) { continue; }
-				if ( uuid.indexOf( '"' ) !== -1 ) { uuid = uuid.split( '"' )[ 1 ]; }
+				// uuid = wOUT[ i ].split( "UUID=" )[ 1 ];
+				// uuid = uuid.split( " " )[ 0 ];
+				// if ( uuid.indexOf( "-" ) !== -1 ) { continue; }
+				// if ( uuid.indexOf( '"' ) !== -1 ) { uuid = uuid.split( '"' )[ 1 ]; }
 
-				if ( uuid !== wUUID ) { continue; }
+				// if ( uuid !== wUUID ) { continue; }
+
+				var uuid = wOUT[ i ].split( " " );
+				if ( !uuid[ 8 ] ) { continue; }
 
 				console.log( uuid );
 				var q1 = getPath();
@@ -76,25 +80,6 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 	});
 }
 module.exports.findAndMountUSB_From_UUID = FIND_USB_STORAGE_PATH_FROM_UUID;
-
-
-// var sd = null;
-// var fr = {};
-// function safeReadDirSync(r){var n={};try{n=FS.readdirSync(r)}catch(c){if("EACCES"==c.code)return null;throw c}return n}
-// // FROM --> https://github.com/mihneadb/node-directory-tree/blob/master/lib/directory-tree.js
-// function directoryTree_Stage1(e,r,n){var t,i=PATH.basename(e),a={name:i};try{t=FS.statSync(e)}catch(u){return null}if(t.isFile()){PATH.extname(e).toLowerCase()}else{if(!t.isDirectory())return null;var l=safeReadDirSync(e);if(null===l)return null;a.children=l.map(function(t){return directoryTree_Stage1(PATH.join(e,t),r,n)}).filter(function(e){return!!e})}return a}
-// function directoryTree_Stage2(){for(var e=0;e<sd.children.length;++e){fr[sd.children[e].name]={};for(var d=0;d<sd.children[e].children.length;++d)if(fr[sd.children[e].name][sd.children[e].children[d].name]=[],sd.children[e].children[d].children)for(var a=0;a<sd.children[e].children[d].children.length;++a){var r=[];if(sd.children[e].children[d].children[a].children)for(var n=0;n<sd.children[e].children[d].children[a].children.length;++n)r.push(sd.children[e].children[d].children[a].children[n].name);fr[sd.children[e].name][sd.children[e].children[d].name].push(r)}}}
-
-
-// async function BUILD_HD_REF( wMountPoint ) {
-// 	sd = directoryTree_Stage1( wMountPoint );
-// 	console.log( sd );
-// 	directoryTree_Stage2();
-// 	return fr;
-// }
-// module.exports.buildHardDriveReference = BUILD_HD_REF;
-
-
 
 function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 	return new Promise( async function( resolve , reject ) {
