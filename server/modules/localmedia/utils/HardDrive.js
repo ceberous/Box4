@@ -93,8 +93,8 @@ module.exports.findAndMountUSB_From_UUID = FIND_USB_STORAGE_PATH_FROM_UUID;
 // }
 // module.exports.buildHardDriveReference = BUILD_HD_REF;
 
-function CustomDirTreeFilter( path ) {
-	const tree = dirTree( path.resolve( path ) );
+function CustomDirTreeFilter( wPath ) {
+	const tree = dirTree( path.resolve( wPath ) );
 
 	var Tree = {
 		"audiobooks": {} ,
