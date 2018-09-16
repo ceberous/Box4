@@ -109,65 +109,65 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 
 
 
-			const genres = Object.keys( x1 );
-			if ( genres.length < 1 ) { resolve( "empty" ); return; }
-			await Redis.keySetMulti([
-				[ "set" , RC.BASE + "GENRES" + ".TOTAL" , genres.length ] ,
-				[ "set" , RC.BASE + "GENRES" + ".CURRENT_INDEX" , 0 ] ,
-			]);
-			await Redis.listSetFromArray( RC.BASE + "GENRES" , genres );
-			for ( var i = 0; i < genres.length; ++i ) {
-				console.log( "\n--> " + genres[ i ] );
+			// const genres = Object.keys( x1 );
+			// if ( genres.length < 1 ) { resolve( "empty" ); return; }
+			// await Redis.keySetMulti([
+			// 	[ "set" , RC.BASE + "GENRES" + ".TOTAL" , genres.length ] ,
+			// 	[ "set" , RC.BASE + "GENRES" + ".CURRENT_INDEX" , 0 ] ,
+			// ]);
+			// await Redis.listSetFromArray( RC.BASE + "GENRES" , genres );
+			// for ( var i = 0; i < genres.length; ++i ) {
+			// 	console.log( "\n--> " + genres[ i ] );
 				 
-				// Each Show In Genre
-				const shows = Object.keys( x1[ genres[ i ] ] );
-				if ( shows.length < 1 ) { continue; }
-				await Redis.keySetMulti([
-					[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".TOTAL_SHOWS" , shows.length ] ,
-					[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".CURRENT_INDEX" , 0 ] ,
-				]);
-				await Redis.listSetFromArray( RC.BASE + "GENRES."  + genres[ i ] + ".SHOWS" , shows );
-				for ( var j = 0; j < shows.length; ++j ) {
-					console.log( "\t--> " + shows[ j ] );
+			// 	// Each Show In Genre
+			// 	const shows = Object.keys( x1[ genres[ i ] ] );
+			// 	if ( shows.length < 1 ) { continue; }
+			// 	await Redis.keySetMulti([
+			// 		[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".TOTAL_SHOWS" , shows.length ] ,
+			// 		[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".CURRENT_INDEX" , 0 ] ,
+			// 	]);
+			// 	await Redis.listSetFromArray( RC.BASE + "GENRES."  + genres[ i ] + ".SHOWS" , shows );
+			// 	for ( var j = 0; j < shows.length; ++j ) {
+			// 		console.log( "\t--> " + shows[ j ] );
 
-					// Each Season in Show
-					const seasons = Object.keys( x1[ genres[ i ] ][ shows[ j ] ] );
-					if ( seasons.length < 1 ) { continue; }
-					await Redis.keySetMulti([
-						[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".TOTAL_SEASONS" , seasons.length ] ,
-						[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".CURRENT_INDEX" , 0 ] ,
-					]);
-					await Redis.listSetFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".SEASONS" , seasons );
-					for ( var k = 0; k < seasons.length; ++k ) {
-						console.log( "\t\t--> " + seasons[ j ] );
+			// 		// Each Season in Show
+			// 		const seasons = Object.keys( x1[ genres[ i ] ][ shows[ j ] ] );
+			// 		if ( seasons.length < 1 ) { continue; }
+			// 		await Redis.keySetMulti([
+			// 			[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".TOTAL_SEASONS" , seasons.length ] ,
+			// 			[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".CURRENT_INDEX" , 0 ] ,
+			// 		]);
+			// 		await Redis.listSetFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".SEASONS" , seasons );
+			// 		for ( var k = 0; k < seasons.length; ++k ) {
+			// 			console.log( "\t\t--> " + seasons[ j ] );
 
 
-						// Each Episode in Season
-						const episodes = Object.keys( x1[ genres[ i ] ][ shows[ j ] ][ seasons[ k ] ] );
-						if ( episodes.length < 1 ) { continue; }
-						await Redis.keySetMulti([
-							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".TOTAL_EPISODES" , seasons.length ] ,
-							[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".CURRENT_INDEX" , 0 ] ,
-						]);
-						await Redis.listSetFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".EPISODES" , episodes );
-						for ( var e = 0; e < episodes.length; ++e ) {
+			// 			// Each Episode in Season
+			// 			const episodes = Object.keys( x1[ genres[ i ] ][ shows[ j ] ][ seasons[ k ] ] );
+			// 			if ( episodes.length < 1 ) { continue; }
+			// 			await Redis.keySetMulti([
+			// 				[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".TOTAL_EPISODES" , seasons.length ] ,
+			// 				[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".CURRENT_INDEX" , 0 ] ,
+			// 			]);
+			// 			await Redis.listSetFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ]  + ".EPISODES" , episodes );
+			// 			for ( var e = 0; e < episodes.length; ++e ) {
 
-							if ( !episodes[ e ] ) { continue; }
-							if ( episodes[ e ] === null ) { continue; }
-							if ( episodes[ e ] === "null" ) { continue; }
-							const fp = path.join( RC.BASE , genres[ i ] , shows[ j ] , k.toString() , episodes[ e ] );
-							if ( !fp ) { continue; }
-							if ( fp === null ) { continue; }
-							if ( fp === "null" ) { continue; }
-							console.log( fp );
+			// 				if ( !episodes[ e ] ) { continue; }
+			// 				if ( episodes[ e ] === null ) { continue; }
+			// 				if ( episodes[ e ] === "null" ) { continue; }
+			// 				const fp = path.join( RC.BASE , genres[ i ] , shows[ j ] , k.toString() , episodes[ e ] );
+			// 				if ( !fp ) { continue; }
+			// 				if ( fp === null ) { continue; }
+			// 				if ( fp === "null" ) { continue; }
+			// 				console.log( fp );
 
-						}
+			// 			}
 
-					}
+			// 		}
 
-				}
+			// 	}
 
-			}
+			// }
 
 			resolve();
 		}
