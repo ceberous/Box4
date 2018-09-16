@@ -102,8 +102,6 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 						for ( var j = 0; j < x1[ genre ][ show ][ i ].length; ++j ) {
 							console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].name );
 
-
-
 						}
 
 					}
