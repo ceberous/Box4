@@ -96,7 +96,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 				[ "set" , RC.BASE + "GENRES" + ".CURRENT_INDEX" , 0 ] ,
 			]);			
 			for ( genre in x1 ) { // Each Genre
-				console.log( "\n--> " + genre );					
+				//console.log( "\n--> " + genre );					
 
 				const total_shows = Object.keys( x1[ genre ] ).length;
 				if ( total_shows < 1 ) { continue; }
@@ -105,7 +105,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					[ "set" , RC.BASE + "GENRES." + genre + ".CURRENT_INDEX" , 0 ] ,
 				]);
 				for ( show in x1[ genre ] ) { // Each 'Show'
-					console.log( "\t--> " + show );
+					//console.log( "\t--> " + show );
 
 					const total_seasons = Object.keys( x1[ genre ][ show ] ).length;
 					if ( total_seasons < 1 ) { continue; }
@@ -114,7 +114,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 						[ "set" , RC.BASE + "GENRES." + genre + "." + show + ".CURRENT_INDEX" , 0 ] ,
 					]);	
 					for ( var i = 0; i < x1[ genre ][ show ].length; ++i ) { // Each 'Season'
-						console.log( "\t\t--> " + ( i + 1 ).toString() );
+						//console.log( "\t\t--> " + ( i + 1 ).toString() );
 
 						const season_key = RC.BASE + "GENRES."  + genre + ".SHOWS." + show + ".SEASON." + ( i + 1 ).toString();
 						const episode_paths = x1[ genre ][ show ][ i ].map( x => x.path );
