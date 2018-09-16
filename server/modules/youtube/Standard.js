@@ -93,7 +93,7 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 			var current_followers = await Redis.setGetFull( RC.FOLLOWERS );
 			console.log( current_followers );
 			if ( !current_followers ) { console.log( "No Standard Followers" ); resolve( "no followers" ); return; }
-			if ( current_followers.length > 0 ) { console.log( "No Standard Followers" ); resolve( "no followers" ); return; }
+			if ( current_followers.length < 0 ) { console.log( "No Standard Followers" ); resolve( "no followers" ); return; }
 
 			var latest = await map( current_followers , userId => STANDARD_FOLLOWERS_FETCH_XML( userId ) );
 			console.log( latest );
