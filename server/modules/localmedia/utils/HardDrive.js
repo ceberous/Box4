@@ -118,19 +118,17 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 						//console.log( "\t\t--> " + ( i + 1 ).toString() );
 
 						const season_key = RC.BASE + "GENRES."  + genre + ".SHOWS." + show + ".SEASON." + ( season + 1 ).toString();
-						
-						//const episode_paths = x1[ genre ][ show ][ season ].map( x => x.path );
-						//await Redis.listSetFromArray( season_key , episode_paths );
+						const episode_paths = x1[ genre ][ show ][ season ].map( x => x.path );
+						await Redis.keySetMulti([
+							[ "set" , season_key + ".TOTAL_EPISODES" , total_seasons ] ,
+							[ "set" , season_key + ".CURRENT_INDEX" , 0 ] ,
+						]);
+						await Redis.listSetFromArray( season_key , episode_paths );
 
-						for ( var j = 0; j < x1[ genre ][ show ][ season ].length; ++j ) {
+						//for ( var j = 0; j < x1[ genre ][ show ][ season ].length; ++j ) {
 							//console.log( "\t\t\t--> " + x1[ genre ][ show ][ season ][ j ].name );
 							//console.log( "\t\t\t--> " + x1[ genre ][ show ][ season ][ j ].path );
-							await Redis.keySetMulti([
-								[ "lpush" , season_key , x1[ genre ][ show ][ season ][ j ].path ] ,
-								[ "set" , RC.BASE + "GENRES." + genre + "." + show + episode_paths.length.toString() + ".TOTAL_EPISODES" , total_seasons ] ,
-								[ "set" , RC.BASE + "GENRES." + genre + "." + show +  ".CURRENT_INDEX" , 0 ] ,
-							]);						
-						}
+						//}
 
 					}
 
