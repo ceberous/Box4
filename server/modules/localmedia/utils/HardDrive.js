@@ -11,8 +11,6 @@ const colors	= require( "colors" );
 function wcl( wSTR ) { console.log( colors.magenta.bgBlack( "[HARD_DRIVE_UTIL] --> " + wSTR ) ); }
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
 
-const CustomDirectoryScanner = require( "./ScanDirectory.js" );
-
 function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 	function getPath() {
 		const findMountPointCMD = "findmnt -rn -S UUID=" + wUUID + " -o TARGET";
@@ -87,7 +85,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			
 			// Scan Mount_Point
 			//const x1 = await BUILD_HD_REF( wMountPoint );
-			const x1 = CustomDirectoryScanner( wMountPoint );
+			const x1 = require( "./ScanDirectory.js" )( wMountPoint );
 			console.log( x1 );
 
 			// Each Genre
