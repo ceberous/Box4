@@ -121,10 +121,10 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 						const episode_paths = x1[ genre ][ show ][ i ].map( x => x.path );
 						await Redis.listSetFromArray( season_key , episode_paths );
 
-						for ( var j = 0; j < x1[ genre ][ show ][ i ].length; ++j ) {
-							//console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].name );
-							//console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].path );
-						}
+						// for ( var j = 0; j < x1[ genre ][ show ][ i ].length; ++j ) {
+						// 	console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].name );
+						// 	console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].path );
+						// }
 
 					}
 
