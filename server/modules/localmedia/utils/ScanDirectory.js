@@ -4,7 +4,7 @@ const dirTree = require( "directory-tree" );
 
 module.exports = function( wPath ) {
 	console.log( "Searching --> " + path.resolve( wPath ) );
-	const tree = dirTree( path.resolve( wPath ) );
+	const wTree = dirTree( path.resolve( wPath ) );
 
 	var Tree = {
 		"audiobooks": {} ,
@@ -18,14 +18,14 @@ module.exports = function( wPath ) {
 	}
 	var finalGenres = {};
 
-	for ( var i = 0; i < tree.children.length; ++i ) { 
+	for ( var i = 0; i < wTree.children.length; ++i ) { 
 
-		let genre = tree.children[ i ].name.toLowerCase();
+		let genre = wTree.children[ i ].name.toLowerCase();
 		console.log( "Sorting --> " + genre );
 
 		if ( Tree[ genre ] ) {  // Each Genre
 
-			Tree[ genre ] = tree.children[ i ].children;
+			Tree[ genre ] = wTree.children[ i ].children;
 
 			var shows = {};
 			for ( var j = 0; j < Tree[ genre ].length; ++j ) {  // Each Show
