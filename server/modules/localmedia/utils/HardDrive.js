@@ -91,6 +91,10 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 
 			// Each Genre
 			const total_genres = Object.keys( x1 ).length;
+			await Redis.keySetMulti([
+				[ "set" , RC.BASE + "GENRES" + ".TOTAL" , total_genres ] ,
+				[ "set" , RC.BASE + "GENRES" + ".CURRENT_INDEX" , 0 ] ,
+			]);			
 			for ( genre in x1 ) { // Each Genre
 				console.log( "\n--> " + genre );					
 
