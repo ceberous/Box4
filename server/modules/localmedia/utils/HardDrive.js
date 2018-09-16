@@ -118,7 +118,6 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 
 						const season_key = RC.BASE + "GENRES."  + genre + ".SHOWS." + show + ".SEASONS." + ( i + 1 ).toString();
 						const episode_paths = x1[ genre ][ show ][ i ].map( x => x.path );
-						console.log( episode_paths );
 						await Redis.listSetFromArray( season_key , episode_paths );
 
 						for ( var j = 0; j < x1[ genre ][ show ][ i ].length; ++j ) {
