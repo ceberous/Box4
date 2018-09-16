@@ -1,4 +1,4 @@
-//console.log = function( msg ){ console.trace();  };
+console.log = function( msg ){ console.trace();  };
 
 process.on( "unhandledRejection" , function( reason , p ) {
 	console.error( reason, "Unhandled Rejection at Promise" , p );
