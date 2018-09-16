@@ -35,7 +35,7 @@ module.exports.filterCommon = FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED;
 function RECORD_VIDEO_WATCHED( wID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await RU.setAdd( RC.WATCHED , wID );
+			await Redis.setAdd( RC.WATCHED , wID );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
