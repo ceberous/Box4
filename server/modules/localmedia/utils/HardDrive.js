@@ -91,7 +91,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			// Each Genre
 
 			for ( genre in x1 ) {
-				console.log( "\n--> " + genres );
+				console.log( "\n--> " + genre );
 
 				for ( show in x1[ genre ] ) {
 					console.log( "\t--> " + show );
