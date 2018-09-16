@@ -5,7 +5,7 @@ const RC = Redis.c.LOCAL_MEDIA;
 
 const dirTree = require( "directory-tree" );
 require( "shelljs/global" );
-const FS = require( "fs" );
+const fs = require( "fs" );
 const exfs = require("extfs");
 //const PATH = require( "path" );
 const colors	= require( "colors" );
