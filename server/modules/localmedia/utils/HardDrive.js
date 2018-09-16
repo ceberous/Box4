@@ -93,11 +93,8 @@ module.exports.findAndMountUSB_From_UUID = FIND_USB_STORAGE_PATH_FROM_UUID;
 // }
 // module.exports.buildHardDriveReference = BUILD_HD_REF;
 
-function CustomDirTreeFilter( wPath ) {
-	console.log( "Trying to Build Tree from --> " );
-	console.log( wPath );
-	let tree = dirTree( path.resolve( wPath ) );
-	console.log( tree );
+function CustomDirTreeFilter( path ) {
+	const tree = dirTree( TestPath );
 
 	var Tree = {
 		"audiobooks": {} ,
@@ -110,6 +107,7 @@ function CustomDirTreeFilter( wPath ) {
 		"podcasts": {} ,
 	}
 	var finalGenres = {};
+
 	for ( var i = 0; i < tree.children.length; ++i ) { 
 
 		let genre = tree.children[ i ].name.toLowerCase();
