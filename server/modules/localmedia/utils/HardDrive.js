@@ -105,7 +105,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					[ "set" , RC.BASE + "GENRES." + genres[ i ] + ".CURRENT_INDEX" , 0 ] ,
 				]);
 				await Redis.listSetFromArray( RC.BASE + "GENRES."  + genres[ i ] + ".SHOWS" , shows );
-				for ( var j = 0; j < x1[ genres[ i ] ][ shows[ j ] ].length; ++j ) {
+				for ( var j = 0; j < shows.length; ++j ) {
 
 					// Each Season in Show
 					const seasons = Object.keys( x1[ genres[ i ] ][ shows[ j ] ] );
