@@ -53,7 +53,7 @@ function CustomMediaBoxScanner( wPath ) {
 	console.log( "Searching --> " + path.resolve( wPath ) );
 	//const wTree = dirTree( wPath );
 	const wTree = CustomDirTree( wPath );
-	console.log( wTree );
+	//console.log( wTree );
 	var Tree = {
 		"audiobooks": {} ,
 		"dvds": {} ,
