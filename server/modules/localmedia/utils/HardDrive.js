@@ -84,14 +84,15 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 		try {
 			
 			// Scan Mount_Point
-			//const x1 = await BUILD_HD_REF( wMountPoint );
 			const x1 = require( "./ScanDirectory.js" ).scan( wMountPoint );
 			//console.log( x1 );
 
-			// Each Genre
+			// Sort
 
+			// Each Genre
+			const total_genres = Object.keys( x1 ).length;
 			for ( genre in x1 ) { // Each Genre
-				console.log( "\n--> " + genre );
+				console.log( "\n--> " + genre );					
 
 				for ( show in x1[ genre ] ) { // Each 'Show'
 					console.log( "\t--> " + show );
