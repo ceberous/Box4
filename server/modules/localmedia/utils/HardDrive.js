@@ -107,6 +107,12 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 				for ( show in x1[ genre ] ) { // Each 'Show'
 					console.log( "\t--> " + show );
 
+					const total_seasons = Object.keys( x1[ genre ][ show ] ).length;
+					if ( seasons.length < 1 ) { continue; }
+					await Redis.keySetMulti([
+						[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".TOTAL_SEASONS" , seasons.length ] ,
+						[ "set" , RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".CURRENT_INDEX" , 0 ] ,
+					]);	
 					for ( var i = 0; i < x1[ genre ][ show ].length; ++i ) { // Each 'Season'
 						console.log( "\t\t--> " + ( i + 1 ).toString() );
 
