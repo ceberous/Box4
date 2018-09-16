@@ -1,4 +1,11 @@
-console.log = function( msg ){ if ( msg === "null" ) { console.trace(); }  };
+console.log = function( msg ){ 
+	if ( msg === null ) {
+		console.trace(); 
+	}
+	else if ( msg === "null" ) { 
+		console.trace(); 
+	}
+};
 
 process.on( "unhandledRejection" , function( reason , p ) {
 	console.error( reason, "Unhandled Rejection at Promise" , p );
