@@ -4,8 +4,8 @@ const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.LOCAL_MEDIA;
 
 require( "shelljs/global" );
-const fs = require( "fs" );
-const exfs = require("extfs");
+// const fs = require( "fs" );
+// const exfs = require("extfs");
 //const PATH = require( "path" );
 const colors	= require( "colors" );
 function wcl( wSTR ) { console.log( colors.magenta.bgBlack( "[HARD_DRIVE_UTIL] --> " + wSTR ) ); }
