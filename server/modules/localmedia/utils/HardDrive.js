@@ -90,14 +90,14 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 
 			// Each Genre
 
-			for ( genre in x1 ) {
+			for ( genre in x1 ) { // Each Genre
 				console.log( "\n--> " + genre );
 
-				for ( show in x1[ genre ] ) {
+				for ( show in x1[ genre ] ) { // Each 'Show'
 					console.log( "\t--> " + show );
 
-					for ( var i = 0; i < x1[ genre ][ show ].length; ++i ) {
-						console.log( "\t\t--> " + x1[ genre ][ show ][ i ].name );
+					for ( var i = 0; i < x1[ genre ][ show ].length; ++i ) { // Each 'Season'
+						console.log( "\t\t--> " + i.toString() );
 					}
 
 				}
