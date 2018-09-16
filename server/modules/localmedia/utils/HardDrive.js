@@ -64,7 +64,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 					if ( q1 === "" ) { console.log("Still Can't Mount HardDrive Despite all Efforts"); process.exit(1); }
 
 				}
-				//q1 = q1 + "/";
+				q1 = q1 + "/";
 				q1 = path.resolve( q1 );
 				console.log( q1 )
 				resolve( q1 );
