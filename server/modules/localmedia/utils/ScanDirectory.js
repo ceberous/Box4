@@ -1,8 +1,8 @@
 const fs = require( "fs" );
 const path = require( "path" );
-var dirTree = require( "directory-tree" );
+const dirTree = require( "directory-tree" );
 
-module.exports = function( wPath ) {
+function CustomMediaBoxScanner( wPath ) {
 	console.log( "Searching --> " + path.resolve( wPath ) );
 	const wTree = dirTree( wPath );
 	console.log( wTree );
@@ -88,3 +88,4 @@ module.exports = function( wPath ) {
 	return finalGenres;
 
 }
+module.exports = CustomMediaBoxScanner;

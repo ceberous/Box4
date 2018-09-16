@@ -28,6 +28,7 @@ const RMU = require( "redis-manager-utils" );
 			config = require( "./config.js" );
 			break;
 		default:
+			config = require( "./config.js" );
 			break;
 	}
 	module.exports.config = config;
