@@ -4,7 +4,7 @@ const dirTree = require( "directory-tree" );
 
 module.exports = function( wPath ) {
 	console.log( "Searching --> " + path.resolve( wPath ) );
-	const wTree = dirTree( path.resolve( wPath ).toString() );
+	const wTree = dirTree( wPath );
 	console.log( wTree );
 	var Tree = {
 		"audiobooks": {} ,
