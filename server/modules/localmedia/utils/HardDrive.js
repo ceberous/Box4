@@ -86,6 +86,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			// Scan Mount_Point
 			//const x1 = await BUILD_HD_REF( wMountPoint );
 			const x1 = require( "./ScanDirectory.js" ).scan( wMountPoint );
+			console.log( x1 );
 
 			// Each Genre
 			const genres = Object.keys( x1 );
@@ -96,7 +97,8 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			]);
 			await Redis.listSetFromArray( RC.BASE + "GENRES" , genres );
 			for ( var i = 0; i < genres.length; ++i ) {
-				
+				console.log( "\n--> " + genres[ i ] );
+				 
 				// Each Show In Genre
 				const shows = Object.keys( x1[ genres[ i ] ] );
 				if ( shows.length < 1 ) { continue; }
@@ -106,6 +108,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 				]);
 				await Redis.listSetFromArray( RC.BASE + "GENRES."  + genres[ i ] + ".SHOWS" , shows );
 				for ( var j = 0; j < shows.length; ++j ) {
+					console.log( "\t--> " + shows[ j ] );
 
 					// Each Season in Show
 					const seasons = Object.keys( x1[ genres[ i ] ][ shows[ j ] ] );
@@ -116,6 +119,8 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					]);
 					await Redis.listSetFromArray( RC.BASE + "GENRES." + genres[ i ] + "." + shows[ j ] + ".SEASONS" , seasons );
 					for ( var k = 0; k < seasons.length; ++k ) {
+						console.log( "\t\t--> " + seasons[ j ] );
+
 
 						// Each Episode in Season
 						const episodes = Object.keys( x1[ genres[ i ] ][ shows[ j ] ][ seasons[ k ] ] );

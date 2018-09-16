@@ -23,13 +23,13 @@ function safeReadDirSync (wPath) {
 function CustomDirTree( wPath ) {
 	wPath = wPath.replace( String.fromCharCode(92) + " " , " " );
 	const name = path.basename(wPath);
-	const item = { wPath, name };
+	const item = { path: wPath , name };
 	let stats;
 	wPath = path.normalize( wPath );
 	try { stats = fs.statSync(wPath); }
 	catch (e) { console.log(  e ); return null; }
 	if (stats.isFile()) {
-		const ext = path.extname(wPath).toLowerCase();
+		const ext = path.extname( wPath ).toLowerCase();
 		item.size = stats.size;  // File size in bytes
 		item.extension = ext;
 		item.type = constants.FILE;
