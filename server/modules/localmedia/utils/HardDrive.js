@@ -41,6 +41,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 
 				var uuid = wOUT[ i ].split( " " );
 				if ( !uuid[ 8 ] ) { continue; }
+				if ( uuid !== wUUID ) { continue; }				
 
 				console.log( uuid );
 				var q1 = getPath();
