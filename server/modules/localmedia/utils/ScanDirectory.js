@@ -1,7 +1,6 @@
 const fs = require( "fs" );
 const path = require( "path" );
 var dirTree = require( "directory-tree" );
-console.log( dirTree );
 
 module.exports = function( wPath ) {
 	console.log( "Searching --> " + path.resolve( wPath ) );
