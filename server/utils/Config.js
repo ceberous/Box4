@@ -31,7 +31,7 @@ function SAVE_CONFIG_TO_REDIS() {
 			const YT = require( path.join( MainFP , "main.js" ) ).config.youtube;
 			SET_KEYS[ "YOU_TUBE.LIVE.FOLLOWERS" ] = YT.LIVE.FOLLOWERS.map( x => x[ "id" ] );
 			SET_KEYS[ "YOU_TUBE.LIVE.BLACKLIST" ] = YT.LIVE.BLACKLIST;
-			SET_KEYS[ "YOU_TUBE.STANDARD.FOLLOWERS" ] = YT.LIVE.FOLLOWERS.map( x => x[ "id" ] );
+			SET_KEYS[ "YOU_TUBE.STANDARD.FOLLOWERS" ] = YT.STANDARD.FOLLOWERS.map( x => x[ "id" ] );
 			SET_KEYS[ "YOU_TUBE.STANDARD.BLACKLIST" ] = YT.STANDARD.BLACKLIST;
 			const IST = require( path.join( MainFP , "main.js" ) ).config.instagram;
 			SET_KEYS[ "INSTAGRAM.FOLLOWERS" ] = IST;
