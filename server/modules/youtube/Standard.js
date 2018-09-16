@@ -7,7 +7,6 @@ const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice(
 const path = require( "path" );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.YOUTUBE.STANDARD;
-console.log( RC );
 
 function wcl( wSTR ) { console.log( colors.white.bgRed( "[YOUTUBE_STANDARD] --> " + wSTR ) ); }
 
