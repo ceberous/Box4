@@ -85,6 +85,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			
 			// Scan Mount_Point
 			const x1 = require( "./ScanDirectory.js" ).scan( wMountPoint );
+			await Redis.keySet( RC.BASE + "SKELETON" , JSON.stringify( x1 ) );
 			//console.log( x1 );
 
 			// Sort
