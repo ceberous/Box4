@@ -116,9 +116,14 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					for ( var i = 0; i < x1[ genre ][ show ].length; ++i ) { // Each 'Season'
 						console.log( "\t\t--> " + ( i + 1 ).toString() );
 
+						await Redis.listSetFromArray(
+							RC.BASE + "GENRES."  + genre + ".SHOWS." , show + ".SEASONS." + ( i + 1 ).toString() ,
+							x1[ genre ][ show ][ i ].map( x => x.path )
+						);
+
 						for ( var j = 0; j < x1[ genre ][ show ][ i ].length; ++j ) {
 							console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].name );
-
+							console.log( "\t\t\t--> " + x1[ genre ][ show ][ i ][ j ].path );
 						}
 
 					}
