@@ -131,6 +131,9 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 							if ( episodes[ e ] === null ) { continue; }
 							if ( episodes[ e ] === "null" ) { continue; }
 							const fp = path.join( RC.BASE , genres[ i ] , shows[ j ] , k.toString() , episodes[ e ] );
+							if ( !fp ) { continue; }
+							if ( fp === null ) { continue; }
+							if ( fp === "null" ) { continue; }
 							console.log( fp );
 
 						}
