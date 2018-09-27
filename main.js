@@ -38,8 +38,6 @@ const RMU = require( "redis-manager-utils" );
 			config = require( "./config.js" );
 			break;
 	}
-	config.buttons = require( "./server/utils/Config.js" ).addStateAndSessionFilePaths( config.buttons );
-	console.log( config );
 	module.exports.config = config;
 
 	// Personal
@@ -65,6 +63,7 @@ const RMU = require( "redis-manager-utils" );
 	});
 	await redis.init();
 	module.exports.redis = redis;
+	config.buttons = require( "./server/utils/Config.js" ).addStateAndSessionFilePaths( config.buttons );	
 
 	// Reporter
 	let reporter = new Reporter( { discord: personal.discord } );
