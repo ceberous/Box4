@@ -48,17 +48,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	}
 
 	// Else , Button Number indicates new state or session, Launch State or Session By Number
-
-	// Prepare Launching Path from Config Name
-	let indexing_type;
-	if ( BTN_MAP[ wButtonNum ][ "state" ] ) { indexing_type = "state"; }
-	else if ( BTN_MAP[ wButtonNum ][ "session" ] ) { indexing_type = "session"; }
-	else { return "some error"; }
-	let launching_fp;
-	let launching_state_name;
-	launching_fp = path.join( __dirname , indexing_type.toUpperCase() + "S" ,  BTN_MAP[ wButtonNum ][ indexing_type ] + ".js" );
-	launching_state_name = BTN_MAP[ wButtonNum ][ indexing_type ];
-	CLog1( "LAUNCHING " + indexing_type.toUpperCase() + " ---> " + BTN_MAP[ wButtonNum ][ indexing_type ] );
+	let launching_fp = BTN_MAP[ wButtonNum ].fp;
 	if ( launching_fp === cached_launching_fp ) {
 		if ( wOptions ) {
 			if ( wOptions.mode ) {
@@ -72,7 +62,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 		if ( CURRENT_STATE !== null ) {
 			CLog1( "stopping CURRENT_STATE --> " + CURRENT_STATE );
 			await CURRENT_STATE.stop(); 
-			await wSleep( 1000 );
+			await wSleep( 500 );
 		}
 	}
 
@@ -80,7 +70,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	try { delete require.cache[ CURRENT_STATE ]; }
 	catch ( e ) {}
 	CURRENT_STATE = null;
-	await wSleep( 1000 );
+	await wSleep( 500 );
 	CURRENT_STATE = require( launching_fp );
 	cached_launching_fp = launching_fp;
 	if ( wOptions.mode ) { cached_mode = wOptions.mode; }
