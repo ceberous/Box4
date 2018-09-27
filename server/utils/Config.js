@@ -94,6 +94,7 @@ module.exports.saveConfigToRedis = SAVE_CONFIG_TO_REDIS;
 
 function ADD_STATE_AND_SESSION_FILE_PATHS( wConfig ) {
 	for ( var button in wConfig ) {
+		button = parseInt( button );
 		let indexing_type;
 		if ( wConfig[ button ][ "state" ] ) { indexing_type = "state"; }
 		else if ( wConfig[ button ][ "session" ] ) { indexing_type = "session"; }
