@@ -98,7 +98,7 @@ function ADD_STATE_AND_SESSION_FILE_PATHS( wConfig ) {
 		let indexing_type;
 		if ( wConfig[ button ][ "state" ] ) { indexing_type = "state"; }
 		else if ( wConfig[ button ][ "session" ] ) { indexing_type = "session"; }
-		wConfig[ button ][ "fp" ] = path.join( MainFP , "server" , indexing_type + "s" ,  wConfig[ wButtonNum ][ indexing_type ] + ".js" );
+		wConfig[ button ][ "fp" ] = path.join( MainFP , "server" , indexing_type + "s" ,  wConfig[ button ][ indexing_type ] + ".js" );
 	}
 	return wConfig;
 }
