@@ -93,6 +93,7 @@ module.exports.saveConfigToRedis = SAVE_CONFIG_TO_REDIS;
 
 
 function ADD_STATE_AND_SESSION_FILE_PATHS( wConfig ) {
+	console.log( wConfig );
 	for ( var button in wConfig ) {
 		console.log( button );
 		//button = parseInt( button );
