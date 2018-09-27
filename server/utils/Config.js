@@ -90,3 +90,16 @@ function SAVE_CONFIG_TO_REDIS() {
 	});
 }
 module.exports.saveConfigToRedis = SAVE_CONFIG_TO_REDIS;
+
+
+function ADD_STATE_AND_SESSION_FILE_PATHS( wConfig ) {
+	for ( var button in wConfig ) {
+		let indexing_type;
+		if ( wConfig[ button ][ "state" ] ) { indexing_type = "state"; }
+		else if ( wConfig[ button ][ "session" ] ) { indexing_type = "session"; }
+		else { return "some error"; }
+		wConfig[ button ][ "fp" ] = path.join( MainFP , "server" , indexing_type + "s" ,  BTN_MAP[ wButtonNum ][ indexing_type ] + ".js" );
+	}
+	return wConfig;
+}
+module.exports.addStateAndSessionFilePaths = ADD_STATE_AND_SESSION_FILE_PATHS;

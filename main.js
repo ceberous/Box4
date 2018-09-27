@@ -38,6 +38,8 @@ const RMU = require( "redis-manager-utils" );
 			config = require( "./config.js" );
 			break;
 	}
+	config = require( "./server/utils/Config.js" ).addStateAndSessionFilePaths( config );
+	console.log( config );
 	module.exports.config = config;
 
 	// Personal

@@ -14,12 +14,14 @@ var cached_mode = null;
 var CURRENT_STATE = null;
 const BTN_MAP = require( "../main.js" ).config.buttons;
 
-async function wPressButtonMaster( wButtonNum , wOptions , wMasterClose ) {
-	CLog1( "wPressButtonMaster( " + wButtonNum.toString() + " )" );
+async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
+	
+	CLog1( "PRESS_BUTTON( " + wButtonNum.toString() + " )" );
+	const wBTN_I = parseInt( wButtonNum );
 	if ( wBTN_I > 20 || wBTN_I < 0 ) { return "out of range"; }
 	wOptions = wOptions || BTN_MAP[ wButtonNum ][ "options" ];
-	wSendButtonPressNotification( wButtonNum );
-	var wBTN_I = parseInt( wButtonNum );
+
+	// If Closing Command
 	if ( wBTN_I === 6 ) {
 		if ( CURRENT_STATE ) {
 			if ( CURRENT_STATE !== null ) {
@@ -35,50 +37,59 @@ async function wPressButtonMaster( wButtonNum , wOptions , wMasterClose ) {
 		else { await require( "./utils/Generic.js" ).closeCommon(); }
 		return;
 	}
-	var launching_fp = null;
-	var launching_state_name = null;
-	if ( BTN_MAP[ wButtonNum ][ "state" ] || BTN_MAP[ wButtonNum ][ "session" ] ) {
-		if ( BTN_MAP[ wButtonNum ][ "session" ] ) {
-			launching_fp = path.join( __dirname , "SESSIONS" ,  BTN_MAP[ wButtonNum ][ "session" ] + ".js" );
-			launching_state_name = BTN_MAP[ wButtonNum ][ "session" ];
-			CLog1( "LAUNCHING SESSION ---> " + BTN_MAP[ wButtonNum ][ "session" ] );
+	// Else If, State Action Label , i.e pause , next , exct
+	else if ( wBTN_I === 7 || wBTN_I === 8 || wBTN_I === 9 ) {
+		// Only If , Current State is Active
+		if ( CURRENT_STATE ) {
+			CLog1( "STATE ACTION --> " + BTN_MAP[ wButtonNum ][ "label" ] + "()" );
+			CURRENT_STATE[ BTN_MAP[ wButtonNum ][ "label" ] ]();
 		}
-		else {
-			launching_fp = path.join( __dirname , "STATES" ,  BTN_MAP[ wButtonNum ][ "state" ] + ".js" );
-			launching_state_name = BTN_MAP[ wButtonNum ][ "state" ];
-			CLog1( "LAUNCHING STATE ---> " + BTN_MAP[ wButtonNum ][ "state" ] );
-		}
-		if ( launching_fp === cached_launching_fp ) {
-			if ( wOptions ) {
-				if ( wOptions.mode ) {
-					if ( wOptions.mode === cached_mode ) { return; }
-				}
-				else { return; }
+		return;
+	}
+
+	// Else , Button Number indicates new state or session, Launch State or Session By Number
+
+	// Prepare Launching Path from Config Name
+	let indexing_type;
+	if ( BTN_MAP[ wButtonNum ][ "state" ] ) { indexing_type = "state"; }
+	else if ( BTN_MAP[ wButtonNum ][ "session" ] ) { indexing_type = "session"; }
+	else { return "some error"; }
+	let launching_fp;
+	let launching_state_name;
+	launching_fp = path.join( __dirname , indexing_type.toUpperCase() + "S" ,  BTN_MAP[ wButtonNum ][ indexing_type ] + ".js" );
+	launching_state_name = BTN_MAP[ wButtonNum ][ indexing_type ];
+	CLog1( "LAUNCHING " + indexing_type.toUpperCase() + " ---> " + BTN_MAP[ wButtonNum ][ indexing_type ] );
+	if ( launching_fp === cached_launching_fp ) {
+		if ( wOptions ) {
+			if ( wOptions.mode ) {
+				if ( wOptions.mode === cached_mode ) { return; }
 			}
 			else { return; }
 		}
-		if ( CURRENT_STATE ) {
-			if ( CURRENT_STATE !== null ) {
-				CLog1( "stopping CURRENT_STATE --> " + CURRENT_STATE );
-				await CURRENT_STATE.stop(); 
-				await wSleep( 1000 );
-			}
-		}
-		
-		require( "./utils/cecClientManager.js" ).activate();	
-		try { delete require.cache[ CURRENT_STATE ]; }
-		catch ( e ) {}
-		CURRENT_STATE = null;
-		await wSleep( 1000 );
-		CURRENT_STATE = require( launching_fp );
-		cached_launching_fp = launching_fp;
-		if ( wOptions.mode ) { cached_mode = wOptions.mode; }
-		//RU.setKey(  )
-		await CURRENT_STATE.start( wOptions );
+		else { return; }
 	}
-	else { if ( CURRENT_STATE ) { CLog1( "STATE ACTION --> " + BTN_MAP[ wButtonNum ][ "label" ] + "()" ); CURRENT_STATE[ BTN_MAP[ wButtonNum ][ "label" ] ](); } }
+	if ( CURRENT_STATE ) {
+		if ( CURRENT_STATE !== null ) {
+			CLog1( "stopping CURRENT_STATE --> " + CURRENT_STATE );
+			await CURRENT_STATE.stop(); 
+			await wSleep( 1000 );
+		}
+	}
+
+	require( "./utils/cecClientManager.js" ).activate();	
+	try { delete require.cache[ CURRENT_STATE ]; }
+	catch ( e ) {}
+	CURRENT_STATE = null;
+	await wSleep( 1000 );
+	CURRENT_STATE = require( launching_fp );
+	cached_launching_fp = launching_fp;
+	if ( wOptions.mode ) { cached_mode = wOptions.mode; }
+	//RU.setKey(  )
+	await CURRENT_STATE.start( wOptions );
+
+
 }
-module.exports.pressButtonMaster = wPressButtonMaster;
+module.exports.pressButtonMaster = PRESS_BUTTON;
 
 
 
