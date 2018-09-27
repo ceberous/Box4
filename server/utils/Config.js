@@ -93,14 +93,11 @@ module.exports.saveConfigToRedis = SAVE_CONFIG_TO_REDIS;
 
 
 function ADD_STATE_AND_SESSION_FILE_PATHS( wConfig ) {
-	//console.log( wConfig );
 	for ( var button in wConfig ) {
-		//console.log( button );
-		//button = parseInt( button );
+		if ( wConfig[ button ][ "label" ] ) { continue; }		
 		let indexing_type;
 		if ( wConfig[ button ][ "state" ] ) { indexing_type = "state"; }
 		else if ( wConfig[ button ][ "session" ] ) { indexing_type = "session"; }
-		else { return "some error"; }
 		wConfig[ button ][ "fp" ] = path.join( MainFP , "server" , indexing_type + "s" ,  BTN_MAP[ wButtonNum ][ indexing_type ] + ".js" );
 	}
 	return wConfig;
