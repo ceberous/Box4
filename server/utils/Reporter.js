@@ -74,6 +74,7 @@ function REMOTE_LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
+			if ( !msg_config ) { resolve(); return; }
 			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );
 			await reporter.log( wMSG );
 			resolve();
@@ -86,7 +87,8 @@ function REMOTE_POST( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
-			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );			
+			if ( !msg_config ) { resolve(); return; }
+			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );
 			await reporter.post( wMSG );
 			resolve();
 		}
@@ -98,6 +100,7 @@ function REMOTE_ERROR( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
+			if ( !msg_config ) { resolve(); return; }
 			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );			
 			await reporter.error( wMSG );
 			resolve();
@@ -115,7 +118,7 @@ function LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			LOCAL_LOG( wMSG );
-			await REMOTE_LOG( wMSG );
+			//await REMOTE_LOG( wMSG );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
