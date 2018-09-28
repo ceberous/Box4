@@ -26,6 +26,7 @@ function GET_CALLER() {
 
     return callerfile;
 }
+
 function LOCAL_LOG( wMSG ) {
 	return new Promise( function( resolve , reject ) {
 		try {
