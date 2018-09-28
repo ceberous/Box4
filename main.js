@@ -85,7 +85,7 @@ const RMU = require( "redis-manager-utils" );
 	express_server = http.createServer( express_app );
 
 	// WebSocket
-	let web_socket_manager = new require( "./server/WebSocketManager.js" );	
+	let web_socket_manager = require( "./server/WebSocketManager.js" );	
 	let web_socket_server = new WebSocket.Server({ server: express_server });
 	web_socket_server.on( "connection" , web_socket_manager.onConnection );
 	module.exports.wss = web_socket_server;
