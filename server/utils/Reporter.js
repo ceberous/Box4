@@ -87,7 +87,8 @@ module.exports.remote = {
 function LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let caller = GET_CALLER();
+			//let caller = GET_CALLER();
+			let caller = arguments.callee.name();
 			console.log( caller );
 			LOCAL_LOG( wMSG );
 			await REMOTE_LOG( wMSG );
