@@ -6,7 +6,7 @@ let reporter;
 function GET_CALLER() {
 	let stack = StackTrace.getSync();
 	stack = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) === -1 );
-	return stack[ 0 ];
+	return stack[ 0 ].fileName;
 }
 
 function LOCAL_LOG( wMSG ) {
