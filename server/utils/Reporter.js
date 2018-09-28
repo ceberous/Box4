@@ -31,13 +31,15 @@ function LOCAL_LOG( wMSG ) {
 			if ( !wMSG ) { return; }
 			if ( wMSG.length < 1 ) { return; }
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
-			let x1 = wSTR;	
-			if ( wColorsConfig.length > 0 ) {
-				if ( wColorsConfig.length === 3 ) {
-					console.log( colors[ wColorsConfig[ 0 ] ][ wColorsConfig[ 1 ] ]( x1 ) );
+			if ( msg_config.length > 0 ) {
+				if ( msg_config.length === 3 ) {
+					console.log( colors[ msg_config[ 1 ] ][ wColorsConfig[ 2 ] ]( wMSG ) );
+				}
+				else if ( msg_config.length === 2 ) {
+					console.log( colors[ msg_config[ 1 ] ]( wMSG ) );
 				}
 				else {
-					console.log( colors[ wColorsConfig[ 0 ] ]( x1 ) );
+					console.log( wMSG );
 				}
 			}
 			else { console.log( x1 ); }
