@@ -1,4 +1,5 @@
 const Reporter = require( "lilreporter" );
+const colors = require("colors");
 const StackTrace = require( "stacktrace-js" );
 const Sleep = require( "./Generic.js" ).sleep;
 const NowTime = require( "./Generic.js" ).time;
@@ -42,11 +43,7 @@ function LOCAL_LOG( wMSG ) {
 				else {
 					console.log( wMSG );
 				}
-			}
-			else { console.log( x1 ); }
-			if ( wPrefix ) { wSTR = now_time + " === " + "**" + wPrefix + "**" + wSTR; }
-			else { wSTR = now_time + " === " + wSTR; }
-			Reporter.log( wSTR );			
+			}		
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
