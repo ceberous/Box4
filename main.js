@@ -21,6 +21,7 @@ process.on( "uncaughtException" , function( err ) {
 
 const http = require( "http" );
 const ip = require( "ip" );
+const localIP = ip.address();
 const WebSocket = require( "ws" );
 const Reporter = require( "lilreporter" );
 const RMU = require( "redis-manager-utils" );
@@ -85,7 +86,7 @@ const RMU = require( "redis-manager-utils" );
 	let express_app = require( "./server/express/app.js" );
 
 	// Express Server
-	let express_server = http.createServer( this.express_app );
+	express_server = http.createServer( express_app );
 
 	// WebSocket
 	let web_socket_manager = new require( "./server/WebSocketManager.js" );	
@@ -94,7 +95,6 @@ const RMU = require( "redis-manager-utils" );
 	module.exports.wss = web_socket_server;
 
 	express_server.listen( port , function() {
-		const localIP = ip.address();
 		console.log( "\tServer Started on :" );
 		console.log( "\thttp://" + localIP + ":" + port );
 		console.log( "\t\t or" );
