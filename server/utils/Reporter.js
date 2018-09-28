@@ -24,6 +24,27 @@ function LOCAL_GET_COLORS() {
 function LOCAL_LOG( wMSG ) {
 	return new Promise( function( resolve , reject ) {
 		try {
+			let cur_colors = LOCAL_GET_COLORS();
+			if ( !wMSG ) { return; }
+			if ( wMSG.length < 1 ) { return; }
+			const now_time = GET_NOW_TIME();
+			if ( wColorsConfig ) {
+				let x1 = wSTR;
+				if ( wPrefix ) { x1 = now_time + " === " + wPrefix + x1; }
+				else { x1 = now_time + " === " + x1; }	
+				if ( wColorsConfig.length > 0 ) {
+					if ( wColorsConfig.length === 2 ) {
+						console.log( colors[ wColorsConfig[ 0 ] ][ wColorsConfig[ 1 ] ]( x1 ) );
+					}
+					else {
+						console.log( colors[ wColorsConfig[ 0 ] ]( x1 ) );
+					}
+				}
+				else { console.log( x1 ); }
+			}
+			if ( wPrefix ) { wSTR = now_time + " === " + "**" + wPrefix + "**" + wSTR; }
+			else { wSTR = now_time + " === " + wSTR; }
+			Reporter.log( wSTR );			
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -81,8 +102,6 @@ module.exports.remote = {
 function LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let caller = GET_CALLER();
-			console.log( caller );
 			LOCAL_LOG( wMSG );
 			await REMOTE_LOG( wMSG );
 			resolve();
