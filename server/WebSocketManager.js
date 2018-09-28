@@ -3,9 +3,6 @@ const fs = require("fs");
 const path = require( "path" );
 const Reporter = require( "./utils/Reporter.js" );
 
-const colors = require("colors");
-function wcl( wSTR ) { console.log( colors.rainbow( "[WebSocket] --> " + wSTR ) ); }
-
 const wsClient = require( "../main.js" ).wss;
 function BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions ) {
 	wsClient.clients.forEach( function each( ws ) { 
@@ -49,7 +46,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 						Reporter.post( message.url );
 						break;
 					case "youtubeAuthHash":
-						console.log( message );
+						Reporter.local.log( message );
 						break;
 					case "InstagramMediaOver":
 						require( "./modules/instagram/Manager.js" ).updateWatchedMedia( message.options )
@@ -69,7 +66,7 @@ function SEND_STAGED_WS_MESSAGE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			var STAGED_FF_CLIENT_TASK = await require( "./server/utils/generic.js" ).getStagedFFClientTask( true );
-			CLog1( "Sending Staged FF Client Task to Websocket Clients = " + STAGED_FF_CLIENT_TASK );
+			Reporter.log( "Sending Staged FF Client Task to Websocket Clients = " + STAGED_FF_CLIENT_TASK );
 			wsClient.clients.forEach( function each( ws ) {
 				ws.send( STAGED_FF_CLIENT_TASK );
 			});
