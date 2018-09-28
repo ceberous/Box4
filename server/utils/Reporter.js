@@ -35,7 +35,7 @@ function LOCAL_LOG( wMSG ) {
 			wMSG = PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );
 			if ( msg_config.length > 0 ) {
 				if ( msg_config.length === 3 ) {
-					console.log( colors[ msg_config[ 1 ] ][ wColorsConfig[ 2 ] ]( wMSG ) );
+					console.log( colors[ msg_config[ 1 ] ][ msg_config[ 2 ] ]( wMSG ) );
 				}
 				else if ( msg_config.length === 2 ) {
 					console.log( colors[ msg_config[ 1 ] ]( wMSG ) );
