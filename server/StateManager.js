@@ -7,12 +7,30 @@ function CLog1( wSTR ) { CLog( wSTR , CLogColorConfig , CLogPrefix ); }
 
 const Sleep = require( "./utils/Generic.js" ).sleep;
 const Redis = require( "../main.js" ).redis;
+const RC = Redis.c.LAST_SS;
 const Reporter = require( "../main.js" ).reporter;
+
+const BTN_MAP = require( "../main.js" ).config.buttons;
 
 var cached_launching_fp = null;
 var cached_mode = null;
 var CURRENT_STATE = null;
-const BTN_MAP = require( "../main.js" ).config.buttons;
+function CURRENT_STATE_STOP() {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			if ( CURRENT_STATE !== null ) {
+				CLog1( "stopping CURRENT_STATE --> " + CURRENT_STATE );
+				await CURRENT_STATE.stop();
+				await wSleep( 1000 );
+				try { delete require.cache[ CURRENT_STATE ]; }
+				catch ( e ) {}
+				CURRENT_STATE = null;
+			}		
+			resolve();
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
 
 async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	
@@ -23,16 +41,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 
 	// If Closing Command
 	if ( wBTN_I === 6 ) {
-		if ( CURRENT_STATE ) {
-			if ( CURRENT_STATE !== null ) {
-				CLog1( "stopping CURRENT_STATE" ); 
-				await CURRENT_STATE.stop();
-				try { delete require.cache[ CURRENT_STATE ]; }
-				catch ( e ) {}			
-				CURRENT_STATE = null;
-				await wSleep( 500 );
-			}
-		}
+		await CURRENT_STATE_STOP();
 		if ( wMasterClose ) { await require( "./utils/Generic.js" ).closeEverything(); }
 		else { await require( "./utils/Generic.js" ).closeCommon(); }
 		return;
@@ -49,34 +58,32 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 
 	// Else , Button Number indicates new state or session, Launch State or Session By Number
 	let launching_fp = BTN_MAP[ wButtonNum ].fp;
-	if ( launching_fp === cached_launching_fp ) {
-		if ( wOptions ) {
-			if ( wOptions.mode ) {
-				if ( wOptions.mode === cached_mode ) { return; }
+	await Redis.keySet( RC.FP , launching_fp );
+	if ( wOptions.mode ) { await Redis.keySet( RC.MODE , wOptions.mode ); }
+
+	// Get Previous State
+	let previous_state = await Redis.keyGetMulti( RC.FP , RC.MODE );
+
+	// However , if This is a Repeat of our Previous State , Just Assume Misclick
+	if ( previous_state ) { if ( previous_state[ 0 ] ) { if ( previous_state[ 1 ] ) {
+		if ( previous_state[ 0 ] === launching_fp ) {
+			if ( wOptions ) {
+				if ( wOptions.mode ) {
+					if ( wOptions.mode === cached_mode ) { return; }
+				}
+				else { return; }
 			}
-			else { return; }
+			else { return; }	
 		}
-		else { return; }
-	}
-	if ( CURRENT_STATE ) {
-		if ( CURRENT_STATE !== null ) {
-			CLog1( "stopping CURRENT_STATE --> " + CURRENT_STATE );
-			await CURRENT_STATE.stop(); 
-			await wSleep( 500 );
-		}
-	}
+	}}}
+	
+	// Further Cleanup
+	await CURRENT_STATE_STOP();
+	require( "./utils/cecClientManager.js" ).activate();
 
-	require( "./utils/cecClientManager.js" ).activate();	
-	try { delete require.cache[ CURRENT_STATE ]; }
-	catch ( e ) {}
-	CURRENT_STATE = null;
-	await wSleep( 500 );
+	// Finally Start New State / Session
 	CURRENT_STATE = require( launching_fp );
-	cached_launching_fp = launching_fp;
-	if ( wOptions.mode ) { cached_mode = wOptions.mode; }
-	//RU.setKey(  )
 	await CURRENT_STATE.start( wOptions );
-
 
 }
 module.exports.pressButtonMaster = PRESS_BUTTON;

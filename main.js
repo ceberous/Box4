@@ -100,7 +100,7 @@ const RMU = require( "redis-manager-utils" );
 
 	process.on( "SIGINT" , async function () {
 		//wEmitter.emit( "closeEverything" );
-		console.log( "Shutting Down" );
+		console.log( "\nShutting Down" );
 		//await MyBox4.buttons.press( 6 , {} , true );
 		process.exit( 1 );
 	});	

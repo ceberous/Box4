@@ -126,4 +126,6 @@ module.exports.STATUS = [
 module.exports.LAST_SS = {
 	BUTTON: "LAST_SS.BUTTON" ,
 	OPTIONS: "LAST_SS.OPTIONS" ,
+	FP: "LAST_SS.FP" ,
+	MODE: "LAST_SS.MODE" ,
 };
