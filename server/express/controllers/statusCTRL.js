@@ -4,7 +4,8 @@ const GetStatus = require( path.join( MainFP , "server" , "utils" , "Generic.js"
 
 function sendJSONResponse( res , status , content ) { if ( status ) { res.status( status ); } res.json( content ); }
 
-module.exports.all = function( req , res ) { 
-	require( "../../utils/generic.js" ).rebootRouter();
-	sendJSONResponse( res , 200 , { message: "Rebooted Router" } ); 
-};
+async function ALL_STATUS( req , res ) {
+	let require( "../../utils/generic.js" ).rebootRouter();
+	sendJSONResponse( res , 200 , { status:  } ); 
+}
+module.exports.all = ALL_STATUS;
