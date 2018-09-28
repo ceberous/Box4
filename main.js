@@ -41,6 +41,7 @@ const RMU = require( "redis-manager-utils" );
 			break;
 	}
 	module.exports.config = config;
+	let port = process.env.PORT || 6969;	
 
 	// Personal
 	let personal = require( "./personal.js" );
@@ -90,6 +91,14 @@ const RMU = require( "redis-manager-utils" );
 	let web_socket_server = new WebSocket.Server({ server: express_server });
 	web_socket_server.on( "connection" , web_socket_manager.onConnection );
 	module.exports.wss = web_socket_server;
+
+	express_server.listen( port , function() {
+		const localIP = ip.address();
+		wcl( "\tServer Started on :" );
+		wcl( "\thttp://" + localIP + ":" + port );
+		wcl( "\t\t or" );
+		wcl( "\thttp://localhost:" + port );
+	});	
 
 	process.on( "unhandledRejection" , async function( reason , p ) {
 		await reporter.error( reason );
