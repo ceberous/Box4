@@ -5,7 +5,7 @@ const GetStatus = require( path.join( MainFP , "server" , "utils" , "Generic.js"
 function sendJSONResponse( res , status , content ) { if ( status ) { res.status( status ); } res.json( content ); }
 
 async function ALL_STATUS( req , res ) {
-	let require( "../../utils/generic.js" ).rebootRouter();
-	sendJSONResponse( res , 200 , { status:  } ); 
+	let cur_status =  await GetStatus();
+	sendJSONResponse( res , 200 , { status: cur_status } ); 
 }
 module.exports.all = ALL_STATUS;
