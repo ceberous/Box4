@@ -1,30 +1,12 @@
 const Reporter = require( "lilreporter" );
-const Caller = require( "caller" );
+const StackTrace = require( "stacktrace-js" );
 const Sleep = require( "./Generic.js" ).sleep;
 let reporter;
 
 function GET_CALLER() {
-    var originalFunc = Error.prepareStackTrace;
-
-    var callerfile;
-    try {
-        var err = new Error();
-        var currentfile;
-
-        Error.prepareStackTrace = function (err, stack) { return stack; };
-
-        currentfile = err.stack.shift().getFileName();
-        console.log( currentfile );
-        while (err.stack.length) {
-            callerfile = err.stack.shift().getFileName();
-            console.log( callerfile );
-            if(currentfile !== callerfile) break;
-        }
-    } catch (e) {}
-
-    Error.prepareStackTrace = originalFunc; 
-
-    return callerfile;
+	let stack = StackTrace.getSync();
+	stack = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) !== -1 );
+	return stack;
 }
 
 function LOCAL_LOG( wMSG ) {
@@ -87,8 +69,7 @@ module.exports.remote = {
 function LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			//let caller = GET_CALLER();
-			let caller = LOG.caller.name;
+			let caller = GET_CALLER();
 			console.log( caller );
 			LOCAL_LOG( wMSG );
 			await REMOTE_LOG( wMSG );
