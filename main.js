@@ -98,10 +98,10 @@ const RMU = require( "redis-manager-utils" );
 	});	
 
 	process.on( "unhandledRejection" , async function( reason , p ) {
-		await reporter.error( reason );
+		await require( "./server/utils/Reporter.js" ).error( reason );
 	});
 	process.on( "uncaughtException" , async function( err ) {
-		await reporter.error( err );
+		await require( "./server/utils/Reporter.js" ).error( err );
 	});
 
 	process.on( "SIGINT" , async function () {
