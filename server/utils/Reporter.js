@@ -1,4 +1,5 @@
 const Reporter = require( "lilreporter" );
+const Caller = require( "caller" );
 const Sleep = require( "./Generic.js" ).sleep;
 let reporter;
 
@@ -62,7 +63,8 @@ module.exports.remote = {
 function LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			console.log( process.mainModule.filename );
+			let caller = require( "caller" );
+			console.log( caller );
 			LOCAL_LOG( wMSG );
 			await REMOTE_LOG( wMSG );
 			resolve();
