@@ -21,7 +21,12 @@ function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
 	return CALLER_COLOR_TABLE[ caller ];
 }
 
-function PREFACE_MESSAGE( wMSG , wPrefix ) {
+function LOCAL_PREFACE_MESSAGE( wMSG , wPrefix ) {
+	let now_time = NowTime();
+	return now_time + " === " + wPrefix + wMSG;
+}
+
+function REMOTE_PREFACE_MESSAGE( wMSG , wPrefix ) {
 	let now_time = NowTime();
 	return now_time + " === " + "**" + wPrefix + "**" + wMSG;
 }
