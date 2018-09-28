@@ -1,4 +1,7 @@
 #!/bin/bash
-wget -O- --post-data='{"some data to post..."}' \
-  --header=Content-Type:application/json \
-  "http://www.example.com:9000/json"
+# wget -O- --post-data='{"some data to post..."}' \
+#   --header=Content-Type:application/json \
+#   "http://www.example.com:9000/json"
+
+
+wget http://localhost:8080/myApp/ping -O - | findstr /C:"\"pong\" : 1" && echo Success || echo failure

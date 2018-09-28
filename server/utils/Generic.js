@@ -135,13 +135,15 @@ function GET_STATUS_REPORT() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			var wStatusReport = await Redis.keyGetMulti( ...StatusKeys );
-			var discord_post = "\n\nSTATUS REPORT ====\n";
+			//var discord_post = "\n\nSTATUS REPORT ====\n";
+			let final_report = {};
 			for ( var i = 0; i < StatusKeys.length; ++i ) {
-				discord_post = discord_post + StatusKeys[ i ] + " === " +wStatusReport[ i ] + "\n";
+				final_report[ StatusKeys[ i ] ] = wStatusReport[ i ];
+				//discord_post = discord_post + StatusKeys[ i ] + " === " +wStatusReport[ i ] + "\n";
 			}
-			console.log( discord_post );
+			//console.log( discord_post );
 			//Reporter.log( discord_post );
-			resolve( wStatusReport );
+			resolve( final_report );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
 	});
