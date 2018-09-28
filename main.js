@@ -92,10 +92,10 @@ const RMU = require( "redis-manager-utils" );
 
 	express_server.listen( port , function() {
 		require( "./server/utils/Reporter.js" ).log(
-			"\tServer Started on :" + 
-			"\thttp://" + localIP + ":" + port +
-			"\t\t or" + 
-			"\thttp://localhost:" + port
+			"\nServer Started on :" + 
+			"\n\thttp://" + localIP + ":" + port +
+			"\n\t\t or" + 
+			"\n\thttp://localhost:" + port
 		);
 	});	
 

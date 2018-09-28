@@ -12,6 +12,7 @@ function GET_CALLER() {
 }
 
 const CALLER_COLOR_TABLE = {
+	"/main.js": [ "[MAIN] --> " , "black" , "bgRed" ] , 
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 };
 
