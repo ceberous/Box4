@@ -71,6 +71,8 @@ module.exports.local = {
 function REMOTE_LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
+			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );			
 			await reporter.log( wMSG );
 			resolve();
 		}
