@@ -1,6 +1,7 @@
 const Reporter = require( "lilreporter" );
 const StackTrace = require( "stacktrace-js" );
 const Sleep = require( "./Generic.js" ).sleep;
+const NowTime = require( "./Generic.js" ).time();
 let reporter;
 
 function GET_CALLER() {
@@ -13,35 +14,30 @@ const CALLER_COLOR_TABLE = {
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 };
 
-function LOCAL_GET_COLORS() {
+function PREFACE_MESSAGE( wMSG ) {
 	let caller = GET_CALLER();
-	if ( CALLER_COLOR_TABLE[ caller ] ) {
-		return CALLER_COLOR_TABLE[ caller ];
-	}
-	else { return undefined; }
+	if ( !CALLER_COLOR_TABLE[ caller ] ) { return undefined; }
+	CALLER_COLOR_TABLE[ caller ]
 }
 
 function LOCAL_LOG( wMSG ) {
 	return new Promise( function( resolve , reject ) {
 		try {
-			let cur_colors = LOCAL_GET_COLORS();
 			if ( !wMSG ) { return; }
 			if ( wMSG.length < 1 ) { return; }
-			const now_time = GET_NOW_TIME();
-			if ( wColorsConfig ) {
-				let x1 = wSTR;
-				if ( wPrefix ) { x1 = now_time + " === " + wPrefix + x1; }
-				else { x1 = now_time + " === " + x1; }	
-				if ( wColorsConfig.length > 0 ) {
-					if ( wColorsConfig.length === 2 ) {
-						console.log( colors[ wColorsConfig[ 0 ] ][ wColorsConfig[ 1 ] ]( x1 ) );
-					}
-					else {
-						console.log( colors[ wColorsConfig[ 0 ] ]( x1 ) );
-					}
+			let wColorsConfig = LOCAL_GET_COLORS();
+			let x1 = wSTR;
+			if ( wPrefix ) { x1 = now_time + " === " + wPrefix + x1; }
+			else { x1 = now_time + " === " + x1; }	
+			if ( wColorsConfig.length > 0 ) {
+				if ( wColorsConfig.length === 2 ) {
+					console.log( colors[ wColorsConfig[ 0 ] ][ wColorsConfig[ 1 ] ]( x1 ) );
 				}
-				else { console.log( x1 ); }
+				else {
+					console.log( colors[ wColorsConfig[ 0 ] ]( x1 ) );
+				}
 			}
+			else { console.log( x1 ); }
 			if ( wPrefix ) { wSTR = now_time + " === " + "**" + wPrefix + "**" + wSTR; }
 			else { wSTR = now_time + " === " + wSTR; }
 			Reporter.log( wSTR );			
@@ -114,6 +110,8 @@ module.exports.log = LOG;
 function POST( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			const now_time = GET_NOW_TIME();
+			wMSG = now_time + 
 			LOCAL_LOG( wMSG );
 			await REMOTE_LOG( wMSG );
 			resolve();
