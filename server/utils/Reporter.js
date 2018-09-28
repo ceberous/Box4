@@ -14,7 +14,7 @@ function GET_CALLER() {
         Error.prepareStackTrace = function (err, stack) { return stack; };
 
         currentfile = err.stack.shift().getFileName();
-
+        console.log( currentfile );
         while (err.stack.length) {
             callerfile = err.stack.shift().getFileName();
 
