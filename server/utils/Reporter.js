@@ -14,7 +14,7 @@ const CALLER_COLOR_TABLE = {
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 };
 
-function PREFACE_MESSAGE( wMSG ) {
+function GET_CALLER( wMSG ) {
 	let caller = GET_CALLER();
 	if ( !CALLER_COLOR_TABLE[ caller ] ) { return undefined; }
 	return CALLER_COLOR_TABLE[ caller ];
