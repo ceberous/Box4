@@ -8,11 +8,14 @@ let reporter;
 function GET_CALLER() {
 	let stack = StackTrace.getSync();
 	stack = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) === -1 );
-	return stack[ 0 ].fileName.split( "/Box4" )[ 1 ];
+	let name = stack[ 0 ].fileName.split( "/Box4" )[ 1 ];
+	console.log( name );
+	return name;
 }
 
 const CALLER_COLOR_TABLE = {
 	"/main.js": [ "[MAIN] --> " , "black" , "bgRed" ] , 
+	"/server/WebSocketManager.js" , [ "[WebSocket] --> " , "rainbow" ] ,
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 };
 
