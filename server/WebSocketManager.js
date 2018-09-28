@@ -46,7 +46,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 						require( "./Manager.js" ).pressButtonMaster( 9 ); // next
 						break;										
 					case "youtubeNowPlayingID":
-						.post( message.url );
+						Reporter.post( message.url );
 						break;
 					case "youtubeAuthHash":
 						console.log( message );
