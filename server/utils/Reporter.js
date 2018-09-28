@@ -57,6 +57,7 @@ function LOCAL_LOG( wMSG ) {
 function LOCAL_ERROR( wMSG ) {
 	return new Promise( function( resolve , reject ) {
 		try {
+			LOCAL_LOG( wMSG );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
