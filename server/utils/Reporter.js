@@ -17,7 +17,7 @@ function GET_CALLER() {
         console.log( currentfile );
         while (err.stack.length) {
             callerfile = err.stack.shift().getFileName();
-
+            console.log( callerfile );
             if(currentfile !== callerfile) break;
         }
     } catch (e) {}
