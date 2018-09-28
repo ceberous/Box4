@@ -44,7 +44,7 @@ const corsOptions = {
 
 // Main-Routes
 app.get( "/" , function( req , res , next ) {
-	res.render( 'index.html' );
+	res.render( "index.html" );
 });
 
 const statusRoutes = require( "./routes/statusRTR.js" );
