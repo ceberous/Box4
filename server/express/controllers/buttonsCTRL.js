@@ -2,7 +2,7 @@ const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice(
 const path = require( "path" );
 
 const wPressButtonMaster = require( path.join( MainFP , "server" , "StateManager.js" ) ).pressButtonMaster;
-const ButtonNames = require( "../../../main.js" ).config.button;
+const ButtonNames = require( path.join( MainFP , "main.js" ) ).config.button;
 
 function sendJSONResponse( res , status , content ) { if ( status ) { res.status( status ); } res.json( content ); }
 
