@@ -5,7 +5,7 @@ let reporter;
 
 function GET_CALLER() {
 	let stack = StackTrace.getSync();
-	stack = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) !== -1 );
+	stack = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) === -1 );
 	return stack;
 }
 
