@@ -1,0 +1,4 @@
+#!/bin/bash
+wget -O- --post-data='{"some data to post..."}' \
+  --header=Content-Type:application/json \
+  "http://www.example.com:9000/json"

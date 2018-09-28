@@ -47,6 +47,9 @@ app.get( "/" , function( req , res , next ) {
 	res.render( 'index.html' );
 });
 
+const statusRoutes = require( "./routes/statusRTR.js" );
+app.use( "/status/" , statusRoutes );
+
 const specialRoutes = require( "./routes/specialRTR.js" );
 app.use( "/special/" , specialRoutes );
 
