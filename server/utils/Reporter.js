@@ -1,7 +1,7 @@
 const Reporter = require( "lilreporter" );
 const StackTrace = require( "stacktrace-js" );
 const Sleep = require( "./Generic.js" ).sleep;
-const NowTime = require( "./Generic.js" ).time();
+const NowTime = require( "./Generic.js" ).time;
 let reporter;
 
 function GET_CALLER() {
@@ -17,7 +17,6 @@ const CALLER_COLOR_TABLE = {
 function PREFACE_MESSAGE( wMSG ) {
 	let caller = GET_CALLER();
 	if ( !CALLER_COLOR_TABLE[ caller ] ) { return undefined; }
-	let now_time = NowTime();
 	CALLER_COLOR_TABLE[ caller ]
 }
 
