@@ -1,14 +1,10 @@
 const path	= require( "path" );
-const CLogPrefix = "[STATE_MAN] --> ";
-const CLogColorConfig = [ "black" , "bgWhite" ];
-const CLog = require( "./utils/Generic.js" ).clog;
-function CLog1( wSTR ) { CLog( wSTR , CLogColorConfig , CLogPrefix ); }
 
 
 const Sleep = require( "./utils/Generic.js" ).sleep;
 const Redis = require( "../main.js" ).redis;
 const RC = Redis.c.LAST_SS;
-const Reporter = require( "../main.js" ).reporter;
+const Reporter = require(  "./utils/Reporter.js" );
 
 const BTN_MAP = require( "../main.js" ).config.buttons;
 
