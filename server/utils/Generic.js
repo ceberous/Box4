@@ -1,7 +1,6 @@
 const request = require( "request" );
 const path = require( "path" );
 require( "shelljs/global" );
-const colors = require("colors");
 
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const MainFPMJS = path.join( MainFP , "main.js" );
@@ -10,7 +9,7 @@ const Redis = require( MainFPMJS ).redis;
 //const MonthNames = require( MainFPMJS ).constants.MonthNames;
 const MonthNames = require( path.join( MainFP , "server" , "constants" , "generic.js" ) ).MonthNames;
 const StatusKeys = require( MainFPMJS ).rc.STATUS;
-const Reporter = require( MainFPMJS ).reporter;
+const Reporter = require( MainFPMJS , "server" , "utils" , "Reporter.js" );
 
 function W_SLEEP( ms ) { return new Promise( resolve => setTimeout( resolve , ms ) ); }
 module.exports.sleep = W_SLEEP;
@@ -35,53 +34,6 @@ function GET_NOW_TIME() {
 }
 module.exports.time = GET_NOW_TIME;
 
-function COMMON_LOG( wSTR , wColorsConfig , wPrefix ) {
-	if ( !wSTR ) { return; }
-	if ( wSTR.length < 1 ) { return; }
-	const now_time = GET_NOW_TIME();
-	if ( wColorsConfig ) {
-		var x1 = wSTR;
-		if ( wPrefix ) { x1 = now_time + " === " + wPrefix + x1; }
-		else { x1 = now_time + " === " + x1; }	
-		if ( wColorsConfig.length > 0 ) {
-			if ( wColorsConfig.length === 2 ) {
-				console.log( colors[ wColorsConfig[ 0 ] ][ wColorsConfig[ 1 ] ]( x1 ) );
-			}
-			else {
-				console.log( colors[ wColorsConfig[ 0 ] ]( x1 ) );
-			}
-		}
-		else { console.log( x1 ); }
-	}
-	if ( wPrefix ) { wSTR = now_time + " === " + "**" + wPrefix + "**" + wSTR; }
-	else { wSTR = now_time + " === " + wSTR; }
-	Reporter.log( wSTR );
-}
-module.exports.clog = COMMON_LOG;
-
-function COMMON_ERROR_LOG( wSTR , wColorsConfig , wPrefix ) {
-	if ( !wSTR ) { return; }
-	if ( wSTR.length < 1 ) { return; }
-	const now_time = GET_NOW_TIME();
-	if ( wColorsConfig ) {
-		var x1 = wSTR;
-		if ( wPrefix ) { x1 = now_time + " === " + wPrefix + x1; }
-		else { x1 = now_time + " === " + x1; }	
-		if ( wColorsConfig.length > 0 ) {
-			if ( wColorsConfig.length === 2 ) {
-				console.log( colors[ wColorsConfig[ 0 ] ][ wColorsConfig[ 1 ] ]( x1 ) );
-			}
-			else {
-				console.log( colors[ wColorsConfig[ 0 ] ]( x1 ) );
-			}
-		}
-		else { console.log( x1 ); }
-	}
-	if ( wPrefix ) { wSTR = now_time + " === " + "**" + wPrefix + "**" + wSTR; }
-	else { wSTR = now_time + " === " + wSTR; }
-	Reporter.error( wSTR );
-}
-module.exports.celog = COMMON_ERROR_LOG;
 
 function FIX_PATH_SPACE( wFP ) {
 	var fixSpace = new RegExp( " " , "g" );
