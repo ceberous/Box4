@@ -124,10 +124,8 @@ module.exports.log = LOG;
 function POST( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const now_time = GET_NOW_TIME();
-			wMSG = now_time + 
 			LOCAL_LOG( wMSG );
-			await REMOTE_LOG( wMSG );
+			await REMOTE_POST( wMSG );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
