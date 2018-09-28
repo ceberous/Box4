@@ -1,7 +1,7 @@
 
 
 function INITIALIZE () {
-	return new Promise( function( resolve , reject ) {
+	return new Promise( async function( resolve , reject ) {
 		try {
 			await require( "./Standard.js" ).update();
 			resolve();
