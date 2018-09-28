@@ -91,10 +91,12 @@ const RMU = require( "redis-manager-utils" );
 	module.exports.wss = web_socket_server;
 
 	express_server.listen( port , function() {
-		console.log( "\tServer Started on :" );
-		console.log( "\thttp://" + localIP + ":" + port );
-		console.log( "\t\t or" );
-		console.log( "\thttp://localhost:" + port );
+		require( "./server/utils/Reporter.js" ).log(
+			"\tServer Started on :" + 
+			"\thttp://" + localIP + ":" + port +
+			"\t\t or" + 
+			"\thttp://localhost:" + port
+		);
 	});	
 
 	process.on( "unhandledRejection" , async function( reason , p ) {
@@ -106,7 +108,7 @@ const RMU = require( "redis-manager-utils" );
 
 	process.on( "SIGINT" , async function () {
 		//wEmitter.emit( "closeEverything" );
-		console.log( "\nShutting Down" );
+		await require( "./server/utils/Reporter.js" ).log( "\nShutting Down" );
 		//await MyBox4.buttons.press( 6 , {} , true );
 		process.exit( 1 );
 	});	
