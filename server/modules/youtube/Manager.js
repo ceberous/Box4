@@ -9,4 +9,4 @@ function INITIALIZE () {
 		catch( error ) { console.log( error ); reject( error ); }
 	});
 }
-moduele.exports.initialize = INITIALIZE;
+module.exports.initialize = INITIALIZE;
