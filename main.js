@@ -23,7 +23,6 @@ const http = require( "http" );
 const ip = require( "ip" );
 const localIP = ip.address();
 const WebSocket = require( "ws" );
-const Reporter = require( "lilreporter" );
 const RMU = require( "redis-manager-utils" );
 
 ( async ()=> {
@@ -68,13 +67,10 @@ const RMU = require( "redis-manager-utils" );
 	});
 	await redis.init();
 	module.exports.redis = redis;
-	config.buttons = require( "./server/utils/Config.js" ).addStateAndSessionFilePaths( config.buttons );	
+	config.buttons = require( "./server/utils/Config.js" ).addStateAndSessionFilePaths( config.buttons );
 
-	// Reporter
-	let reporter = new Reporter( { discord: personal.discord } );
-	await reporter.init();
-	module.exports.reporter = reporter;
-	await require( "./server/utils/Generic.js" ).sleep( 2000 );
+	// Initialize Reporting / Logging
+	await require( "./server/utils/Reporter.js" ).initialize();
 
 	await require( "./server/utils/Config.js" ).saveConfigToRedis();	
 

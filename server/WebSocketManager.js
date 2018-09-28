@@ -1,6 +1,7 @@
 const ip = require("ip");
 const fs = require("fs");
 const path = require( "path" );
+const Reporter = require( "./utils/Reporter.js" );
 
 const colors = require("colors");
 function wcl( wSTR ) { console.log( colors.rainbow( "[WebSocket] --> " + wSTR ) ); }
@@ -45,7 +46,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 						require( "./Manager.js" ).pressButtonMaster( 9 ); // next
 						break;										
 					case "youtubeNowPlayingID":
-						require( "../main.js" ).reporter.post( message.url );
+						.post( message.url );
 						break;
 					case "youtubeAuthHash":
 						console.log( message );
