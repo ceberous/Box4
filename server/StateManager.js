@@ -64,7 +64,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	// Get Previous State
 	let previous_state = await Redis.keyGetMulti( RC.FP , RC.MODE );
 
-	// However , if This is a Repeat of our Previous State , Just Assume Misclick
+	// However , if This is a Repeat of our Previous State , Just Assume Misclick and Exit
 	if ( previous_state ) { if ( previous_state[ 0 ] ) { if ( previous_state[ 1 ] ) {
 		if ( previous_state[ 0 ] === launching_fp ) {
 			if ( wOptions ) {
@@ -79,7 +79,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	
 	// Further Cleanup
 	await CURRENT_STATE_STOP();
-	require( "./utils/cecClientManager.js" ).activate();
+	require( "./utils/CEC_USB.js" ).activate();
 
 	// Finally Start New State / Session
 	CURRENT_STATE = require( launching_fp );
