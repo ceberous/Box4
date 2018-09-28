@@ -142,7 +142,7 @@ function ERROR( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			LOCAL_ERROR( wMSG );
-			await REMOTE_ERROR( wMSG );
+			//await REMOTE_ERROR( wMSG );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
