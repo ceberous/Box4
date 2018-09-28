@@ -15,7 +15,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			const ip = wReq.connection.remoteAddress;
-			wcl( "New WebSocket Client Connected @@@ " + ip );
+			Reporter.log( "New WebSocket Client Connected @@@ " + ip );
 			const STAGED_FF_CLIENT_TASK = await require( "./utils/Generic.js" ).getStagedFFClientTask();
 			await require( "../main.js" ).sendStagedWebSocketMessage();
 			wSocket.on( "message" ,  function( message ) {
@@ -83,13 +83,18 @@ function INITIALIZE( wPort ) {
 		try {
 			const localIP = ip.address();
 			const wSIP = 'var socketServerAddress = "' + localIP + '"; var socketPORT = "' + wPort + '";';	
-			fs.writeFileSync( path.join( __dirname , ".." , "client" , "js" , "webSocketServerAddress.js" ) , wSIP );	
+			fs.writeFileSync( path.join( __dirname , ".." , "client" , "js" , "webSocketServerAddress.js" ) , wSIP );
+			Reporter.log( "Done Initializing" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
 	});
 }
 module.exports.initialize = INITIALIZE;
+
+( async ()=> {
+	INITIALIZE();
+})();
 
 // // May not be necessary , because clients seem to be automatically deleteed in simple testing
 // wss_interval = setInterval( function ping() {
