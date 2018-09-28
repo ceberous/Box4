@@ -94,10 +94,10 @@ const RMU = require( "redis-manager-utils" );
 
 	express_server.listen( port , function() {
 		const localIP = ip.address();
-		wcl( "\tServer Started on :" );
-		wcl( "\thttp://" + localIP + ":" + port );
-		wcl( "\t\t or" );
-		wcl( "\thttp://localhost:" + port );
+		console.log( "\tServer Started on :" );
+		console.log( "\thttp://" + localIP + ":" + port );
+		console.log( "\t\t or" );
+		console.log( "\thttp://localhost:" + port );
 	});	
 
 	process.on( "unhandledRejection" , async function( reason , p ) {
