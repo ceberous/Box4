@@ -3,6 +3,29 @@ const Caller = require( "caller" );
 const Sleep = require( "./Generic.js" ).sleep;
 let reporter;
 
+function GET_CALLER() {
+    var originalFunc = Error.prepareStackTrace;
+
+    var callerfile;
+    try {
+        var err = new Error();
+        var currentfile;
+
+        Error.prepareStackTrace = function (err, stack) { return stack; };
+
+        currentfile = err.stack.shift().getFileName();
+
+        while (err.stack.length) {
+            callerfile = err.stack.shift().getFileName();
+
+            if(currentfile !== callerfile) break;
+        }
+    } catch (e) {}
+
+    Error.prepareStackTrace = originalFunc; 
+
+    return callerfile;
+}
 function LOCAL_LOG( wMSG ) {
 	return new Promise( function( resolve , reject ) {
 		try {
@@ -63,8 +86,8 @@ module.exports.remote = {
 function LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let caller = require( "caller" );
-			console.log( caller(1) );
+			let caller = GET_CALLER();
+			console.log( caller );
 			LOCAL_LOG( wMSG );
 			await REMOTE_LOG( wMSG );
 			resolve();
