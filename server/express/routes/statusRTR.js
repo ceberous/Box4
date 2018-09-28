@@ -3,7 +3,7 @@ const router = express.Router();
 
 const statusCTRL = require( "../controllers/statusCTRL.js" );
 
-router.get( "/all" , statusCTRL.all );
+router.get( "/all/" , statusCTRL.all );
 // router.get( "/restart-pm2/" , specialCTRL.restartPM2 );
 // router.get( "/tv-power/" , specialCTRL.tvPower );
 
