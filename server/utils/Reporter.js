@@ -64,7 +64,7 @@ function LOG( wMSG ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			let caller = require( "caller" );
-			console.log( caller(2) );
+			console.log( caller() );
 			LOCAL_LOG( wMSG );
 			await REMOTE_LOG( wMSG );
 			resolve();
