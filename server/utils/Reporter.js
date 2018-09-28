@@ -11,11 +11,11 @@ function GET_CALLER() {
 
 const CALLER_COLOR_TABLE = {
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
-}
+};
 
 function LOCAL_GET_COLORS() {
 	let caller = GET_CALLER();
-	if CALLER_COLOR_TABLE[ caller ] {
+	if ( CALLER_COLOR_TABLE[ caller ] ) {
 		return CALLER_COLOR_TABLE[ caller ];
 	}
 	else { return undefined; }
