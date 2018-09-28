@@ -15,7 +15,7 @@ function CURRENT_STATE_STOP() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			if ( CURRENT_STATE !== null ) {
-				CLog1( "stopping CURRENT_STATE --> " + CURRENT_STATE );
+				Reporter.log( "stopping CURRENT_STATE --> " + CURRENT_STATE );
 				await CURRENT_STATE.stop();
 				await wSleep( 1000 );
 				try { delete require.cache[ CURRENT_STATE ]; }
@@ -30,7 +30,7 @@ function CURRENT_STATE_STOP() {
 
 async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	
-	CLog1( "PRESS_BUTTON( " + wButtonNum.toString() + " )" );
+	Reporter.log( "PRESS_BUTTON( " + wButtonNum.toString() + " )" );
 	const wBTN_I = parseInt( wButtonNum );
 	if ( wBTN_I > 20 || wBTN_I < 0 ) { return "out of range"; }
 	wOptions = wOptions || BTN_MAP[ wButtonNum ][ "options" ];
@@ -46,7 +46,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	else if ( wBTN_I === 7 || wBTN_I === 8 || wBTN_I === 9 ) {
 		// Only If , Current State is Active
 		if ( CURRENT_STATE ) {
-			CLog1( "STATE ACTION --> " + BTN_MAP[ wButtonNum ][ "label" ] + "()" );
+			Reporter.log( "STATE ACTION --> " + BTN_MAP[ wButtonNum ][ "label" ] + "()" );
 			CURRENT_STATE[ BTN_MAP[ wButtonNum ][ "label" ] ]();
 		}
 		return;
@@ -94,10 +94,9 @@ const MOPIDY_MAN 		= require( "./modules/mopidy/Manager.js" );
 // ======================================================================
 
 ( async ()=> {
-	await require( "./utils/Reporter.js" ).log( "Initializing stuff" );
-	//CLog1( "Initializing stuff" );
+	await Reporter.log( "Initializing stuff" );
 	await require( "./modules/localmedia/Manager.js" ).initialize();
 	await require( "./modules/youtube/Manager.js" ).initialize();
-	//CLog1( "we are done with Initialization" );
+	await Reporter.log( "we are done with Initialization" );
 	await require( "./utils/Generic.js" ).getStatusReport();
 })();
