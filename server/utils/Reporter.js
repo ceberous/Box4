@@ -9,8 +9,16 @@ function GET_CALLER() {
 	return stack[ 0 ].fileName.split( "/Box4" )[ 1 ];
 }
 
+const CALLER_COLOR_TABLE = {
+	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
+}
+
 function LOCAL_GET_COLORS() {
 	let caller = GET_CALLER();
+	if CALLER_COLOR_TABLE[ caller ] {
+		return CALLER_COLOR_TABLE[ caller ];
+	}
+	else { return undefined; }
 }
 
 function LOCAL_LOG( wMSG ) {
