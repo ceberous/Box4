@@ -5,6 +5,7 @@ const GetStatus = require( path.join( MainFP , "server" , "utils" , "Generic.js"
 function sendJSONResponse( res , status , content ) { if ( status ) { res.status( status ); } res.json( content ); }
 
 async function ALL_STATUS( req , res ) {
+	console.log( "Express /status/" );
 	let cur_status =  await GetStatus();
 	sendJSONResponse( res , 200 , { status: cur_status } ); 
 }
