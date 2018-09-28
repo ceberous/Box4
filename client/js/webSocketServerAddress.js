@@ -1,1 +1,1 @@
-var socketServerAddress = "192.168.0.85"; var socketPORT = "6969";
+var socketServerAddress = "192.168.0.85"; var socketPORT = "undefined";

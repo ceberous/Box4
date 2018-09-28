@@ -79,12 +79,12 @@ module.exports.sendStagedWebSocketMessage = SEND_STAGED_WS_MESSAGE;
 
 
 function INITIALIZE( wPort ) {
-	return new Promise( function( resolve , reject ) {
+	return new Promise( async function( resolve , reject ) {
 		try {
 			const localIP = ip.address();
 			const wSIP = 'var socketServerAddress = "' + localIP + '"; var socketPORT = "' + wPort + '";';	
 			fs.writeFileSync( path.join( __dirname , ".." , "client" , "js" , "webSocketServerAddress.js" ) , wSIP );
-			Reporter.log( "Done Initializing" );
+			await Reporter.log( "Done Initializing" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
