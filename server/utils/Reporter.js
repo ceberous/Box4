@@ -31,11 +31,9 @@ function LOCAL_LOG( wMSG ) {
 			if ( !wMSG ) { return; }
 			if ( wMSG.length < 1 ) { return; }
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
-			let x1 = wSTR;
-			if ( wPrefix ) { x1 = now_time + " === " + wPrefix + x1; }
-			else { x1 = now_time + " === " + x1; }	
+			let x1 = wSTR;	
 			if ( wColorsConfig.length > 0 ) {
-				if ( wColorsConfig.length === 2 ) {
+				if ( wColorsConfig.length === 3 ) {
 					console.log( colors[ wColorsConfig[ 0 ] ][ wColorsConfig[ 1 ] ]( x1 ) );
 				}
 				else {
