@@ -1,12 +1,8 @@
-const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const path = require( "path" );
+const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
+const Reporter( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.LOCAL_MEDIA;
-
-const CLogPrefix = "[LOCAL_MEDIA_MAN] --> ";
-const CLogColorConfig = [ "magenta" , "bgBlack" ];
-const CLog = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).clog;
-function CLog1( wSTR ) { CLog( wSTR , CLogColorConfig , CLogPrefix ); }
 
 const wEmitter		= require( path.join( MainFP , "main.js" ) ).emitter;
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
@@ -27,7 +23,7 @@ function INITIALIZE() {
 				resolve();
 				return;
 			}
-			CLog1( "Live Mount Point === " + GLOBAL_INSTANCE_MOUNT_POINT );
+			Reporter.log( "Live Mount Point === " + GLOBAL_INSTANCE_MOUNT_POINT );
 
 			wEmitter.on( "MPlayerOVER" , async function( wResults ) {
 				await UpdateLastPlayedTime( wResults );
@@ -36,9 +32,9 @@ function INITIALIZE() {
 				const wAS = await Redis.keyGet( "LAST_SS.ACTIVE_STATE" );
 				if ( wAS ) { 
 					if ( wAS === "LOCAL_MEDIA" ) { PLAY(); }
-					else { CLog1( "WE WERE TOLD TO QUIT" ); }
+					else { Reporter.log( "WE WERE TOLD TO QUIT" ); }
 				}
-				else { CLog1( "WE WERE TOLD TO QUIT" ); }
+				else { Reporter.log( "WE WERE TOLD TO QUIT" ); }
 			});
 			await Redis.keySet( RC.STATUS , "ONLINE" );
 			resolve();
@@ -52,7 +48,7 @@ function LOCAL_MPLAY_WRAP( wFilePath , wCurrentTime ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			if ( !wFilePath ) { resolve(); return; }
-			CLog1( "\nSTARTING --> MPLAYER" );
+			Reporter.log( "\nSTARTING --> MPLAYER" );
 			await MPLAYER_MAN.playFilePath( wFilePath );
 			if ( wCurrentTime ) {
 				if ( wCurrentTime > 1 ) {
@@ -69,7 +65,7 @@ function LOCAL_MPLAY_WRAP( wFilePath , wCurrentTime ) {
 function PLAY( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			CLog1( "play()" );
+			Reporter.log( "play()" );
 			const FinalNowPlaying = await Calculate.next( wOptions );
 			await LOCAL_MPLAY_WRAP( FinalNowPlaying.fp , FinalNowPlaying.cur_time );
 			resolve();
@@ -82,7 +78,7 @@ module.exports.play = PLAY;
 function PAUSE( wOptions ) {
 	return new Promise( function( resolve , reject ) {
 		try {
-			CLog1( "pause()" );
+			Reporter.log( "pause()" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -93,7 +89,7 @@ module.exports.pause = PAUSE;
 function RESUME( wOptions ) {
 	return new Promise( function( resolve , reject ) {
 		try {
-			CLog1( "resume()" );
+			Reporter.log( "resume()" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -104,7 +100,7 @@ module.exports.resume = RESUME;
 function STOP( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			CLog1( "stop()" );
+			Reporter.log( "stop()" );
 			const cur_time = MPLAYER_MAN.silentStop();
 			await UpdateLastPlayedTime( cur_time );
 			resolve();
@@ -117,7 +113,7 @@ module.exports.stop = STOP;
 function NEXT( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			CLog1( "next()" );
+			Reporter.log( "next()" );
 			await STOP();
 			await Calculate.skip();
 			await PLAY();
@@ -131,7 +127,7 @@ module.exports.next = NEXT;
 function PREVIOUS( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			CLog1( "previous()" );
+			Reporter.log( "previous()" );
 			await STOP();
 			const previous = await Calculate.previous();
 			await LOCAL_MPLAY_WRAP( previous.fp , previous.cur_time );
