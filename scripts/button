@@ -1,7 +1,4 @@
-#!/bin/bash
-# wget -O- --post-data='{"some data to post..."}' \
-#   --header=Content-Type:application/json \
-#   "http://www.example.com:9000/json"
-
-
-wget http://localhost:8080/myApp/ping -O - | findstr /C:"\"pong\" : 1" && echo Success || echo failure
+#!/bin/bash                                                                                                                                                                                                                       
+_URL="http://localhost:6969/status"                                                                                                                                                                                       
+#_URL="http://localhost:6969/buttonpress/$1"                                                                                                                                                                                       
+curl -H 'Accept: application/localhost:6161+json' -X GET $_URL | python -mjson.tool > out.json
