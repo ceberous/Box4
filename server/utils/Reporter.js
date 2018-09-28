@@ -17,7 +17,7 @@ const CALLER_COLOR_TABLE = {
 function PREFACE_MESSAGE( wMSG ) {
 	let caller = GET_CALLER();
 	if ( !CALLER_COLOR_TABLE[ caller ] ) { return undefined; }
-	CALLER_COLOR_TABLE[ caller ]
+	return CALLER_COLOR_TABLE[ caller ];
 }
 
 function LOCAL_LOG( wMSG ) {
