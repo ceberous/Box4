@@ -15,7 +15,7 @@ function GET_CALLER() {
 
 const CALLER_COLOR_TABLE = {
 	"/main.js": [ "[MAIN] --> " , "black" , "bgRed" ] , 
-	"/server/WebSocketManager.js" , [ "[WebSocket] --> " , "rainbow" ] ,
+	"/server/WebSocketManager.js": [ "[WebSocket] --> " , "rainbow" ] ,
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 };
 
