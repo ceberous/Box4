@@ -20,6 +20,7 @@ process.on( "uncaughtException" , function( err ) {
 
 
 const http = require( "http" );
+const ip = require( "ip" );
 const WebSocket = require( "ws" );
 const Reporter = require( "lilreporter" );
 const RMU = require( "redis-manager-utils" );
