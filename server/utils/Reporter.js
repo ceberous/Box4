@@ -17,6 +17,7 @@ const CALLER_COLOR_TABLE = {
 	"/main.js": [ "[MAIN] --> " , "black" , "bgRed" ] , 
 	"/server/WebSocketManager.js": [ "[WebSocket] --> " , "rainbow" ] ,
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
+	"/server/modules/localmedia/Manager.js" : [ "[LOCAL_MEDIA_MAN] --> " , "magenta" , "bgBlack" ] ,
 };
 
 function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
