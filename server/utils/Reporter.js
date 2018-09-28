@@ -14,10 +14,15 @@ const CALLER_COLOR_TABLE = {
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 };
 
-function GET_CALLER( wMSG ) {
+function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
 	let caller = GET_CALLER();
 	if ( !CALLER_COLOR_TABLE[ caller ] ) { return undefined; }
 	return CALLER_COLOR_TABLE[ caller ];
+}
+
+function PREFACE_MESSAGE( wMSG , wPrefix ) {
+	let now_time = NowTime();
+	return now_time + " === " + "**" + wPrefix + "**" + wMSG;
 }
 
 function LOCAL_LOG( wMSG ) {
@@ -25,7 +30,7 @@ function LOCAL_LOG( wMSG ) {
 		try {
 			if ( !wMSG ) { return; }
 			if ( wMSG.length < 1 ) { return; }
-			let wColorsConfig = LOCAL_GET_COLORS();
+			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
 			let x1 = wSTR;
 			if ( wPrefix ) { x1 = now_time + " === " + wPrefix + x1; }
 			else { x1 = now_time + " === " + x1; }	
