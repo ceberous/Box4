@@ -17,6 +17,7 @@ const CALLER_COLOR_TABLE = {
 function PREFACE_MESSAGE( wMSG ) {
 	let caller = GET_CALLER();
 	if ( !CALLER_COLOR_TABLE[ caller ] ) { return undefined; }
+	let now_time = NowTime();
 	CALLER_COLOR_TABLE[ caller ]
 }
 
