@@ -65,7 +65,7 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 
 			var wResults = [];
 			var wFeedURL = ytXML_Base + channelID;
-			wcl( wFeedURL );
+			Reporter.log( wFeedURL );
 			var req = request( wFeedURL );
 			req.on( "error" , function ( error ) { console.log(error); resolve(); return; } );
 			req.on( "response" , function ( res ) {
