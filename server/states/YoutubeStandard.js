@@ -7,7 +7,7 @@ const RC = Redis.c.YOUTUBE;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
 
-let FFManager; 
+var FFManager; 
 
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
