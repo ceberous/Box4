@@ -19,6 +19,9 @@ const CALLER_COLOR_TABLE = {
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 	"/server/modules/localmedia/Manager.js" : [ "[LOCAL_MEDIA_MAN] --> " , "magenta" , "bgBlack" ] ,
 	"/server/modules/youtube/Utils.js" : [ "[YOU_TUBE_UTILS] --> " , "white" , "bgRed" ] ,
+	"/server/modules/youtube/Currated.js" : [ "[YOU_TUBE_CURRATED] --> " , "white" , "bgRed" ] ,
+	"/server/modules/youtube/Live.js" : [ "[YOU_TUBE_LIVE] --> " , "white" , "bgRed" ] ,
+	"/server/modules/youtube/Standard.js" : [ "[YOU_TUBE_STANDARD] --> " , "white" , "bgRed" ] ,
 };
 
 function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
