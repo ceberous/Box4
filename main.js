@@ -82,7 +82,7 @@ const FirefoxWrapper = require( "firefox-wrapper" );
 
 	// Firefox
 	let FFManager = undefined;
-	module.exports.FFManager;
+	module.exports.FFManager = FFManager;
 
 	// Express App
 	let express_app = require( "./server/express/app.js" );
