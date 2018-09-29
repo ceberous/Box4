@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require( "path" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const WebSocketClientFilePath = path.join( MainFP , "client" , "js" , "webSocketServerAddress.js" );
+const GetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).getStagedFFClientTask;
 const Reporter = require( "./utils/Reporter.js" );
 
 const wsClient = require( "../main.js" ).wss;
