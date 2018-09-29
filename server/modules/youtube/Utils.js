@@ -10,6 +10,7 @@ console.log( "What the F ???" );
 function FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED( wNewIDS ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			console.log( "Are we alive ????" );
 			console.log( wNewIDS );
 			const temp_skipped_key = "TMP_KEY.SKIPPED." + Math.random().toString(36).substring(7);
 			const temp_blacklist_key = "TMP_KEY.BLACKLIST." + Math.random().toString(36).substring(7);
