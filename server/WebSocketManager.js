@@ -81,10 +81,11 @@ function SEND_STAGED_WS_MESSAGE() {
 module.exports.sendStagedWebSocketMessage = SEND_STAGED_WS_MESSAGE;
 
 
-function INITIALIZE( wPort ) {
+function INITIALIZE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			const localIP = ip.address();
+			const port = require( path.join( MainFP , "main.js" ) ).port;
 			const wSIP = 'var socketServerAddress = "' + localIP + '"; var socketPORT = "' + wPort + '";';	
 			fs.writeFileSync( WebSocketClientFilePath , wSIP );
 			await Reporter.log( "Done Initializing" );
