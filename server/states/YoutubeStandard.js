@@ -10,7 +10,7 @@ const FirefoxManager = require( path.join( MainFP , "server" , "modules" , "fire
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
+			let finalVideo = await Redis.setPopRandomMembers( RC.LATEST , 1 );
 			if ( finalVideo.length < 1 ) { Reporter.log( "No Standard Videos Left" ); resolve(); return; }
 			else { finalVideo = finalVideo[ 0 ]; }			
 			Reporter.log( "Next Video = " + finalVideo );
