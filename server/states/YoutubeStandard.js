@@ -16,8 +16,8 @@ function GET_NEXT_VIDEO() {
 			Reporter.log( "Next Video = " + finalVideo );
 			// WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
 			await Redis.keySetMulti( [ 
-				[ "sadd" , RC.ALREADY_WATCHED , finalVideo ] ,
-				[ "set" , RC.NOW_PLAYING_KEY , finalVideo ] , 
+				[ "sadd" , RC.WATCHED , finalVideo ] ,
+				[ "set" , RC.NOW_PLAYING_ID , finalVideo ] , 
 			]);			
 			resolve( finalVideo );
 		}
