@@ -37,7 +37,7 @@ function wStart() {
 			await FFManager.openNewTab( "http://localhost:6969/youtube" );
 			FFManager.x.fullScreen();
 			FFManager.x.centerMouse();
-			await FFManager.sleep( 500 );
+			await FFManager.sleep( 6000 );
 			FFManager.x.leftClick()
 			await FFManager.sleep( 500 );
 			FFManager.x.pressKeyboardKey( "f" );
