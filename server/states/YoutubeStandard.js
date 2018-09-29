@@ -7,8 +7,6 @@ const RC = Redis.c.YOUTUBE;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
 
-var FFManager; 
-
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
 		try {
@@ -33,7 +31,7 @@ function wStart() {
 			//await require( "../youtubeManager.js" ).updateStandard();
 			let final_vid = await GET_NEXT_VIDEO();
 			if ( !final_vid ) { resolve( "No Standard Videos Left" ); return; }
-			FFManager = new FirefoxWrapper();
+			let FFManager = new FirefoxWrapper();
 			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
 			await FFManager.launch();
 			await FFManager.openNewTab( "http://localhost:6969/youtubeStandard" );
