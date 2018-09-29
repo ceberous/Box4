@@ -31,15 +31,7 @@ function wStart() {
 			let final_vid = await GET_NEXT_VIDEO();
 			if ( !final_vid ) { resolve( "No Standard Videos Left" ); return; }
 			await SetStagedFFClientTask( { message: "Youtube" , playlist: [ final_vid ]  } );
-			FFManager = new FirefoxWrapper();
-			await FFManager.launch();
-			await FFManager.openNewTab( "http://localhost:6969/youtube" );
-			FFManager.x.fullScreen();
-			FFManager.x.centerMouse();
-			await FFManager.sleep( 6000 );
-			FFManager.x.leftClick()
-			await FFManager.sleep( 500 );
-			FFManager.x.pressKeyboardKey( "f" );
+			FFManager.youtube();
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
