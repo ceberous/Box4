@@ -190,7 +190,7 @@ module.exports.addFollower = ADD_FOLLOWER;
 function REMOVE_FOLLOWER( wChannelID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.srem( RC.FOLLOWERS , wChannelID );
+			await Redis.setRemove( RC.FOLLOWERS , wChannelID );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -201,7 +201,7 @@ module.exports.removeFollower = REMOVE_FOLLOWER;
 function GET_BLACKLIST() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const blacklist = await Redis.getFullSet( RC.BLACKLIST );
+			const blacklist = await Redis.setGetFull( RC.BLACKLIST );
 			resolve( blacklist );
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -212,7 +212,7 @@ module.exports.getBlacklist = GET_BLACKLIST;
 function BLACKLIST_VID( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.sadd( RC.BLACKLIST , wVideoID );
+			await Redis.setAdd( RC.BLACKLIST , wVideoID );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -223,7 +223,7 @@ module.exports.blacklistVID = BLACKLIST_VID;
 function REMOVE_BLACKLIST_VID( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.srem( RC.BLACKLIST , wVideoID );			
+			await Redis.setRemove( RC.BLACKLIST , wVideoID );			
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -234,7 +234,7 @@ module.exports.removeBlacklistVID = REMOVE_BLACKLIST_VID;
 function DELETE_VIDEO( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await Redis.delKey( RC.LATEST + "." + wVideoID );
+			await Redis.keyDel( RC.LATEST + "." + wVideoID );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -259,7 +259,7 @@ module.exports.getVideoInfo = GET_VIDEO_INFO;
 function UPDATE_VIDEO_INFO( wVideoID , wKey , wValue ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.hset( RC.LATEST + "." + wVideoID , wKey , wValue );			
+			await Redis.redis.hset( RC.LATEST + "." + wVideoID , wKey , wValue );			
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
