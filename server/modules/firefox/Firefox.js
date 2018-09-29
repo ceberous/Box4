@@ -1,4 +1,5 @@
 const FirefoxWrapper = require( "firefox-wrapper" );
+
 // Centralized Firefox
 let FFManager;
 
