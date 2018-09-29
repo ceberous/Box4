@@ -10,9 +10,7 @@ const FirefoxManager = require( path.join( MainFP , "server" , "modules" , "fire
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let finalVideo;
-
-			finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
+			let finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
 			if ( finalVideo.length < 1 ) { Reporter.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve(); return; }
 			else { finalVideo = finalVideo[0]; }			
 			Reporter.log( finalVideo );
