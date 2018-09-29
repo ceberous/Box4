@@ -20,7 +20,6 @@ function GET_NEXT_VIDEO() {
 			await Redis.setMulti( [ 
 				[ "sadd" , RC.ALREADY_WATCHED , finalVideo ] ,
 				[ "set" , RC.NOW_PLAYING_KEY , finalVideo ] , 
-				[ "set" , RC.NOW_PLAYING_MODE , finalMode ] 
 			]);			
 			resolve( finalVideo );
 		}
