@@ -2,7 +2,7 @@ const path = require( "path" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
-const RC = Redis.c.YOUTUBE.STANDARD;
+const RC = Redis.c.YOUTUBE;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
 const FirefoxManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
@@ -10,7 +10,7 @@ const FirefoxManager = require( path.join( MainFP , "server" , "modules" , "fire
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let finalVideo = await Redis.setPopRandomMembers( RC.LATEST , 1 );
+			let finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
 			if ( finalVideo.length < 1 ) { Reporter.log( "No Standard Videos Left" ); resolve(); return; }
 			else { finalVideo = finalVideo[ 0 ]; }			
 			Reporter.log( "Next Video = " + finalVideo );
