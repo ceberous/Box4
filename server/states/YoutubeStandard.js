@@ -5,6 +5,7 @@ const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.YOUTUBE;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
+const FirefoxWrapper = require( "firefox-wrapper" );
 const FFManager = require( path.join( MainFP , "main.js" ) ).FFManager;
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
