@@ -1,14 +1,12 @@
-const colors = require( "colors" );
 const request = require( "request" );
 const FeedParser = require( "feedparser" );
 const { map } = require( "p-iteration" );
 
-const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const path = require( "path" );
+const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
+const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.YOUTUBE.STANDARD;
-
-function wcl( wSTR ) { console.log( colors.white.bgRed( "[YOUTUBE_STANDARD] --> " + wSTR ) ); }
 
 const wMonth = 2629800;
 const wWeek = 604800;
@@ -159,7 +157,7 @@ module.exports.update = STANDARD_FOLLOWERS_GET_LATEST;
 function GET_QUE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const que = await RU.getFullList( RC.QUE );
+			const que = await Redis.getFullList( RC.QUE );
 			resolve( que );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -170,7 +168,7 @@ module.exports.getQue = GET_QUE;
 function GET_FOLLOWERS() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const followers = await RU.getFullSet( RC.FOLLOWERS );
+			const followers = await Redis.getFullSet( RC.FOLLOWERS );
 			resolve( followers );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -203,7 +201,7 @@ module.exports.removeFollower = REMOVE_FOLLOWER;
 function GET_BLACKLIST() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const blacklist = await RU.getFullSet( RC.BLACKLIST );
+			const blacklist = await Redis.getFullSet( RC.BLACKLIST );
 			resolve( blacklist );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -236,7 +234,7 @@ module.exports.removeBlacklistVID = REMOVE_BLACKLIST_VID;
 function DELETE_VIDEO( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await RU.delKey( RC.LATEST + "." + wVideoID );
+			await Redis.delKey( RC.LATEST + "." + wVideoID );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -248,7 +246,7 @@ module.exports.deleteVideo = DELETE_VIDEO;
 function GET_VIDEO_INFO( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const x1 = await RU.hashGetAll( RC.LATEST + "." + wVideoID );
+			const x1 = await Redis.hashGetAll( RC.LATEST + "." + wVideoID );
 			console.log( x1 );
 			resolve( x1 );
 		}
@@ -278,26 +276,26 @@ function GET_NEXT_VIDEO() {
 			//var finalVideo = finalMode = null;
 			// Precedance Order Unless Otherwise Segregated into Sub-States
 			// 1.) Check inside redis-Personal-Store for custom youtube.com/playlists
-			// var finalVideo = await RU.popRandomSetMembers( RC.CURRATED.QUE , 1 );
+			// var finalVideo = await Redis.popRandomSetMembers( RC.CURRATED.QUE , 1 );
 			// if ( finalVideo.length > 0 ) { finalMode = "QUE"; finalVideo = finalVideo[0]; }
 			// // 2.) If none exist , build a mini playlist of Standard Followers Latest Videos this Month
 			// else {
 			// 	console.log( "no videos are left in QUE" );
 			// 	finalMode = "STANDARD";
-			// 	finalVideo = await RU.popRandomSetMembers( RC.STANDARD.QUE , 1 );
+			// 	finalVideo = await Redis.popRandomSetMembers( RC.STANDARD.QUE , 1 );
 			// 	if ( finalVideo.length < 1 ) { console.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve(); return; }
 			// 	else { finalVideo = finalVideo[0]; }
 			// }
 			// console.log( finalVideo );
 			// console.log( finalMode );
 			// // WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
-			// await RU.setMulti( [ 
+			// await Redis.setMulti( [ 
 			// 	[ "sadd" , RC.ALREADY_WATCHED , finalVideo ] ,
 			// 	[ "set" , RC.NOW_PLAYING_ID , finalVideo ] , 
 			// 	[ "set" , RC.NOW_PLAYING_MODE , finalMode ] 
 			// ]);
 
-			var finalVideo = await RU.listRPOP( RC.QUE , 1 );
+			var finalVideo = await Redis.listRPOP( RC.QUE , 1 );
 			if ( !finalVideo ) { console.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve( "empty" ); return; }
 			resolve( finalVideo );
 		}
