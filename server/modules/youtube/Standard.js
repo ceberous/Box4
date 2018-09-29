@@ -60,11 +60,10 @@ function PARSE_STANDARD_FOLLOWER_XML( wResults , wChannelID ) {
 function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 	return new Promise( function( resolve , reject ) {
 		try {
-			const wFP_Options = { "normalize": true ,"feedurl": wFeedURL };
 			const feedparser = new FeedParser( [ wFP_Options ] );
-
 			var wResults = [];
 			var wFeedURL = ytXML_Base + channelID;
+			const wFP_Options = { "normalize": true ,"feedurl": wFeedURL };
 			Reporter.log( wFeedURL );
 			var req = request( wFeedURL );
 			req.on( "error" , function ( error ) { Reporter.log(error); resolve(); return; } );
