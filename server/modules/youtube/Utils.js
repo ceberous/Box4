@@ -24,9 +24,10 @@ function FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED( wNewIDS ) {
 			if ( watched ) { if ( watched.length > 0 ) {
 				final_ids = final_ids.filter( x => watched.indexOf( x ) === -1 );
 			}}
-			await Redis.keyDel( temp_skipped_key );
-			await Redis.keyDel( temp_watched_key );
-			await Redis.keyDel( temp_blacklist_key );
+			// await Redis.keyDel( temp_skipped_key );
+			// await Redis.keyDel( temp_watched_key );
+			// await Redis.keyDel( temp_blacklist_key );
+			await Redis.deleteMultiplePatterns( [ "TMP_KEY*" ] );
 			resolve( final_ids );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
