@@ -34,3 +34,4 @@ function YOUTUBE_FULLSCREEN() {
 		catch( error ) { console.log( error ); reject( error ); }
 	});	
 }
+module.exports.youtubeFullScreen = YOUTUBE_FULLSCREEN;
