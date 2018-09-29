@@ -1,6 +1,9 @@
+
 const ip = require("ip");
 const fs = require("fs");
 const path = require( "path" );
+const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
+const WebSocketClientFilePath = path.join( MainFP , "client" , "js" , "webSocketServerAddress.js" );
 const Reporter = require( "./utils/Reporter.js" );
 
 const wsClient = require( "../main.js" ).wss;
@@ -83,7 +86,7 @@ function INITIALIZE( wPort ) {
 		try {
 			const localIP = ip.address();
 			const wSIP = 'var socketServerAddress = "' + localIP + '"; var socketPORT = "' + wPort + '";';	
-			fs.writeFileSync( path.join( __dirname , ".." , "client" , "js" , "webSocketServerAddress.js" ) , wSIP );
+			fs.writeFileSync( WebSocketClientFilePath , wSIP );
 			await Reporter.log( "Done Initializing" );
 			resolve();
 		}

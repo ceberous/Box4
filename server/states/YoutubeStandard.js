@@ -35,7 +35,7 @@ function wStart() {
 			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
 			FFManager = new FirefoxWrapper();
 			await FFManager.launch();
-			await FFManager.openNewTab( "http://localhost:6969/youtubeStandard" );
+			await FFManager.openNewTab( "http://localhost:6969/youtube" );
 			FFManager.x.fullScreen();
 			FFManager.x.centerMouse();
 			await FFManager.sleep( 500 );
