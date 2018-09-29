@@ -60,21 +60,23 @@ function PARSE_STANDARD_FOLLOWER_XML( wResults , wChannelID ) {
 function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 	return new Promise( function( resolve , reject ) {
 		try {
-			const feedparser = new FeedParser( [ wFP_Options ] );
-			var wResults = [];
-			var wFeedURL = ytXML_Base + channelID;
-			const wFP_Options = { "normalize": true ,"feedurl": wFeedURL };
+			let wFeedURL = ytXML_Base + channelID;
+			let wFP_Options = { "normalize": true ,"feedurl": wFeedURL };
+			let feedparser = new FeedParser( [ wFP_Options ] );
+
+			let wResults = [];
+			
 			Reporter.log( wFeedURL );
-			var req = request( wFeedURL );
+			let req = request( wFeedURL );
 			req.on( "error" , function ( error ) { Reporter.log(error); resolve(); return; } );
 			req.on( "response" , function ( res ) {
 				if ( res.statusCode !== 200 ) { /*reject( res.statusCode ); */  resolve(); return; }
 				else { this.pipe( feedparser ); }
 			});
 			feedparser.on( "error" , function ( error ) { Reporter.log( error ); } );
-			feedparser.on( "readable" , function () { var item; while ( item = this.read() ) { wResults.push( item ); } } );
+			feedparser.on( "readable" , function () { let item; while ( item = this.read() ) { wResults.push( item ); } } );
 			feedparser.on( "end" , () => {
-				var parsed = PARSE_STANDARD_FOLLOWER_XML( wResults , channelID );
+				let parsed = PARSE_STANDARD_FOLLOWER_XML( wResults , channelID );
 				parsed = FILTER_OLD_VIDEOS_BASED_ON_TIME( parsed );
 				resolve( parsed );
 			});
