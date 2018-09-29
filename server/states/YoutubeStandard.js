@@ -11,7 +11,7 @@ function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			let finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
-			if ( finalVideo.length < 1 ) { Reporter.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve(); return; }
+			if ( finalVideo.length < 1 ) { Reporter.log( "No Standard Videos Left" ); resolve(); return; }
 			else { finalVideo = finalVideo[0]; }			
 			Reporter.log( finalVideo );
 			// WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
