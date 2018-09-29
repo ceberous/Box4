@@ -31,7 +31,7 @@ function wStart() {
 			let final_vid = await GET_NEXT_VIDEO();
 			if ( !final_vid ) { resolve( "No Standard Videos Left" ); return; }
 			await SetStagedFFClientTask( { message: "Youtube" , playlist: [ final_vid ]  } );
-			FFManager.youtube();
+			await FFManager.youtube();
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
