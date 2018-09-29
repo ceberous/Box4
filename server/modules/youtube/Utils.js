@@ -15,15 +15,15 @@ function FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED( wNewIDS ) {
 
 			let final_ids;
 			let skipped = await Redis.setAddArrayWithFilter( temp_skipped_key , RC.SKIPPED , wNewIDS );
-			if ( skipped ) { if skipped.length > 0 {
+			if ( skipped ) { if ( skipped.length > 0 ) {
 				final_ids = wNewIDS.filter( x => skipped.indexOf( x ) === -1 );
 			}}
 			let blacklisted = await Redis.setAddArrayWithFilter( temp_blacklist_key , RC.GLOBAL_BLACK_LIST , final_ids );
-			if ( blacklisted ) { if blacklisted.length > 0 {
+			if ( blacklisted ) { if ( blacklisted.length > 0 ) {
 				final_ids = final_ids.filter( x => blacklisted.indexOf( x ) === -1 );
 			}}			
 			let watched = await Redis.setAddArrayWithFilter( temp_watched_key , RC.WATCHED , final_ids );
-			if ( watched ) { if watched.length > 0 {
+			if ( watched ) { if ( watched.length > 0 ) {
 				final_ids = final_ids.filter( x => watched.indexOf( x ) === -1 );
 			}}
 
