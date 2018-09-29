@@ -62,7 +62,8 @@ function wPause() {
 function wStop() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await FirefoxManager.terminateFFWithClient();
+			await FFManager.close();
+			FFManager = undefined;
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
