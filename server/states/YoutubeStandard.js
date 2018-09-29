@@ -29,7 +29,7 @@ function wStart() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			//await require( "../youtubeManager.js" ).updateStandard();
-			var final_vid = await GET_NEXT_VIDEO();
+			let final_vid = await GET_NEXT_VIDEO();
 			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
 			await FirefoxManager.openURL( "http://localhost:6969/youtubeStandard" );
 			resolve();
