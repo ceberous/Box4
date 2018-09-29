@@ -60,9 +60,8 @@ function PARSE_STANDARD_FOLLOWER_XML( wResults , wChannelID ) {
 function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 	return new Promise( function( resolve , reject ) {
 		try {
-			Reporter.log( "Here ??" );
 			let wFeedURL = ytXML_Base + channelID;
-			Reporter.log( wFeedURL );
+			Reporter.log( "Searching: " + wFeedURL );
 			let wFP_Options = { "normalize": true ,"feedurl": wFeedURL };
 			let feedparser = new FeedParser( [ wFP_Options ] );
 
@@ -90,7 +89,6 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 	return new Promise( async function( resolve , reject ) {
 		try { 
 			let current_followers = await Redis.setGetFull( RC.FOLLOWERS );
-			Reporter.log( current_followers );
 			if ( !current_followers ) { Reporter.log( "No Standard Followers" ); resolve( "no followers" ); return; }
 			if ( current_followers.length < 0 ) { Reporter.log( "No Standard Followers" ); resolve( "no followers" ); return; }
 
