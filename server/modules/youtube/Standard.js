@@ -67,12 +67,12 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 			var wFeedURL = ytXML_Base + channelID;
 			Reporter.log( wFeedURL );
 			var req = request( wFeedURL );
-			req.on( "error" , function ( error ) { console.log(error); resolve(); return; } );
+			req.on( "error" , function ( error ) { Reporter.log(error); resolve(); return; } );
 			req.on( "response" , function ( res ) {
 				if ( res.statusCode !== 200 ) { /*reject( res.statusCode ); */  resolve(); return; }
 				else { this.pipe( feedparser ); }
 			});
-			feedparser.on( "error" , function ( error ) { console.log( error ); } );
+			feedparser.on( "error" , function ( error ) { Reporter.log( error ); } );
 			feedparser.on( "readable" , function () { var item; while ( item = this.read() ) { wResults.push( item ); } } );
 			feedparser.on( "end" , () => {
 				var parsed = PARSE_STANDARD_FOLLOWER_XML( wResults , channelID );
@@ -80,7 +80,7 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 				resolve( parsed );
 			});
 		}
-		catch( error ) { console.log( error ); resolve(); }
+		catch( error ) { Reporter.log( error ); resolve(); }
 	});
 }
 
@@ -88,9 +88,9 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 	return new Promise( async function( resolve , reject ) {
 		try { 
 			let current_followers = await Redis.setGetFull( RC.FOLLOWERS );
-			console.log( current_followers );
-			if ( !current_followers ) { console.log( "No Standard Followers" ); resolve( "no followers" ); return; }
-			if ( current_followers.length < 0 ) { console.log( "No Standard Followers" ); resolve( "no followers" ); return; }
+			Reporter.log( current_followers );
+			if ( !current_followers ) { Reporter.log( "No Standard Followers" ); resolve( "no followers" ); return; }
+			if ( current_followers.length < 0 ) { Reporter.log( "No Standard Followers" ); resolve( "no followers" ); return; }
 
 			let latest = await map( current_followers , userId => STANDARD_FOLLOWERS_FETCH_XML( userId ) );
 			let all_new = null;
@@ -105,27 +105,27 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 					// }}
 					const wNewTotal = new_que_ids.length;
 					const current_que_length = await Redis.listGetLength( RC.QUE );
-					//console.log( "Current QUE Length === " + current_que_length.toString() );
-					//console.log( "New Additions Total === " + wNewTotal.toString() );
+					//Reporter.log( "Current QUE Length === " + current_que_length.toString() );
+					//Reporter.log( "New Additions Total === " + wNewTotal.toString() );
 					const space_available = ( 100 - ( current_que_length + wNewTotal ) );
-					//console.log( "Space Available === " + space_available.toString() );
+					//Reporter.log( "Space Available === " + space_available.toString() );
 					if ( space_available < 0 ) {
 						const space_needed = ( 0 - space_available );
-						//console.log( "We need to clear " + space_needed.toString() + " slots in que" );
+						//Reporter.log( "We need to clear " + space_needed.toString() + " slots in que" );
 						let wToDeleteIDS = [];
 						for ( let i = 0; i < space_needed; ++i ) {
 							let xTMP = await Redis.listRPOP( RC.QUE );
 							wToDeleteIDS.push( xTMP );
 						}
 						let wToDeleteKeysMulti = wToDeleteIDS.map( x => [ "del" , RC.LATEST + "." + x ] );
-						//console.log( "We need to remove these **old** videos" );
-						//console.log( wToDeleteKeysMulti );
+						//Reporter.log( "We need to remove these **old** videos" );
+						//Reporter.log( wToDeleteKeysMulti );
 						await Redis.keySetMulti( wToDeleteKeysMulti );
-						//console.log( "supposedly done deleting keys" );
+						//Reporter.log( "supposedly done deleting keys" );
 					}
-					//console.log( "about to add new ids to QUE" );
+					//Reporter.log( "about to add new ids to QUE" );
 					await Redis.listSetFromArrayBeginning( RC.QUE , new_que_ids );
-					//console.log( "done adding to QUE" );
+					//Reporter.log( "done adding to QUE" );
 					for ( let i = 0; i < all_new.length; ++i ) {
 						let xR_Key = RC.LATEST + "." + all_new[ i ][ "id" ];
 						if ( !await Redis.exists( xR_Key ) ) {
@@ -149,7 +149,7 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 			}
 			resolve( all_new );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.update = STANDARD_FOLLOWERS_GET_LATEST;
@@ -160,7 +160,7 @@ function GET_QUE() {
 			const que = await Redis.getFullList( RC.QUE );
 			resolve( que );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.getQue = GET_QUE;
@@ -171,7 +171,7 @@ function GET_FOLLOWERS() {
 			const followers = await Redis.getFullSet( RC.FOLLOWERS );
 			resolve( followers );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.getFollowers = GET_FOLLOWERS;
@@ -182,7 +182,7 @@ function ADD_FOLLOWER( wChannelID ) {
 			await redis.sadd( RC.FOLLOWERS , wChannelID );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.addFollower = ADD_FOLLOWER;
@@ -193,7 +193,7 @@ function REMOVE_FOLLOWER( wChannelID ) {
 			await redis.srem( RC.FOLLOWERS , wChannelID );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.removeFollower = REMOVE_FOLLOWER;
@@ -204,7 +204,7 @@ function GET_BLACKLIST() {
 			const blacklist = await Redis.getFullSet( RC.BLACKLIST );
 			resolve( blacklist );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.getBlacklist = GET_BLACKLIST;
@@ -215,7 +215,7 @@ function BLACKLIST_VID( wVideoID ) {
 			await redis.sadd( RC.BLACKLIST , wVideoID );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.blacklistVID = BLACKLIST_VID;
@@ -226,7 +226,7 @@ function REMOVE_BLACKLIST_VID( wVideoID ) {
 			await redis.srem( RC.BLACKLIST , wVideoID );			
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.removeBlacklistVID = REMOVE_BLACKLIST_VID;
@@ -237,7 +237,7 @@ function DELETE_VIDEO( wVideoID ) {
 			await Redis.delKey( RC.LATEST + "." + wVideoID );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.deleteVideo = DELETE_VIDEO;
@@ -247,10 +247,10 @@ function GET_VIDEO_INFO( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			const x1 = await Redis.hashGetAll( RC.LATEST + "." + wVideoID );
-			console.log( x1 );
+			Reporter.log( x1 );
 			resolve( x1 );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.getVideoInfo = GET_VIDEO_INFO;
@@ -262,7 +262,7 @@ function UPDATE_VIDEO_INFO( wVideoID , wKey , wValue ) {
 			await redis.hset( RC.LATEST + "." + wVideoID , wKey , wValue );			
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.updateVideoInfo = UPDATE_VIDEO_INFO;
@@ -280,14 +280,14 @@ function GET_NEXT_VIDEO() {
 			// if ( finalVideo.length > 0 ) { finalMode = "QUE"; finalVideo = finalVideo[0]; }
 			// // 2.) If none exist , build a mini playlist of Standard Followers Latest Videos this Month
 			// else {
-			// 	console.log( "no videos are left in QUE" );
+			// 	Reporter.log( "no videos are left in QUE" );
 			// 	finalMode = "STANDARD";
 			// 	finalVideo = await Redis.popRandomSetMembers( RC.STANDARD.QUE , 1 );
-			// 	if ( finalVideo.length < 1 ) { console.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve(); return; }
+			// 	if ( finalVideo.length < 1 ) { Reporter.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve(); return; }
 			// 	else { finalVideo = finalVideo[0]; }
 			// }
-			// console.log( finalVideo );
-			// console.log( finalMode );
+			// Reporter.log( finalVideo );
+			// Reporter.log( finalMode );
 			// // WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
 			// await Redis.setMulti( [ 
 			// 	[ "sadd" , RC.ALREADY_WATCHED , finalVideo ] ,
@@ -296,10 +296,10 @@ function GET_NEXT_VIDEO() {
 			// ]);
 
 			var finalVideo = await Redis.listRPOP( RC.QUE , 1 );
-			if ( !finalVideo ) { console.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve( "empty" ); return; }
+			if ( !finalVideo ) { Reporter.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve( "empty" ); return; }
 			resolve( finalVideo );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.getNextVideo = GET_NEXT_VIDEO;
