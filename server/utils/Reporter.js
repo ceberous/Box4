@@ -22,6 +22,7 @@ const CALLER_COLOR_TABLE = {
 	"/server/modules/youtube/Currated.js" : [ "[YOU_TUBE_CURRATED] --> " , "white" , "bgRed" ] ,
 	"/server/modules/youtube/Live.js" : [ "[YOU_TUBE_LIVE] --> " , "white" , "bgRed" ] ,
 	"/server/modules/youtube/Standard.js" : [ "[YOU_TUBE_STANDARD] --> " , "white" , "bgRed" ] ,
+	"/server/states/YoutubeStandard.js" : [ "[STATE_YOU_TUBE_STANDARD] --> " , "white" , "bgRed" ] ,
 };
 
 function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
