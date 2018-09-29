@@ -16,7 +16,7 @@ function CURRENT_STATE_STOP() {
 			if ( CURRENT_STATE !== null ) {
 				Reporter.log( "stopping CURRENT_STATE --> " + CURRENT_STATE );
 				await CURRENT_STATE.stop();
-				await wSleep( 1000 );
+				await Sleep( 1000 );
 				try { delete require.cache[ CURRENT_STATE ]; }
 				catch ( e ) {}
 				CURRENT_STATE = null;
