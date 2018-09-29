@@ -7,7 +7,7 @@ const WebSocketClientFilePath = path.join( MainFP , "client" , "js" , "webSocket
 const GetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).getStagedFFClientTask;
 const Reporter = require( "./utils/Reporter.js" );
 
-const wsClient = require( "../main.js" ).wss;
+const wsClient = require( path.join( MainFP , "main.js" ) ).wss;
 function BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions ) {
 	wsClient.clients.forEach( function each( ws ) { 
 		ws.send( JSON.stringify( { message: wMessage , options: wOptions } ) ); 
