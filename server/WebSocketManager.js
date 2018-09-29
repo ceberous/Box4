@@ -69,6 +69,7 @@ function SEND_STAGED_WS_MESSAGE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			const wsClient = require( path.join( MainFP , "main.js" ) ).wss;
+			console.log( wsClient );
 			var STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask( true );
 			Reporter.log( "Sending Staged FF Client Task to Websocket Clients = " + STAGED_FF_CLIENT_TASK );
 			wsClient.clients.forEach( function each( ws ) {
