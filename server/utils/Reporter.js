@@ -18,7 +18,7 @@ const CALLER_COLOR_TABLE = {
 	"/server/WebSocketManager.js": [ "[WebSocket] --> " , "rainbow" ] ,
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 	"/server/modules/localmedia/Manager.js" : [ "[LOCAL_MEDIA_MAN] --> " , "magenta" , "bgBlack" ] ,
-	"/server/modules/youtube/Generic.js" : [ "[YOU_TUBE_UTILS] --> " , "red" , "bgWhite" ] ,
+	"/server/modules/youtube/Generic.js" : [ "[YOU_TUBE_UTILS] --> " , "white" , "bgRed" ] ,
 };
 
 function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
