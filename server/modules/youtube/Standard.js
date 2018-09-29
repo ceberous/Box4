@@ -101,6 +101,7 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 					all_new = [].concat.apply( [] , latest );
 					all_new = all_new.sort( function() { return 0.5 - Math.random(); });
 					var new_que_ids = all_new.map( x => x[ "id" ] );
+					console.log( new_que_ids );
 					new_que_ids = await require( "./Generic.js" ).filterCommon( new_que_ids );
 					const wNewTotal = new_que_ids.length;
 					const current_que_length = await Redis.listGetLength( RC.QUE );
