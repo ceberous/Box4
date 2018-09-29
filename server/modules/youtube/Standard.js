@@ -127,6 +127,7 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 					await Redis.listSetFromArrayBeginning( RC.QUE , new_que_ids );
 					//Reporter.log( "done adding to QUE" );
 					for ( let i = 0; i < all_new.length; ++i ) {
+						if ( !all_new[ i ][ "id" ] ) { continue; }
 						await Redis.setAdd( RC.LATEST , all_new[ i ][ "id" ] );
 						let xR_Key = RC.LATEST + "." + all_new[ i ][ "id" ];
 						if ( !await Redis.exists( xR_Key ) ) {
