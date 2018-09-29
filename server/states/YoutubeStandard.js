@@ -2,38 +2,29 @@ const path = require( "path" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
-const RC = Redis.c.YOUTUBE.CURRATED;
+const RC = Redis.c.YOUTUBE.STANDARD;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
+const FirefoxManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
 
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			var finalVideo = finalMode = null;
 
-			// Precedance Order Unless Otherwise Segregated into Sub-States
-			// 1.) Check inside redis-Personal-Store for custom youtube.com/playlists
-			var finalVideo = await RU.popRandomSetMembers( RC.CURRATED.MAIN_LIST , 1 );
-			if ( finalVideo.length > 0 ) { finalMode = "MAIN_LIST"; finalVideo = finalVideo[0]; }
-			// 2.) If none exist , build a mini playlist of Standard Followers Latest Videos this Month
-			else {
-				console.log( "no videos are left in MAIN_LIST" );
-				finalMode = "STANDARD";
-				finalVideo = await RU.popRandomSetMembers( RC.STANDARD.LATEST , 1 );
-				if ( finalVideo.length < 1 ) { console.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve(); return; }
-				else { finalVideo = finalVideo[0]; }
-			}
-			console.log( finalVideo );
-			console.log( finalMode );
+			finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
+			if ( finalVideo.length < 1 ) { Reporter.log( "this seems impossible , but we don't have any standard youtube videos anywhere" ); resolve(); return; }
+			else { finalVideo = finalVideo[0]; }			
+			Reporter.log( finalVideo );
 			// WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
-			await RU.setMulti( [ 
+			await Redis.setMulti( [ 
 				[ "sadd" , RC.ALREADY_WATCHED , finalVideo ] ,
 				[ "set" , RC.NOW_PLAYING_KEY , finalVideo ] , 
 				[ "set" , RC.NOW_PLAYING_MODE , finalMode ] 
 			]);			
 			resolve( finalVideo );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 
@@ -46,7 +37,7 @@ function wStart() {
 			await require( "../firefoxManager.js" ).openURL( "http://localhost:6969/youtubeStandard" );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 
@@ -56,7 +47,7 @@ function wPause() {
 			wEmitter.emit( "sendFFClientMessage" , "pause" );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 
@@ -66,7 +57,7 @@ function wStop() {
 			await require( "../firefoxManager.js" ).terminateFFWithClient();
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 
@@ -77,7 +68,7 @@ function wNext() {
 			wEmitter.emit( "sendFFClientMessage" , "next" , final_vid );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 
@@ -88,7 +79,7 @@ function wPrevious() { // ehhhh needs fixed
 			wEmitter.emit( "sendFFClientMessage" , "next" , final_vid );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 
