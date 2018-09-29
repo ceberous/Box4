@@ -157,7 +157,7 @@ module.exports.update = STANDARD_FOLLOWERS_GET_LATEST;
 function GET_QUE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const que = await Redis.getFullList( RC.QUE );
+			const que = await Redis.setGetFull( RC.QUE );
 			resolve( que );
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -168,7 +168,7 @@ module.exports.getQue = GET_QUE;
 function GET_FOLLOWERS() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const followers = await Redis.getFullSet( RC.FOLLOWERS );
+			const followers = await Redis.setGetFull( RC.FOLLOWERS );
 			resolve( followers );
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -179,7 +179,7 @@ module.exports.getFollowers = GET_FOLLOWERS;
 function ADD_FOLLOWER( wChannelID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.sadd( RC.FOLLOWERS , wChannelID );
+			await Redis.setAdd( RC.FOLLOWERS , wChannelID );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
