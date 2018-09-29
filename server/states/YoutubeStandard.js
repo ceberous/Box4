@@ -3,7 +3,8 @@ const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice(
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.YOUTUBE.CURRATED;
-const wEmitter = require( path.join( MainFP , "main.js" ) ).wEmitter;
+const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
+const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
 
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
@@ -41,7 +42,7 @@ function wStart() {
 		try {
 			//await require( "../youtubeManager.js" ).updateStandard();
 			var final_vid = await GET_NEXT_VIDEO();
-			await require( "../utils/generic.js" ).setStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
+			await ( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
 			await require( "../firefoxManager.js" ).openURL( "http://localhost:6969/youtubeStandard" );
 			resolve();
 		}
