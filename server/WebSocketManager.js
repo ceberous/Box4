@@ -20,7 +20,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 		try {
 			const ip = wReq.connection.remoteAddress;
 			Reporter.log( "New WebSocket Client Connected @@@ " + ip );
-			const STAGED_FF_CLIENT_TASK = await require( "./utils/Generic.js" ).getStagedFFClientTask();
+			const STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask();
 			await require( "../main.js" ).sendStagedWebSocketMessage();
 			wSocket.on( "message" ,  function( message ) {
 				try { message = JSON.parse( message ); }
@@ -69,7 +69,7 @@ module.exports.onConnection = ON_CONNECTION;
 function SEND_STAGED_WS_MESSAGE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var STAGED_FF_CLIENT_TASK = await require( "./server/utils/Generic.js" ).getStagedFFClientTask( true );
+			var STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask( true );
 			Reporter.log( "Sending Staged FF Client Task to Websocket Clients = " + STAGED_FF_CLIENT_TASK );
 			wsClient.clients.forEach( function each( ws ) {
 				ws.send( STAGED_FF_CLIENT_TASK );
