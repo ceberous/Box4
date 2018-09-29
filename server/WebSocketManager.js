@@ -31,7 +31,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 						this.isAlive = true;
 						break;
 					case "youtubeReadyForFullScreenGlitch":
-						require( "./modules/firefox/Manager.js" ).youtubeFullScreen();
+						//require( "./modules/firefox/Manager.js" ).youtubeFullScreen();
 						FFManager.x.fullScreen();
 						FFManager.x.centerMouse();
 						await FFManager.sleep( 1000 );
