@@ -21,7 +21,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 			const ip = wReq.connection.remoteAddress;
 			Reporter.log( "New WebSocket Client Connected @@@ " + ip );
 			const STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask();
-			await require( "../main.js" ).sendStagedWebSocketMessage();
+			await SEND_STAGED_WS_MESSAGE();
 			wSocket.on( "message" ,  function( message ) {
 				try { message = JSON.parse( message ); }
 				catch( e ) { var a = message; message = {"message": a}; }
