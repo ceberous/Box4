@@ -12,7 +12,7 @@ function GET_NEXT_VIDEO() {
 		try {
 			let finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
 			if ( finalVideo.length < 1 ) { Reporter.log( "No Standard Videos Left" ); resolve(); return; }
-			else { finalVideo = finalVideo[0]; }			
+			else { finalVideo = finalVideo[ 0 ]; }			
 			Reporter.log( finalVideo );
 			// WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
 			await Redis.setMulti( [ 
