@@ -9,7 +9,7 @@ function GET_CALLER() {
 	let stack = StackTrace.getSync();
 	stack = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) === -1 );
 	let name = stack[ 0 ].fileName.split( "/Box4" )[ 1 ];
-	console.log( name );
+	//console.log( name );
 	return name;
 }
 
