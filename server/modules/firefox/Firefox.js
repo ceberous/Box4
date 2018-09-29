@@ -3,6 +3,17 @@ const FirefoxWrapper = require( "firefox-wrapper" );
 // Centralized Firefox
 let FFManager;
 
+function CLOSE() {
+	return new Promise( function( resolve , reject ) {
+		try {
+			FFManager.close();
+			resolve();
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.close = CLOSE;
+
 function YOUTUBE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
