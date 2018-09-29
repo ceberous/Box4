@@ -6,10 +6,10 @@ const RC = Redis.c.YOUTUBE.CURRATED;
 function GET_QUE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const list = await RU.getFullSet( RC.QUE );
+			const list = await Redis.setGetFull( RC.QUE );
 			resolve( list );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.getQue = GET_QUE;
@@ -19,12 +19,12 @@ function ADD_TO_QUE( wVideoID ) {
 		try {
 			if ( wVideoID ) {
 				if ( wVideoID.length > 10 ) {
-					await RU.setAdd( RC.QUE , wVideoID );
+					await Redis.setAdd( RC.QUE , wVideoID );
 				}
 			}			
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.addToQue = ADD_TO_QUE;
@@ -32,10 +32,10 @@ module.exports.addToQue = ADD_TO_QUE;
 function REMOVE_FROM_QUE( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await RU.setRemove( RC.QUE , wVideoID );
+			await Redis.setRemove( RC.QUE , wVideoID );
 			resolve();
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.removeFromQue = REMOVE_FROM_QUE;
@@ -44,15 +44,15 @@ module.exports.removeFromQue = REMOVE_FROM_QUE;
 function IMPORT_FROM_PLAYLIST_ID( wPlaylistID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const videos = await require( "./youtubeAPI_Utils.js" ).getPlaylist( wPlaylistID );
-			const ids = videos.map( x => x[ "videoId" ] );
-			const filtered_ids = await require( "./generic.js" ).filterCommon( ids );
-			console.log( "Filtered IDS === " );
-			console.log( filtered_ids );
-			await RU.setSetFromArray( RC.QUE , filtered_ids );
+			let videos = await require( "./youtubeAPI_Utils.js" ).getPlaylist( wPlaylistID );
+			let ids = videos.map( x => x[ "videoId" ] );
+			let filtered_ids = await require( "./generic.js" ).filterCommon( ids );
+			Reporter.log( "Filtered IDS === " );
+			Reporter.log( filtered_ids );
+			await Redis.setSetFromArray( RC.QUE , filtered_ids );
 			resolve( filtered_ids );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.error( error ); reject( error ); }
 	});
 }
 module.exports.importFromPlaylistID = IMPORT_FROM_PLAYLIST_ID;
@@ -61,12 +61,12 @@ module.exports.importFromPlaylistID = IMPORT_FROM_PLAYLIST_ID;
 function GET_NEXT_IN_QUE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var next_video = await RU.getRandomSetMembers( RC.QUE , 1 );
+			var next_video = await Redis.getRandomSetMembers( RC.QUE , 1 );
 			if ( !next_video ) { next_video = "empty" }
 			else { next_video = next_video[ 0 ]; }		
 			resolve( next_video );
 		}
-		catch( error ) { console.log( error ); reject( error ); }
+		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
 module.exports.getNextInQue = GET_NEXT_IN_QUE;
