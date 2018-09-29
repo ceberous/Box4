@@ -2,8 +2,8 @@ const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice(
 const path = require( "path" );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.youtube;
-
-console.log = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) ).log;
+const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
+console.log = Reporter.log;
 
 function FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED( wNewIDS ) {
 	return new Promise( async function( resolve , reject ) {
