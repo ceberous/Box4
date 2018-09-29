@@ -32,7 +32,7 @@ function wStart() {
 			//await require( "../youtubeManager.js" ).updateStandard();
 			let final_vid = await GET_NEXT_VIDEO();
 			if ( !final_vid ) { resolve( "No Standard Videos Left" ); return; }
-			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
+			await SetStagedFFClientTask( { message: "Youtube" , playlist: [ final_vid ]  } );
 			FFManager = new FirefoxWrapper();
 			await FFManager.launch();
 			await FFManager.openNewTab( "http://localhost:6969/youtube" );
