@@ -32,6 +32,7 @@ function wStart() {
 			let final_vid = await GET_NEXT_VIDEO();
 			if ( !final_vid ) { resolve( "No Standard Videos Left" ); return; }
 			let FFManager = new FirefoxWrapper();
+			console.log( FFManager );
 			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
 			await FFManager.launch();
 			await FFManager.openNewTab( "http://localhost:6969/youtubeStandard" );
