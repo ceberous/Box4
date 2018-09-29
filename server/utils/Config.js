@@ -29,7 +29,7 @@ function SAVE_CONFIG_TO_REDIS() {
 		try {
 			// 0.) Bring in physical config
 			const YT = require( path.join( MainFP , "main.js" ) ).config.youtube;
-			console.log( YT );
+			//console.log( YT );
 			SET_KEYS[ "YOUTUBE.LIVE.FOLLOWERS" ] = YT.LIVE.FOLLOWERS.map( x => x[ "id" ] );
 			SET_KEYS[ "YOUTUBE.LIVE.BLACKLIST" ] = YT.LIVE.BLACKLIST;
 			SET_KEYS[ "YOUTUBE.STANDARD.FOLLOWERS" ] = YT.STANDARD.FOLLOWERS.map( x => x[ "id" ] );
