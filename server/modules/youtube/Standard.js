@@ -105,7 +105,6 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 					if ( filtered ) { if ( filtered.length > 0 ) {
 						new_que_ids = new_que_ids.filter( x => filtered.index( x ) === -1 );
 					}}
-					console.log( new_que_ids );
 					const wNewTotal = new_que_ids.length;
 					const current_que_length = await Redis.listGetLength( RC.QUE );
 					//console.log( "Current QUE Length === " + current_que_length.toString() );
