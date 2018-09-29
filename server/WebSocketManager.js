@@ -22,7 +22,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 			Reporter.log( "New WebSocket Client Connected @@@ " + ip );
 			const STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask();
 			await SEND_STAGED_WS_MESSAGE();
-			wSocket.on( "message" ,  function( message ) {
+			wSocket.on( "message" , async function( message ) {
 				try { message = JSON.parse( message ); }
 				catch( e ) { var a = message; message = {"message": a}; }
 				switch( message.message ) {
@@ -32,6 +32,10 @@ function ON_CONNECTION( wSocket , wReq ) {
 						break;
 					case "youtubeReadyForFullScreenGlitch":
 						require( "./modules/firefox/Manager.js" ).youtubeFullScreen();
+						FFManager.x.fullScreen();
+						FFManager.x.centerMouse();
+						await FFManager.sleep( 1000 );
+						FFManager.x.pressKeyboardKey( "f" );
 						break;
 					case "twitchReadyForFullScreenGlitch":
 						require( "./modules/firefox/Manager.js" ).twitchFullScreen();
