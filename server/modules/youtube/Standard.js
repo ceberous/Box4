@@ -61,12 +61,12 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 	return new Promise( function( resolve , reject ) {
 		try {
 			let wFeedURL = ytXML_Base + channelID;
+			Reporter.log( wFeedURL );
 			let wFP_Options = { "normalize": true ,"feedurl": wFeedURL };
 			let feedparser = new FeedParser( [ wFP_Options ] );
 
 			let wResults = [];
-			
-			Reporter.log( wFeedURL );
+		
 			let req = request( wFeedURL );
 			req.on( "error" , function ( error ) { Reporter.log(error); resolve(); return; } );
 			req.on( "response" , function ( res ) {
