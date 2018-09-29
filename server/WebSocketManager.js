@@ -6,7 +6,7 @@ const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice(
 const WebSocketClientFilePath = path.join( MainFP , "client" , "js" , "webSocketServerAddress.js" );
 const GetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).getStagedFFClientTask;
 const Reporter = require( "./utils/Reporter.js" );
-const FFManager = require( path.join( MainFP , "main.js" ).FFManager;
+const FFManager = require( path.join( MainFP , "main.js" ) ).FFManager;
 
 function BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions ) {
 	wsClient.clients.forEach( function each( ws ) { 
