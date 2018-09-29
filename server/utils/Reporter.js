@@ -18,11 +18,11 @@ const CALLER_COLOR_TABLE = {
 	"/server/WebSocketManager.js": [ "[WebSocket] --> " , "rainbow" ] ,
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
 	"/server/modules/localmedia/Manager.js" : [ "[LOCAL_MEDIA_MAN] --> " , "magenta" , "bgBlack" ] ,
-	"/server/modules/youtube/Utils.js" : [ "[YOU_TUBE_UTILS] --> " , "white" , "bgRed" ] ,
-	"/server/modules/youtube/Currated.js" : [ "[YOU_TUBE_CURRATED] --> " , "white" , "bgRed" ] ,
-	"/server/modules/youtube/Live.js" : [ "[YOU_TUBE_LIVE] --> " , "white" , "bgRed" ] ,
-	"/server/modules/youtube/Standard.js" : [ "[YOU_TUBE_STANDARD] --> " , "white" , "bgRed" ] ,
-	"/server/states/YoutubeStandard.js" : [ "[STATE_YOU_TUBE_STANDARD] --> " , "white" , "bgRed" ] ,
+	"/server/modules/youtube/Utils.js" : [ "[YOUTUBE_UTILS] --> " , "white" , "bgRed" ] ,
+	"/server/modules/youtube/Currated.js" : [ "[YOUTUBE_CURRATED] --> " , "white" , "bgRed" ] ,
+	"/server/modules/youtube/Live.js" : [ "[YOUTUBE_LIVE] --> " , "white" , "bgRed" ] ,
+	"/server/modules/youtube/Standard.js" : [ "[YOUTUBE_STANDARD] --> " , "white" , "bgRed" ] ,
+	"/server/states/YoutubeStandard.js" : [ "[STATE_YOUTUBE_STANDARD] --> " , "white" , "bgRed" ] ,
 };
 
 function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
