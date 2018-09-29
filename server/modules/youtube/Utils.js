@@ -19,7 +19,10 @@ function FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED( wNewIDS ) {
 			if ( blacklisted ) { if blacklisted.length > 0 {
 				final_ids = final_ids.filter( x => blacklisted.indexOf( x ) === -1 );
 			}}			
-			await Redis.setAddArrayWithFilter( temp_watched_key , RC.WATCHED , final_ids );
+			let watched = await Redis.setAddArrayWithFilter( temp_watched_key , RC.WATCHED , final_ids );
+			if ( watched ) { if watched.length > 0 {
+				final_ids = final_ids.filter( x => watched.indexOf( x ) === -1 );
+			}}
 
 			// ( rInstance , wDestinationKey , wFilterSetKey , wArray )
 			// var final_ids = await Redis.setAddArrayWithFilter( temp_skipped_key , RC.SKIPPED , wNewIDS );
