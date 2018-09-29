@@ -5,6 +5,8 @@ const RC = Redis.c.youtube;
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 console.log = Reporter.log;
 
+console.log( "What the F ???" );
+
 function FILTER_GLOBAL_BLACKLIST_AND_WATCHED_AND_SKIPPED( wNewIDS ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
