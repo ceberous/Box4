@@ -24,6 +24,7 @@ const ip = require( "ip" );
 const localIP = ip.address();
 const WebSocket = require( "ws" );
 const RMU = require( "redis-manager-utils" );
+const FirefoxWrapper = require( "firefox-wrapper" );
 
 ( async ()=> {
 
@@ -78,6 +79,10 @@ const RMU = require( "redis-manager-utils" );
 	// State Manger
 	let StateManager = await require("./server/StateManager.js");
 	module.exports.StateManager = StateManager;
+
+	// Firefox
+	let FFManager = undefined;
+	module.exports.FFManager;
 
 	// Express App
 	let express_app = require( "./server/express/app.js" );
