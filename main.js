@@ -42,7 +42,8 @@ const RMU = require( "redis-manager-utils" );
 			break;
 	}
 	module.exports.config = config;
-	let port = process.env.PORT || 6969;	
+	let port = process.env.PORT || 6969;
+	module.exports.port = port;
 
 	// Personal
 	let personal = require( "./personal.js" );
