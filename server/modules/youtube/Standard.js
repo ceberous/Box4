@@ -68,12 +68,12 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 			let wResults = [];
 		
 			let req = request( wFeedURL );
-			req.on( "error" , function ( error ) { Reporter.log(error); resolve(); return; } );
+			req.on( "error" , function ( error ) { Reporter.error(error); resolve(); return; } );
 			req.on( "response" , function ( res ) {
 				if ( res.statusCode !== 200 ) { /*reject( res.statusCode ); */  resolve(); return; }
 				else { this.pipe( feedparser ); }
 			});
-			feedparser.on( "error" , function ( error ) { Reporter.log( error ); } );
+			feedparser.on( "error" , function ( error ) { Reporter.error( error ); } );
 			feedparser.on( "readable" , function () { let item; while ( item = this.read() ) { wResults.push( item ); } } );
 			feedparser.on( "end" , () => {
 				let parsed = PARSE_STANDARD_FOLLOWER_XML( wResults , channelID );
