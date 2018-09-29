@@ -42,7 +42,7 @@ function wStart() {
 		try {
 			//await require( "../youtubeManager.js" ).updateStandard();
 			var final_vid = await GET_NEXT_VIDEO();
-			await ( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
+			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
 			await require( "../firefoxManager.js" ).openURL( "http://localhost:6969/youtubeStandard" );
 			resolve();
 		}
