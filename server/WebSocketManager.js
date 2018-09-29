@@ -7,7 +7,6 @@ const WebSocketClientFilePath = path.join( MainFP , "client" , "js" , "webSocket
 const GetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).getStagedFFClientTask;
 const Reporter = require( "./utils/Reporter.js" );
 
-const wsClient = require( path.join( MainFP , "main.js" ) ).wss;
 function BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions ) {
 	wsClient.clients.forEach( function each( ws ) { 
 		ws.send( JSON.stringify( { message: wMessage , options: wOptions } ) ); 
@@ -69,6 +68,7 @@ module.exports.onConnection = ON_CONNECTION;
 function SEND_STAGED_WS_MESSAGE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			const wsClient = require( path.join( MainFP , "main.js" ) ).wss;
 			var STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask( true );
 			Reporter.log( "Sending Staged FF Client Task to Websocket Clients = " + STAGED_FF_CLIENT_TASK );
 			wsClient.clients.forEach( function each( ws ) {
