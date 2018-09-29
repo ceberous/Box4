@@ -4,11 +4,8 @@ const puppeteer = require( "puppeteer" );
 
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const path = require( "path" );
-const YT_Personalis = require( path.join( MainFP , "main.js" ) ).personal;
-const RC = Redis.c.YOUTUBE.CURRATED;
+const YT_Personal = require( path.join( MainFP , "main.js" ) ).personal.youtube;
 
-
-const YT_Personal = require( "../../personal.js" ).youtube;
 var ENUMERATING_ID = null;
 var FINAL_RESULTS = [];
 var FINAL_PARSED = [];
