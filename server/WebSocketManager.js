@@ -86,7 +86,7 @@ function INITIALIZE() {
 		try {
 			const localIP = ip.address();
 			const port = require( path.join( MainFP , "main.js" ) ).port;
-			const wSIP = 'var socketServerAddress = "' + localIP + '"; var socketPORT = "' + wPort + '";';	
+			const wSIP = 'var socketServerAddress = "' + localIP + '"; var socketPORT = "' + port + '";';	
 			fs.writeFileSync( WebSocketClientFilePath , wSIP );
 			await Reporter.log( "Done Initializing" );
 			resolve();
