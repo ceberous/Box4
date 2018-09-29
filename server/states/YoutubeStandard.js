@@ -1,11 +1,13 @@
 const path = require( "path" );
+const FirefoxWrapper = require( "firefox-wrapper" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.YOUTUBE;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
-const FirefoxManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
+
+let FFManager; 
 
 function GET_NEXT_VIDEO() {
 	return new Promise( async function( resolve , reject ) {
@@ -30,8 +32,17 @@ function wStart() {
 		try {
 			//await require( "../youtubeManager.js" ).updateStandard();
 			let final_vid = await GET_NEXT_VIDEO();
+			if ( !final_vid ) { resolve( "No Standard Videos Left" ); return; }
+			FFManager = new FirefoxWrapper();
 			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
-			await FirefoxManager.openURL( "http://localhost:6969/youtubeStandard" );
+			await FFManager.launch();
+			await FFManager.openNewTab( "http://localhost:6969/youtubeStandard" );
+			FFManager.x.fullScreen();
+			FFManager.x.centerMouse();
+			await FFManager.sleep( 500 );
+			FFManager.x.leftClick()
+			await FFManager.sleep( 500 );
+			FFManager.x.pressKeyboardKey( "f" );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
