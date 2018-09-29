@@ -80,7 +80,7 @@ const RMU = require( "redis-manager-utils" );
 	module.exports.StateManager = StateManager;
 
 	// Centralized Firefox
-	let FFManager = undefined;
+	let FFManager;
 	module.exports.FFManager = FFManager;
 
 	// Express App
