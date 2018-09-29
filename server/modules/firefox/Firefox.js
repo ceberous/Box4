@@ -21,7 +21,9 @@ function YOUTUBE_FULLSCREEN() {
 		try {
 			//FFManager.x.fullScreen();
 			FFManager.x.centerMouse();
-			await FFManager.sleep( 1000 );
+			await FFManager.sleep( 500 );
+			FFManager.x.leftClick();
+			await FFManager.sleep( 500 );
 			FFManager.x.pressKeyboardKey( "f" );
 			resolve();
 		}
