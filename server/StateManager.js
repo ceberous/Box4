@@ -1,6 +1,5 @@
 const path	= require( "path" );
 
-
 const Sleep = require( "./utils/Generic.js" ).sleep;
 const Redis = require( "../main.js" ).redis;
 const RC = Redis.c.LAST_SS;
