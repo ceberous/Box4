@@ -24,7 +24,6 @@ const ip = require( "ip" );
 const localIP = ip.address();
 const WebSocket = require( "ws" );
 const RMU = require( "redis-manager-utils" );
-const FirefoxWrapper = require( "firefox-wrapper" );
 
 ( async ()=> {
 
@@ -80,7 +79,7 @@ const FirefoxWrapper = require( "firefox-wrapper" );
 	let StateManager = await require("./server/StateManager.js");
 	module.exports.StateManager = StateManager;
 
-	// Firefox
+	// Centralized Firefox
 	let FFManager = undefined;
 	module.exports.FFManager = FFManager;
 
