@@ -44,9 +44,9 @@ module.exports.removeFromQue = REMOVE_FROM_QUE;
 function IMPORT_FROM_PLAYLIST_ID( wPlaylistID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let videos = await require( "./youtubeAPI_Utils.js" ).getPlaylist( wPlaylistID );
+			let videos = await require( "./API.js" ).getPlaylist( wPlaylistID );
 			let ids = videos.map( x => x[ "videoId" ] );
-			let filtered_ids = await require( "./generic.js" ).filterCommon( ids );
+			let filtered_ids = await require( "./Generic.js" ).filterCommon( ids );
 			Reporter.log( "Filtered IDS === " );
 			Reporter.log( filtered_ids );
 			await Redis.setSetFromArray( RC.QUE , filtered_ids );
@@ -61,7 +61,7 @@ module.exports.importFromPlaylistID = IMPORT_FROM_PLAYLIST_ID;
 function GET_NEXT_IN_QUE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var next_video = await Redis.getRandomSetMembers( RC.QUE , 1 );
+			var next_video = await Redis.setGetRandomMembers( RC.QUE , 1 );
 			if ( !next_video ) { next_video = "empty" }
 			else { next_video = next_video[ 0 ]; }		
 			resolve( next_video );
