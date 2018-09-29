@@ -13,9 +13,9 @@ function GET_NEXT_VIDEO() {
 			let finalVideo = await Redis.setPopRandomMembers( RC.STANDARD.LATEST , 1 );
 			if ( finalVideo.length < 1 ) { Reporter.log( "No Standard Videos Left" ); resolve(); return; }
 			else { finalVideo = finalVideo[ 0 ]; }			
-			Reporter.log( finalVideo );
+			Reporter.log( "Next Video = " + finalVideo );
 			// WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
-			await Redis.setMulti( [ 
+			await Redis.keySetMulti( [ 
 				[ "sadd" , RC.ALREADY_WATCHED , finalVideo ] ,
 				[ "set" , RC.NOW_PLAYING_KEY , finalVideo ] , 
 			]);			
@@ -31,7 +31,7 @@ function wStart() {
 			//await require( "../youtubeManager.js" ).updateStandard();
 			var final_vid = await GET_NEXT_VIDEO();
 			await SetStagedFFClientTask( { message: "YTStandardForeground" , playlist: [ final_vid ]  } );
-			await require( "../firefoxManager.js" ).openURL( "http://localhost:6969/youtubeStandard" );
+			await FirefoxManager.openURL( "http://localhost:6969/youtubeStandard" );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -51,7 +51,7 @@ function wPause() {
 function wStop() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await require( "../firefoxManager.js" ).terminateFFWithClient();
+			await FirefoxManager.terminateFFWithClient();
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -61,7 +61,7 @@ function wStop() {
 function wNext() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var final_vid = await GET_NEXT_VIDEO();
+			let final_vid = await GET_NEXT_VIDEO();
 			wEmitter.emit( "sendFFClientMessage" , "next" , final_vid );
 			resolve();
 		}
@@ -72,7 +72,7 @@ function wNext() {
 function wPrevious() { // ehhhh needs fixed
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var final_vid = await GET_NEXT_VIDEO();
+			let final_vid = await GET_NEXT_VIDEO();
 			wEmitter.emit( "sendFFClientMessage" , "next" , final_vid );
 			resolve();
 		}
