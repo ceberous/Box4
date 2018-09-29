@@ -89,20 +89,22 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 function STANDARD_FOLLOWERS_GET_LATEST() {
 	return new Promise( async function( resolve , reject ) {
 		try { 
-			var current_followers = await Redis.setGetFull( RC.FOLLOWERS );
+			let current_followers = await Redis.setGetFull( RC.FOLLOWERS );
 			console.log( current_followers );
 			if ( !current_followers ) { console.log( "No Standard Followers" ); resolve( "no followers" ); return; }
 			if ( current_followers.length < 0 ) { console.log( "No Standard Followers" ); resolve( "no followers" ); return; }
 
-			var latest = await map( current_followers , userId => STANDARD_FOLLOWERS_FETCH_XML( userId ) );
-			var all_new = null;
+			let latest = await map( current_followers , userId => STANDARD_FOLLOWERS_FETCH_XML( userId ) );
+			let all_new = null;
 			if ( current_followers && latest ) {
 				if ( current_followers.length === latest.length ) {
 					all_new = [].concat.apply( [] , latest );
 					all_new = all_new.sort( function() { return 0.5 - Math.random(); });
-					var new_que_ids = all_new.map( x => x[ "id" ] );
+					let new_que_ids = all_new.map( x => x[ "id" ] );
 					let filtered = await require( "./Generic.js" ).filterCommon( new_que_ids );
-					new_que_ids = new_que_ids.filter( x => filtered.index( x ) === -1 );
+					if ( filtered ) { if ( filtered.length > 0 ) {
+						new_que_ids = new_que_ids.filter( x => filtered.index( x ) === -1 );
+					}}
 					console.log( new_que_ids );
 					const wNewTotal = new_que_ids.length;
 					const current_que_length = await Redis.listGetLength( RC.QUE );
@@ -113,12 +115,12 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 					if ( space_available < 0 ) {
 						const space_needed = ( 0 - space_available );
 						//console.log( "We need to clear " + space_needed.toString() + " slots in que" );
-						var wToDeleteIDS = [];
-						for ( var i = 0; i < space_needed; ++i ) {
-							var xTMP = await Redis.listRPOP( RC.QUE );
+						let wToDeleteIDS = [];
+						for ( let i = 0; i < space_needed; ++i ) {
+							let xTMP = await Redis.listRPOP( RC.QUE );
 							wToDeleteIDS.push( xTMP );
 						}
-						var wToDeleteKeysMulti = wToDeleteIDS.map( x => [ "del" , RC.LATEST + "." + x ] );
+						let wToDeleteKeysMulti = wToDeleteIDS.map( x => [ "del" , RC.LATEST + "." + x ] );
 						//console.log( "We need to remove these **old** videos" );
 						//console.log( wToDeleteKeysMulti );
 						await Redis.keySetMulti( wToDeleteKeysMulti );
@@ -127,8 +129,8 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 					//console.log( "about to add new ids to QUE" );
 					await Redis.listSetFromArrayBeginning( RC.QUE , new_que_ids );
 					//console.log( "done adding to QUE" );
-					for ( var i = 0; i < all_new.length; ++i ) {
-						var xR_Key = RC.LATEST + "." + all_new[ i ][ "id" ];
+					for ( let i = 0; i < all_new.length; ++i ) {
+						let xR_Key = RC.LATEST + "." + all_new[ i ][ "id" ];
 						if ( !await Redis.exists( xR_Key ) ) {
 							await Redis.hashSetMulti( xR_Key ,
 								"title" , all_new[ i ][ "title" ] ,
