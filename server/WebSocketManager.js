@@ -30,7 +30,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 			await SEND_STAGED_WS_MESSAGE();
 			wEmitter.on( "sendFFClientMessage" , async function( wMessage , wOptions ) {
 				await BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions )
-			});		
+			});
 			wSocket.on( "message" , function( message ) {
 				try { message = JSON.parse( message ); }
 				catch( e ) { var a = message; message = {"message": a}; }
@@ -55,7 +55,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 						break;
 					case "YTRelaxingVideoOver":
 						require( "./Manager.js" ).pressButtonMaster( 9 ); // next
-						break;										
+						break;
 					case "youtubeNowPlayingID":
 						Reporter.post( message.url );
 						break;

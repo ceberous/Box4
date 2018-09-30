@@ -31,7 +31,9 @@ function wStart( wOptions ) {
 function wPause() {
 	return new Promise( function( resolve , reject ) {
 		try {
-			wEmitter.emit( "sendFFClientMessage" , "pause" );
+			//FFManager.raw.x.pressKeyboardKey( "space" );
+			//FFManager.call( "x" , "pressKeyboardKey" , "space" );
+			FFManager.twitchPause();
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

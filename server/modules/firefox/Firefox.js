@@ -3,6 +3,26 @@ const FirefoxWrapper = require( "firefox-wrapper" );
 // Centralized Firefox
 let FFManager;
 
+// function CALL_PROXY( ...args ) {
+// 	return new Promise( async function( resolve , reject ) {
+// 		try {
+// 			let real_arguments = args.pop();
+// 			let real_call = FFManager;
+// 			for ( let i = 0; i < args.length; ++i ) {
+// 				real_call = real_call[ args[ i ] ]
+// 			}
+// 			console.log( "Calling Function === " );
+// 			console.log( real_call );
+// 			console.log( "Calling Arguments === " );
+// 			console.log( real_arguments );
+// 			await real_call( real_arguments );
+// 			resolve();
+// 		}
+// 		catch( error ) { console.log( error ); reject( error ); }
+// 	});
+// }
+// module.exports.call = CALL_PROXY;
+
 function CREATE_NEW( wURL ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
@@ -59,6 +79,17 @@ function TWITCH( wUser ) {
 		try {
 			await CREATE_NEW( "https://twitch.tv/" + wUser );
 			await FFManager.x.sleep( 20000 );
+			await TWITCH_FULLSCREEN();
+			resolve();
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.twitch = TWITCH;
+
+function TWITCH_FULLSCREEN() {
+	return new Promise( async function( resolve , reject ) {
+		try {
 			FFManager.x.centerMouse();
 			await FFManager.sleep( 500 );
 			FFManager.x.leftClick();
@@ -69,4 +100,15 @@ function TWITCH( wUser ) {
 		catch( error ) { console.log( error ); reject( error ); }
 	});
 }
-module.exports.youtube = YOUTUBE;
+module.exports.twitchFullScreen = TWITCH_FULLSCREEN;
+
+function TWITCH_PAUSE() {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			FFManager.x.pressKeyboardKey( "space" );		
+			resolve();
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.twitchPause = TWITCH_PAUSE;
