@@ -15,15 +15,24 @@ function GET_CALLER() {
 
 const CALLER_COLOR_TABLE = {
 	"/main.js": [ "[MAIN] --> " , "black" , "bgRed" ] , 
+	"/server/utils/XDoTool.js": [ "[XDO_TOOL] --> " , "blue" , "bgRed" ] , 
 	"/server/WebSocketManager.js": [ "[WebSocket] --> " , "rainbow" ] ,
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
-	"/server/modules/localmedia/Manager.js" : [ "[LOCAL_MEDIA_MAN] --> " , "magenta" , "bgBlack" ] ,
+	"/server/modules/mplayer/Manager.js" : [ "[MPLAYER_MAN] --> " , "black" , "bgMagenta" ] ,
+	"/server/modules/localmedia/Manager.js" : [ "[LOCALMEDIA] --> " , "magenta" , "bgBlack" ] ,
+	"/server/modules/localmedia/utils/HardDrive.js" : [ "[LOCALMEDIA].hardDrive() --> " , "magenta" , "bgBlack" ] ,
+	"/server/modules/localmedia/utils/Calculate.js" : [ "[LOCALMEDIA].calculate() --> " , "magenta" , "bgBlack" ] ,
 	"/server/modules/youtube/Utils.js" : [ "[YOUTUBE_UTILS] --> " , "white" , "bgRed" ] ,
 	"/server/modules/youtube/Currated.js" : [ "[YOUTUBE_CURRATED] --> " , "white" , "bgRed" ] ,
 	"/server/modules/youtube/Live.js" : [ "[YOUTUBE_LIVE] --> " , "white" , "bgRed" ] ,
 	"/server/modules/youtube/Standard.js" : [ "[YOUTUBE_STANDARD] --> " , "white" , "bgRed" ] ,
 	"/server/states/YoutubeStandard.js" : [ "[STATE_YOUTUBE_STANDARD] --> " , "white" , "bgRed" ] ,
 	"/server/states/TwitchLive.js" : [ "[STATE_TWITCH_LIVE] --> " , "white" , "bgMagenta" ] ,
+	"/server/states/LocalMediaTVShow.js" : [ "[STATE_LOCALMEDIA_TVSHOW] --> " , "magenta" , "bgBlack" ] ,
+	"/server/states/LocalMediaAudioBook.js" : [ "[STATE_LOCALMEDIA_AUDIOBOOK] --> " , "magenta" , "bgBlack" ] ,
+	"/server/states/LocalMediaMusic.js" : [ "[STATE_LOCALMEDIA_MUSIC] --> " , "magenta" , "bgBlack" ] ,
+	"/server/states/LocalMediaMovie.js" : [ "[STATE_LOCALMEDIA_MOVIE] --> " , "magenta" , "bgBlack" ] ,
+	"/server/states/LocalMediaOdyssey.js" : [ "[STATE_LOCALMEDIA_ODYSSEY] --> " , "magenta" , "bgBlack" ] ,
 };
 
 function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {

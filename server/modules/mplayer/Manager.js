@@ -1,10 +1,10 @@
-const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
-
-const path = require("path");
 const spawn = require("child_process").spawn;
-const colors = require("colors");
+const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
+const path = require( "path" );
+const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
+const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
-function wcl( wSTR ) { console.log( colors.black.bgMagenta( "[MPLAYER_MAN] --> " + wSTR ) ); }
+const XDoToolWrapper = require( path.join( MainFP , "server" , "utils" , "XDoTool.js" ) );
 
 function fixPathSpace(wFP) {
 	var fixSpace = new RegExp( " " , "g" );
@@ -14,7 +14,7 @@ function fixPathSpace(wFP) {
 	wFP = wFP.replace( "'" , String.fromCharCode(92) + "'" );
 	return wFP;
 }
-const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
+
 
 const mplayerWrapperScript_FP = path.join( __dirname , "Wrapper.js" );
 var wPROC = null;
@@ -27,7 +27,7 @@ function cleanupChildPROC() {
 	try{wPROC.unref();}
 	catch(e){}
 	if ( EMIT_OVER_EVENT ) { wEmitter.emit( "MPlayerOVER" , wPROC_TIME ); }
-	wcl( "Media is Over !!!" );
+	Reporter.log( "Media is Over !!!" );
 }
 function wPlayFilePath( wFP ) {
 	return new Promise( async function( resolve , reject ) {
@@ -35,7 +35,7 @@ function wPlayFilePath( wFP ) {
 			EMIT_OVER_EVENT = true;
 			
 			process.env.mplayerFP = fixPathSpace( wFP );
-			wcl( process.env.mplayerFP );
+			Reporter.log( process.env.mplayerFP );
 
 			var wOptions = {
 				stdio: [ "pipe" , 1 , 2 , "ipc" ], // === 2 way communication
@@ -50,8 +50,8 @@ function wPlayFilePath( wFP ) {
 				if ( wMessage.time ) { var x1 = Math.floor( wMessage.time ); wPROC_TIME = ( x1 >= 1 ) ? x1 : wPROC_TIME; }
 			});
 			// Disable Subtitles **hack**
-			await Sleep( 1000 );
-			require( "../xdotoolWrapper.js" ).pressKeyboardKey( "v" ); 
+			await Sleep( 5000 );
+			XDoToolWrapper.pressKeyboardKey( "v" ); 
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -74,7 +74,7 @@ function wSilentStop() {
 	wPROC = null; 
 	return wPROC_TIME;
 }
-function wSeekSeconds( wSeconds ) { if ( wPROC !== null ) { wcl( "Seeking --> " + wSeconds.toString() ); wPROC.send( "seekSeconds/" + wSeconds.toString() ); } }
+function wSeekSeconds( wSeconds ) { if ( wPROC !== null ) { Reporter.log( "Seeking --> " + wSeconds.toString() ); wPROC.send( "seekSeconds/" + wSeconds.toString() ); } }
 function wSeekPercent( wPercent ) { if ( wPROC !== null ) { wPROC.send( "seekPercent/" + wPercent.toString() ); } }
 function wHideSubtitles() { if ( wPROC !== null ) { wPROC.send( "hideSubtitles" ); } }
 function wFullScreen() { if ( wPROC !== null ) { wPROC.send( "fullscreen" ); } }

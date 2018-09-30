@@ -94,7 +94,7 @@ const MOPIDY_MAN 		= require( "./modules/mopidy/Manager.js" );
 ( async ()=> {
 	await Reporter.log( "Initializing stuff" );
 	await require( "./modules/localmedia/Manager.js" ).initialize();
-	await require( "./modules/youtube/Manager.js" ).initialize();
+	//await require( "./modules/youtube/Manager.js" ).initialize();
 	await Reporter.log( "we are done with Initialization" );
 	await require( "./utils/Generic.js" ).getStatusReport();
 })();

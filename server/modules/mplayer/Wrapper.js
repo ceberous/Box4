@@ -1,7 +1,6 @@
 const process = require("process");
-const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
-const path = require( "path" );
-const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
+
+function sleep( ms ) { return new Promise( resolve => setTimeout( resolve , ms ) ); }
 
 const MPlayer = require( "mplayer" );
 
