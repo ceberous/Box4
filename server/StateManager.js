@@ -66,7 +66,6 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 				if ( wOptions.mode ) {
 					if ( wOptions.mode === cached_mode ) { return; }
 				}
-				else { return; }
 			}
 			else { return; }	
 		}

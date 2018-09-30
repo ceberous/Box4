@@ -7,6 +7,9 @@
 // 	}
 // };
 
+// /home/$USER/.nvm/versions/node/v10.2.0/lib/node_modules/nodemon/lib/monitor/run.js
+//  219:     exec( "gitPushUpdate" );
+
 // https://www.amazon.com/dp/B077L3HYYW
 
 process.on( "unhandledRejection" , function( reason , p ) {
@@ -78,10 +81,6 @@ const RMU = require( "redis-manager-utils" );
 	// State Manger
 	let StateManager = await require("./server/StateManager.js");
 	module.exports.StateManager = StateManager;
-
-	// Centralized Firefox
-	let FFManager;
-	module.exports.FFManager = FFManager;
 
 	// Express App
 	let express_app = require( "./server/express/app.js" );

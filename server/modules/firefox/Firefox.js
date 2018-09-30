@@ -3,6 +3,19 @@ const FirefoxWrapper = require( "firefox-wrapper" );
 // Centralized Firefox
 let FFManager;
 
+function CREATE_NEW( wURL ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			if ( FFManager ) { await FFManager.close(); FFManager = undefined; }
+			FFManager = new FirefoxWrapper();
+			await FFManager.launch();
+			await FFManager.openNewTab( wURL );			
+			resolve();
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+
 function CLOSE() {
 	return new Promise( function( resolve , reject ) {
 		try {
@@ -17,9 +30,7 @@ module.exports.close = CLOSE;
 function YOUTUBE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			FFManager = new FirefoxWrapper();
-			await FFManager.launch();
-			await FFManager.openNewTab( "http://localhost:6969/youtube" );		
+			await CREATE_NEW( "http://localhost:6969/youtube" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }

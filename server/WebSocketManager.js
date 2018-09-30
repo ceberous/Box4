@@ -3,13 +3,18 @@ const ip = require("ip");
 const fs = require("fs");
 const path = require( "path" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
+const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const WebSocketClientFilePath = path.join( MainFP , "client" , "js" , "webSocketServerAddress.js" );
 const GetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).getStagedFFClientTask;
 const Reporter = require( "./utils/Reporter.js" );
 const FFManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
 function BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions ) {
-	wsClient.clients.forEach( function each( ws ) { 
-		ws.send( JSON.stringify( { message: wMessage , options: wOptions } ) ); 
+	let final_obj;
+	if ( typeof wMessage === "object" ) { final_obj = wMessage }
+	else { final_obj = { message: wMessage , options: wOptions }; }
+	const wsClient = require( path.join( MainFP , "main.js" ) ).wss;
+	wsClient.clients.forEach( function each( ws ) {
+		ws.send( JSON.stringify( final_obj ) ); 
 	});
 }
 module.exports.broadcast = BROADCAST_TO_ALL_CLIENTS;
@@ -21,6 +26,9 @@ function ON_CONNECTION( wSocket , wReq ) {
 			Reporter.log( "New WebSocket Client Connected @@@ " + ip );
 			const STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask();
 			await SEND_STAGED_WS_MESSAGE();
+			wEmitter.on( "sendFFClientMessage" , async function( wMessage , wOptions ) {
+				await BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions )
+			});		
 			wSocket.on( "message" , function( message ) {
 				try { message = JSON.parse( message ); }
 				catch( e ) { var a = message; message = {"message": a}; }
@@ -69,12 +77,9 @@ module.exports.onConnection = ON_CONNECTION;
 function SEND_STAGED_WS_MESSAGE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			const wsClient = require( path.join( MainFP , "main.js" ) ).wss;
-			const STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask( true );
+			const STAGED_FF_CLIENT_TASK = await GetStagedFFClientTask();
 			Reporter.log( "Sending Staged FF Client Task to Websocket Clients = " + STAGED_FF_CLIENT_TASK );
-			wsClient.clients.forEach( function each( ws ) {
-				ws.send( STAGED_FF_CLIENT_TASK );
-			});
+			BROADCAST_TO_ALL_CLIENTS( STAGED_FF_CLIENT_TASK );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
