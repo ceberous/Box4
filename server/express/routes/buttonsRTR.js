@@ -1,7 +1,7 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var buttonsCTRL = require( "../controllers/buttonsCTRL.js" );
+const buttonsCTRL = require( "../controllers/buttonsCTRL.js" );
 
 router.get( '/0/' , buttonsCTRL.press0 );
 router.get( '/1/' , buttonsCTRL.press1 );
@@ -24,5 +24,7 @@ router.get( '/17/' , buttonsCTRL.press17 );
 router.get( '/18/' , buttonsCTRL.press18 );
 router.get( '/19/' , buttonsCTRL.press19 );
 router.get( '/20/' , buttonsCTRL.press20 );
+router.get( '/21/' , buttonsCTRL.press21 );
+router.get( '/22/' , buttonsCTRL.press22 );
 
 module.exports = router;

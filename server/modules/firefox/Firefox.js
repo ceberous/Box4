@@ -53,3 +53,20 @@ function YOUTUBE_FULLSCREEN() {
 	});	
 }
 module.exports.youtubeFullScreen = YOUTUBE_FULLSCREEN;
+
+function TWITCH( wUser ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			await CREATE_NEW( "https://twitch.tv/" + wUser );
+			await FFManager.x.sleep( 20000 );
+			FFManager.x.centerMouse();
+			await FFManager.sleep( 500 );
+			FFManager.x.leftClick();
+			await FFManager.sleep( 500 );
+			FFManager.x.pressKeyboardKey( "F11" );			
+			resolve();
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.youtube = YOUTUBE;

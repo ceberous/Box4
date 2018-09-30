@@ -8,6 +8,8 @@ const WebSocketClientFilePath = path.join( MainFP , "client" , "js" , "webSocket
 const GetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).getStagedFFClientTask;
 const Reporter = require( "./utils/Reporter.js" );
 const FFManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
+const YoutubeRecordVideoWatched = require( path.join( MainFP , "server" , "modules" , "youtube" , "Utils.js" ) ).recordVideoWatched;
+
 function BROADCAST_TO_ALL_CLIENTS( wMessage , wOptions ) {
 	let final_obj;
 	if ( typeof wMessage === "object" ) { final_obj = wMessage }
@@ -46,7 +48,7 @@ function ON_CONNECTION( wSocket , wReq ) {
 						break;
 					case "YTStandardVideoOver":
 						//clientManager.pressButtonMaster( 9 ); // next
-						require( "./YOUTUBE/generic.js" ).recordVideoWatched( message.id );
+						YoutubeRecordVideoWatched( message.id );
 						break;
 					case "YTCurratedVideoOver":
 						require( "./Manager.js" ).pressButtonMaster( 9 ); // next

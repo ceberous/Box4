@@ -2,18 +2,26 @@ const path = require( "path" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
-const RC = Redis.c.YOUTUBE;
+const RC = Redis.c.TWITCH;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
+const UpdateLiveUsers = require( path.join( MainFP , "server" , "modules" , "twitch" , "API.js" ) ).updateLiveUsers;
 let FFManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
 
 function wStart( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			if ( !wOptions ) { resolve( "No Video Info Provided" ); return; }
-			if ( !wOptions.playlist_id ) { resolve( "No Official Playlist List Provided" ); return; }
-			await SetStagedFFClientTask( { message: "Youtube" , playlist_id: wOptions.playlist_id  } );
-			await FFManager.youtube();
+			console.log( "Here in TwitchLive State" );
+			console.log( wOptions );
+			let current_live;
+			if ( wOptions ) {
+				if ( wOptions.user ) { current_live.push( wOptions.user ); }
+				else { current_live = await UpdateLiveUsers(); }
+			}
+			else { current_live = await UpdateLiveUsers(); }
+			console.log( current_live );
+			if ( current_live.length < 1 ) { resolve(); return; }
+			await FFManager.twitch( current_live[ 0 ] );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -44,7 +52,11 @@ function wStop() {
 function wNext() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			wEmitter.emit( "sendFFClientMessage" , "next" );
+			await Redis.increment( RC.LIVE_USERS_INDEX );
+			let index = Redis.keyGet( RC.LIVE_USERS_INDEX );
+			let next_user = Redis.listGetByIndex( RC.LIVE_USERS , index );
+			if ( next_user ) { next_user = { user: next_user }; }
+			await wStart( next_user );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -54,7 +66,11 @@ function wNext() {
 function wPrevious() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			wEmitter.emit( "sendFFClientMessage" , "previous" );
+			await Redis.decrement( RC.LIVE_USERS_INDEX );
+			let index = Redis.keyGet( RC.LIVE_USERS_INDEX );
+			let next_user = Redis.listGetByIndex( RC.LIVE_USERS , index );
+			if ( next_user ) { next_user = { user: next_user }; }
+			await wStart( next_user );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
