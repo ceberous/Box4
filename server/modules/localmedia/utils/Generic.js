@@ -1,17 +1,18 @@
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const path = require( "path" );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
+const RC = Redis.c.LOCAL_MEDIA;
 
 function ADVANCE_NEXT_SHOW_POSITION( wCurrentIndex ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var FinalUNEQ_IDX = ( wCurrentIndex + 1 );
-			var R_NextShow = R_FinalBase + "META.UNEQ";
-			var FinalShowName = await RU.getFromListByIndex( R_NextShow , FinalUNEQ_IDX );
+			let FinalUNEQ_IDX = ( wCurrentIndex + 1 );
+			let R_NextShow = R_FinalBase + "META.UNEQ";
+			let FinalShowName = await Redis.listGetByIndex( R_NextShow , FinalUNEQ_IDX );
 			if ( FinalShowName === null ) { //  IF Advanced Past Total-UNEQ-aka-Unique Shows in Genre
 				//console.log( "inside show-in-genre reset" );
 				FinalUNEQ_IDX = 0;
-				FinalShowName = await RU.getFromListByIndex( R_NextShow , FinalUNEQ_IDX );
+				FinalShowName = await Redis.listGetByIndex( R_NextShow , FinalUNEQ_IDX );
 			}
 			const x1 = [ FinalUNEQ_IDX , FinalShowName ];
 			//console.log( x1 );
@@ -28,18 +29,24 @@ function UPDATE_LAST_PLAYED_TIME( wTime ) {
 			if ( !wTime ) { resolve(); return; }
 			console.log( "Time = " + wTime.toString() );
 			
-			var G_NOW_PLAYING = await RU.getKey( RC.LAST_SS.NOW_PLAYING_GLOBAL );
-			//console.log( G_NOW_PLAYING );
-			if ( !G_NOW_PLAYING ) { resolve(); return; }
-			G_NOW_PLAYING = JSON.parse( G_NOW_PLAYING );
+			let now_playing = await Redis.keyGetDeJSON( RC.NOW_PLAYING.global );
+			console.log( now_playing );
+			if ( !now_playing ) { resolve(); return; }
 			//console.log( "wTime === " + wTime.toString() );
-			G_NOW_PLAYING.cur_time = wTime;
-			G_NOW_PLAYING.remaining_time = ( G_NOW_PLAYING.duration - G_NOW_PLAYING.cur_time );
-			if ( G_NOW_PLAYING.cur_time >= G_NOW_PLAYING.three_percent ) { G_NOW_PLAYING.completed = true; }
-			//console.log( G_NOW_PLAYING );
-			const x1 = JSON.stringify( G_NOW_PLAYING );
-			await RU.setMulti( [ [ "set" , RC.LAST_SS.NOW_PLAYING[ G_NOW_PLAYING.genre ] , x1 ] ,  [ "set" , RC.LAST_SS.NOW_PLAYING_GLOBAL , x1 ] ]);
-		
+			now_playing.current_time = wTime;
+			now_playing.remaining_time = ( now_playing.duration - now_playing.current_time );
+			await Redis.hashSetMulti( now_playing.episode_passive_key , 
+				"current_time" , now_playing.current_time ,
+				"remaining_time" , now_playing.remaining_time
+			);
+			if ( now_playing.current_time >= now_playing.three_percent ) {
+				now_playing.completed = true;
+				await Redis.hashSetMulti( now_playing.episode_passive_key , "completed" , true );
+			}
+			//console.log( now_playing );
+			const x1 = JSON.stringify( now_playing );
+			await Redis.keySetMulti( [ [ "set" , RC.NOW_PLAYING[ now_playing.genre ] , x1 ] ,  [ "set" , RC.NOW_PLAYING.global , x1 ] ]);
+
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -50,7 +57,7 @@ module.exports.updateLastPlayedTime = UPDATE_LAST_PLAYED_TIME;
 function GET_LIVE_CONFIG() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var liveConfig = await RU.getMultiKeys( RC.CONFIG.GENRE , RC.CONFIG.ADVANCE_SHOW , RC.CONFIG.SPECIFIC_SHOW , RC.CONFIG.SPECIFIC_EPISODE , RC.MOUNT_POINT );
+			let liveConfig = await Redis.keyGetMulti( RC.CONFIG.GENRE , RC.CONFIG.ADVANCE_SHOW , RC.CONFIG.SPECIFIC_SHOW , RC.CONFIG.SPECIFIC_EPISODE , RC.MOUNT_POINT );
 			if ( liveConfig ) {
 				liveConfig = {
 					genre: liveConfig[ 0 ] ,
@@ -71,7 +78,7 @@ module.exports.getLiveConfig = GET_LIVE_CONFIG;
 function GET_LAST_PLAYED_GLOBAL() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			var liveLastPlayed = await RU.getKey( RC.LAST_SS.NOW_PLAYING_GLOBAL );
+			let liveLastPlayed = await Redis.keyGet( RC.LAST_SS.NOW_PLAYING_GLOBAL );
 			liveLastPlayed = JSON.parse( liveLastPlayed );
 			resolve( liveLastPlayed );
 		}
@@ -84,7 +91,7 @@ function GET_LAST_PLAYED_IN_GENRE( wGenre ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			if ( !wGenre ) { resolve(); return; }
-			var liveLastPlayed = await RU.getKey( RC.LAST_SS.NOW_PLAYING[ wGenre ] );
+			let liveLastPlayed = await Redis.keyGet( RC.LAST_SS.NOW_PLAYING[ wGenre ] );
 			liveLastPlayed = JSON.parse( liveLastPlayed );
 			resolve( liveLastPlayed );
 		}

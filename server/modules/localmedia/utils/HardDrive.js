@@ -146,6 +146,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 								"skipped" , false ,
 								"current_time" , 0 ,
 								"remaining_time" , 0 ,
+								"three_percent" , 0 ,
 								"duration" , 0
 							);
 						}

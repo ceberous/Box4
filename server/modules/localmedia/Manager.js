@@ -44,17 +44,15 @@ function INITIALIZE() {
 }
 module.exports.initialize = INITIALIZE;
 
-function LOCAL_MPLAY_WRAP( wFilePath , wCurrentTime ) {
+function LOCAL_MPLAY_WRAP( now_playing ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			if ( !wFilePath ) { resolve(); return; }
-			Reporter.log( "\nSTARTING --> MPLAYER" );
-			await MPLAYER_MAN.playFilePath( wFilePath );
-			if ( wCurrentTime ) {
-				if ( wCurrentTime > 1 ) {
-					await wSleep( 1000 );
-					MPLAYER_MAN.seekSeconds( wCurrentTime );
-				}
+			if ( !now_playing ) { resolve(); return; }
+			Reporter.log( "STARTING --> MPLAYER" );
+			await MPLAYER_MAN.playFilePath( now_playing.fp );
+			if ( now_playing.current_time > 0 ) {
+				await Sleep( 1000 );
+				MPLAYER_MAN.seekSeconds( now_playing.current_time );
 			}
 			resolve();
 		}
@@ -66,8 +64,11 @@ function PLAY( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			Reporter.log( "play()" );
-			const FinalNowPlaying = await Calculate.next( wOptions );
-			await LOCAL_MPLAY_WRAP( FinalNowPlaying.fp , FinalNowPlaying.cur_time );
+			let FinalNowPlaying = await Calculate.next( wOptions );
+			//if ( Array.isArray( FinalNowPlaying ) ) { FinalNowPlaying = FinalNowPlaying[ 0 ]; }
+			let JSON_FNP = JSON.stringify( FinalNowPlaying );
+			await Redis.keySet( RC.NOW_PLAYING.global , JSON_FNP );
+			await LOCAL_MPLAY_WRAP( FinalNowPlaying );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -130,7 +131,7 @@ function PREVIOUS( wOptions ) {
 			Reporter.log( "previous()" );
 			await STOP();
 			const previous = await Calculate.previous();
-			await LOCAL_MPLAY_WRAP( previous.fp , previous.cur_time );
+			await LOCAL_MPLAY_WRAP( previous );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }

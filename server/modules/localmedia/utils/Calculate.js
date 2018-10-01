@@ -35,12 +35,15 @@ function GET_EPISODE_INDEX( wGenre , wShowName , wSeasonIndex ) {
 		catch( error ) { console.log( error ); reject( error ); }
 	});	
 }
+function GET_PASSIVE_EPISODE_DATA_KEY( wGenre , wShowName , wSeasonIndex , wEpisodeIndex ) {
+	return RC.PASSIVE.BASE + "GENRES." + wGenre + ".SHOWS." + wShowName + ".SEASON." + ( parseInt( wSeasonIndex ) + 1 ).toString() + ".EPISODE." + ( parseInt( wEpisodeIndex ) + 1 ).toString();
+}
 function GET_PASSIVE_EPISODE_DATA( wGenre , wShowName , wSeasonIndex , wEpisodeIndex ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let key = RC.PASSIVE.BASE + "GENRES." + wGenre + ".SHOWS." + wShowName + ".SEASON." + ( parseInt( wSeasonIndex ) + 1 ).toString() + ".EPISODE." + ( parseInt( wEpisodeIndex ) + 1 ).toString();
+			let key = GET_PASSIVE_EPISODE_DATA_KEY( wGenre , wShowName , wSeasonIndex , wEpisodeIndex );
 			let episode = await Redis.hashGetAll( key );
-			resolve( episode );
+			resolve( [ episode , key ] );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
 	});
@@ -72,12 +75,14 @@ function GET_CURRENT_IN_GENRE( wGenre ) {
 			//console.log( "Current Episode Index = " + episode_index.toString() );
 			
 			// Episode
-			let episode = await GET_PASSIVE_EPISODE_DATA( wGenre , show_name , season_index , episode_index );
+			let episode_passive_data = await GET_PASSIVE_EPISODE_DATA( wGenre , show_name , season_index , episode_index );
+			let episode = episode_passive_data[ 0 ];
+			let episode_passive_key = episode_passive_data[ 1 ];
 
 			episode.season_index_key = season_index_key;
 			episode.episode_index_key = episode_index_key;
+			episode.episode_passive_key = episode_passive_key;
 
-			//console.log( episode );
 			resolve( episode );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -91,31 +96,41 @@ function NEXT( wOptions ) {
 			// Get Current
 			let current = await GET_CURRENT_IN_GENRE( wOptions.genre );
 			if ( !current ) { resolve( "Failed" ); return; }
-			if ( parseInt( current.duration ) === 0 ) { current.duration = current.remaining_time = await GetDuration( current.fp ); }
-			console.log( current );
+			if ( parseInt( current.duration ) === 0 ) {
+				current.duration = current.remaining_time = await GetDuration( current.fp );
+				current.three_percent = Math.floor( ( current.duration - ( current.duration * 0.025 ) ) );
+			}
+			//console.log( "calculate().next()" );
+			//console.log( current );
 
 			// If Not Completed
-			if ( !current.completed ) { resolve( current ); return; }
+			if ( current.completed === false || current.completed === "false" ) { resolve( current ); return; }
 
 			// Else , Calculate Next Episode In Season
 			await Redis.increment( current.episode_index_key );
 			let next_episode_index = await GET_EPISODE_INDEX( current.genre , current.show , current.season_index );
 
-			let episode = await GET_PASSIVE_EPISODE_DATA( current.genre , current.show , current.season_index , next_episode_index );
+			let episode_passive_data = await GET_PASSIVE_EPISODE_DATA( current.genre , current.show , current.season_index , next_episode_index );
+			let episode = episode_passive_data[ 0 ];
+			episode.episode_passive_key = episode_passive_data[ 1 ];			
 			if ( !episode ) { // We Advanced Outside of Current Season's Range
 
-				// Advance Season
+				// Advance Seasonv
 				await Redis.increment( current.season_index_key );
 				let next_season_index = await GET_SEASON_INDEX( current.genre , current.show );
 				
-				episode = await GET_PASSIVE_EPISODE_DATA( current.genre , current.show , next_season_index , 0 );
+				episode_passive_data = await GET_PASSIVE_EPISODE_DATA( current.genre , current.show , next_season_index , 0 );
+				episode = episode_passive_data[ 0 ];
+				episode.episode_passive_key = episode_passive_data[ 1 ];
 				if ( !episode ) { // We Advanced Oustside of Current Show's Season Range
 
 					if ( wOptions.advance_show ) { // Advnaced Show Index to Next Show in Genre
 
 					}
 					else { // Reset to First Season in Genre
-						episode = await GET_PASSIVE_EPISODE_DATA( current.genre , current.show , 0 , 0 );
+						episode_passive_data = await GET_PASSIVE_EPISODE_DATA( current.genre , current.show , 0 , 0 );
+						episode = episode_passive_data[ 0 ];
+						episode.episode_passive_key = episode_passive_data[ 1 ];						
 					}
 
 				}

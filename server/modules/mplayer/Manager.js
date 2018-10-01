@@ -6,8 +6,9 @@ const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
 const XDoToolWrapper = require( path.join( MainFP , "server" , "utils" , "XDoTool.js" ) );
 
-function fixPathSpace(wFP) {
-	var fixSpace = new RegExp( " " , "g" );
+function fixPathSpace( wFP ) {
+	if ( !wFP ) { return ""; }
+	let fixSpace = new RegExp( " " , "g" );
 	wFP = wFP.replace( fixSpace , String.fromCharCode(92) + " " );
 	wFP = wFP.replace( ")" , String.fromCharCode(92) + ")" );
 	wFP = wFP.replace( "(" , String.fromCharCode(92) + "(" );
