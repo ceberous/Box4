@@ -87,12 +87,13 @@ module.exports.LOCAL_MEDIA = {
 		SPECIFIC_EPISODE: "LOCAL_MEDIA.CONFIG.LOCAL_MEDIA.LIVE.SPECIFIC_EPISODE" ,
 	} ,
 	NOW_PLAYING: {
+		"options": "LOCAL_MEDIA.NOW_PLAYING.OPTIONS" ,
 		"global": "LOCAL_MEDIA.NOW_PLAYING" ,
-		"odyssey": "LOCAL_MEDIA.GENRES.odyssey.NOW_PLAYING" ,
-		"tvshows": "LOCAL_MEDIA.GENRES.tvshows.NOW_PLAYING" ,
-		"movies": "LOCAL_MEDIA.GENRES.movies.NOW_PLAYING" ,
-		"music": "LOCAL_MEDIA.GENRES.music.NOW_PLAYING" ,
-		"audiobooks": "LOCAL_MEDIA.GENRES.audiobooks.NOW_PLAYING" ,
+		"odyssey": "LOCAL_MEDIA.NOW_PLAYING.GENRES.odyssey." ,
+		"tvshows": "LOCAL_MEDIA.NOW_PLAYING.GENRES.tvshows." ,
+		"movies": "LOCAL_MEDIA.NOW_PLAYING.GENRES.movies." ,
+		"music": "LOCAL_MEDIA.NOW_PLAYING.GENRES.music." ,
+		"audiobooks": "LOCAL_MEDIA.NOW_PLAYING.GENRES.audiobooks." ,
 	} ,
 	PASSIVE: {
 		BASE: "HARD_DRIVE.PASSIVE." ,

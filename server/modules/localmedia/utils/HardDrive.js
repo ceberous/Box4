@@ -22,11 +22,11 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 	return new Promise( function( resolve , reject ) {
 		try {
 			//var findEventPathCMD = exec( "sudo blkid" , { silent: true , async: false } );
-			var findEventPathCMD = exec( "ls -l /dev/disk/by-uuid" , { silent: true , async: false } );
-			if ( findEventPathCMD.stderr ) { Reporter.log("error finding USB Hard Drive"); process.exit(1); }
+			// var findEventPathCMD = exec( "ls -l /dev/disk/by-uuid" , { silent: true , async: false } );
+			// if ( findEventPathCMD.stderr ) { Reporter.log("error finding USB Hard Drive"); process.exit(1); }
 
-			var wOUT = findEventPathCMD.stdout.split("\n");
-			for ( var i = 0; i < wOUT.length; ++i ) {
+			// var wOUT = findEventPathCMD.stdout.split("\n");
+			// for ( var i = 0; i < wOUT.length; ++i ) {
 
 				// var uuid = wOUT[ i ].indexOf( "UUID=" );
 				// if ( uuid === -1 ) { continue; }
@@ -38,13 +38,14 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 
 				// if ( uuid !== wUUID ) { continue; }
 
-				var uuid = wOUT[ i ].split( " " );
-				if ( !uuid[ 8 ] ) { continue; }
-				if ( uuid[ 8 ] !== wUUID ) { continue; }				
-				uuid = uuid[ 8 ];
+				// var uuid = wOUT[ i ].split( " " );
+				// if ( !uuid[ 8 ] ) { continue; }
+				// if ( uuid[ 8 ] !== wUUID ) { continue; }
+				// uuid = uuid[ 8 ];
+				// console.log( uuid );
 				var q1 = getPath();
 				q1 = q1.replace( "x20" , " " )
-				
+				console.log( q1 );
 				if ( q1 === "" ) {
 
 					Reporter.log( "USB Drive Plugged IN , but unmounted" );
@@ -72,8 +73,8 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 				//Reporter.log( q1 )
 				resolve( q1 );
 				return;
-			}
-			resolve();
+			//}
+			//resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
@@ -95,7 +96,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			const total_genres = Object.keys( x1 ).length;
 			await Redis.keySetMulti([
 				[ "set" , RC.BASE + "GENRES" + ".TOTAL" , total_genres ] ,
-				[ "set" , RC.BASE + "GENRES" + ".CURRENT_INDEX" , 0 ] ,
+				[ "set" , RC.BASE + "GENRES" + ".INDEX" , 0 ] ,
 			]);			
 			for ( genre in x1 ) { // Each Genre
 				//Reporter.log( "\n--> " + genre );					
@@ -103,8 +104,8 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 				const total_shows = Object.keys( x1[ genre ] ).length;
 				if ( total_shows < 1 ) { continue; }
 				await Redis.keySetMulti([
-					[ "set" , RC.BASE + "GENRES." + genre + ".TOTAL_SHOWS" , total_shows ] ,
-					[ "set" , RC.BASE + "GENRES." + genre + ".CURRENT_INDEX" , 0 ] ,
+					[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS.TOTAL" , total_shows ] ,
+					[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS.INDEX" , 0 ] ,
 				]);
 				await Redis.listSetFromArray( RC.BASE + "GENRES." + genre + ".SHOWS" , Object.keys( x1[ genre ] ) );
 
@@ -114,26 +115,26 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					const total_seasons = Object.keys( x1[ genre ][ show ] ).length;
 					if ( total_seasons < 1 ) { continue; }
 					await Redis.keySetMulti([
-						[ "set" , RC.BASE + "GENRES." + genre + "." + show + ".TOTAL_SEASONS" , total_seasons ] ,
-						[ "set" , RC.BASE + "GENRES." + genre + "." + show + ".CURRENT_INDEX" , 0 ] ,
+						[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".SEASONS.TOTAL" , total_seasons ] ,
+						[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".SEASONS.INDEX" , 0 ] ,
 					]);
+					await Redis.listSetFromArray( RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".SEASONS" , Array.apply( null , Array( total_seasons ) ).map(function ( x , i ) { return i; }) );
 
 					for ( var season = 0; season < x1[ genre ][ show ].length; ++season ) { // Each 'Season'
 						//Reporter.log( "\t\t--> " + ( i + 1 ).toString() );
 
-						const season_details_part = "GENRES."  + genre + ".SHOWS." + show + ".SEASON." + ( season + 1 ).toString();
+						const season_details_part = "GENRES."  + genre + ".SHOWS." + show + ".SEASONS." + season.toString();
 						const season_key = RC.BASE + season_details_part;
 						const episode_paths = x1[ genre ][ show ][ season ].map( x => x.path );
 						await Redis.keySetMulti([
-							[ "set" , season_key + ".TOTAL_EPISODES" , episode_paths.length ] ,
-							[ "set" , season_key + ".CURRENT_INDEX" , 0 ] ,
+							[ "set" , season_key + ".EPISODES.TOTAL" , episode_paths.length ] ,
+							[ "set" , season_key + ".EPISODES.INDEX" , 0 ] ,
 						]);
-						await Redis.listSetFromArray( season_key , episode_paths );
 						
 						for ( var j = 0; j < x1[ genre ][ show ][ season ].length; ++j ) {
 							//Reporter.log( "\t\t\t--> " + x1[ genre ][ show ][ season ][ j ].name );
 							//Reporter.log( "\t\t\t--> " + x1[ genre ][ show ][ season ][ j ].path );
-							const passive_episode_key =  RC.PASSIVE.BASE + season_details_part + ".EPISODE." + ( j + 1 ).toString();
+							const passive_episode_key =  RC.PASSIVE.BASE + season_details_part + ".EPISODES." + j.toString();
 							//const duration = await GetDuration( x1[ genre ][ show ][ season ][ j ].path );
 							await Redis.hashSetMulti( passive_episode_key ,
 								"name" , x1[ genre ][ show ][ season ][ j ].name ,
@@ -147,8 +148,10 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 								"current_time" , 0 ,
 								"remaining_time" , 0 ,
 								"three_percent" , 0 ,
-								"duration" , 0
+								"duration" , 0  ,
+								"passive_episode_key" , passive_episode_key
 							);
+							await Redis.listRPUSH( season_key + ".EPISODES" , passive_episode_key );
 						}
 
 					}

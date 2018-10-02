@@ -65,7 +65,7 @@ function PLAY( wOptions ) {
 		try {
 			Reporter.log( "play()" );
 			let FinalNowPlaying = await Calculate.next( wOptions );
-			//if ( Array.isArray( FinalNowPlaying ) ) { FinalNowPlaying = FinalNowPlaying[ 0 ]; }
+			console.log( FinalNowPlaying );
 			let JSON_FNP = JSON.stringify( FinalNowPlaying );
 			await Redis.keySet( RC.NOW_PLAYING.global , JSON_FNP );
 			await LOCAL_MPLAY_WRAP( FinalNowPlaying );
@@ -77,9 +77,10 @@ function PLAY( wOptions ) {
 module.exports.play = PLAY;
 
 function PAUSE( wOptions ) {
-	return new Promise( function( resolve , reject ) {
+	return new Promise( async function( resolve , reject ) {
 		try {
 			Reporter.log( "pause()" );
+			await MPLAYER_MAN.pause();
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -115,8 +116,8 @@ function NEXT( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			Reporter.log( "next()" );
-			await STOP();
-			await Calculate.skip();
+			const cur_time = MPLAYER_MAN.silentStop();
+			await UpdateLastPlayedTime( cur_time , true );
 			await PLAY();
 			resolve();
 		}

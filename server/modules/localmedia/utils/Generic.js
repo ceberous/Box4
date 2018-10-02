@@ -23,26 +23,31 @@ function ADVANCE_NEXT_SHOW_POSITION( wCurrentIndex ) {
 }
 module.exports.advanceNextShow = ADVANCE_NEXT_SHOW_POSITION;
 
-function UPDATE_LAST_PLAYED_TIME( wTime ) {
+function UPDATE_LAST_PLAYED_TIME( wTime , wSkipped ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			if ( !wTime ) { resolve(); return; }
-			console.log( "Time = " + wTime.toString() );
-			
 			let now_playing = await Redis.keyGetDeJSON( RC.NOW_PLAYING.global );
-			console.log( now_playing );
 			if ( !now_playing ) { resolve(); return; }
 			//console.log( "wTime === " + wTime.toString() );
 			now_playing.current_time = wTime;
 			now_playing.remaining_time = ( now_playing.duration - now_playing.current_time );
-			await Redis.hashSetMulti( now_playing.episode_passive_key , 
+			// console.log( "UpdatingLastPlayedTime()" );
+			// console.log( now_playing );
+			await Redis.hashSetMulti( now_playing.passive_episode_key , 
 				"current_time" , now_playing.current_time ,
 				"remaining_time" , now_playing.remaining_time
 			);
 			if ( now_playing.current_time >= now_playing.three_percent ) {
 				now_playing.completed = true;
-				await Redis.hashSetMulti( now_playing.episode_passive_key , "completed" , true );
+				await Redis.hashSetMulti( now_playing.passive_episode_key , "completed" , true );
 			}
+
+			if ( wSkipped ) {
+				now_playing.skipped = true;
+				await Redis.hashSetMulti( now_playing.passive_episode_key , "skipped" , true );
+			}
+
 			//console.log( now_playing );
 			const x1 = JSON.stringify( now_playing );
 			await Redis.keySetMulti( [ [ "set" , RC.NOW_PLAYING[ now_playing.genre ] , x1 ] ,  [ "set" , RC.NOW_PLAYING.global , x1 ] ]);
