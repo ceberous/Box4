@@ -152,6 +152,8 @@ function PREVIOUS( wOptions ) {
 				current.three_percent = Math.floor( ( current.duration - ( current.duration * 0.025 ) ) );
 			}
 
+			console.log( current );
+
 			let episode_key;
 			let season_index;
 			let episode_index;
@@ -173,7 +175,8 @@ function PREVIOUS( wOptions ) {
 
 				let key = "LOCAL_MEDIA.GENRES." + current.genre + ".SHOWS." + current.show + ".SEASONS." + season_index.toString() + ".EPISODES";
 				console.log( key );
-				episode_key = await Redis.listGetByIndex( key , episode_index );	
+				await Redis.keySet( key + ".INDEX" , episode_index );
+				episode_key = await Redis.listGetByIndex( key , episode_index );
 				
 			}
 			else {
