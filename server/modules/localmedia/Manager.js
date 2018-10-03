@@ -132,6 +132,9 @@ function PREVIOUS( wOptions ) {
 			Reporter.log( "previous()" );
 			await STOP();
 			const previous = await Calculate.previous();
+			console.log( previous );
+			let JSON_FNP = JSON.stringify( previous );
+			await Redis.keySet( RC.NOW_PLAYING.global , JSON_FNP );			
 			await LOCAL_MPLAY_WRAP( previous );
 			resolve();
 		}
