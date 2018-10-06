@@ -2,6 +2,7 @@ const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice(
 const path = require( "path" );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.LOCAL_MEDIA;
+const GetDuration = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).getDuration;
 
 function ADVANCE_NEXT_SHOW_POSITION( wCurrentIndex ) {
 	return new Promise( async function( resolve , reject ) {
@@ -34,7 +35,7 @@ function UPDATE_LAST_PLAYED_TIME( wTime , wSkipped ) {
 			now_playing.remaining_time = ( now_playing.duration - now_playing.current_time );
 			// console.log( "UpdatingLastPlayedTime()" );
 			// console.log( now_playing );
-			await Redis.hashSetMulti( now_playing.passive_episode_key , 
+			await Redis.hashSetMulti( now_playing.passive_episode_key ,
 				"current_time" , now_playing.current_time ,
 				"remaining_time" , now_playing.remaining_time
 			);
@@ -104,3 +105,35 @@ function GET_LAST_PLAYED_IN_GENRE( wGenre ) {
 	});
 }
 module.exports.getLastPlayedInGenre = GET_LAST_PLAYED_IN_GENRE;
+
+function GET_CURRENT_SHOW_IN_GENRE( wGenre ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			// Show Index
+			let show_index_key = "LOCAL_MEDIA.GENRES." + wGenre + ".SHOWS.INDEX";
+			let show_index = await Redis.keyGet( show_index_key );
+			console.log( "Current Show Index = " + show_index.toString() );
+
+			// Show Key
+			let show_key = "LOCAL_MEDIA.GENRES." + wGenre + ".SHOWS";
+			let show_name = await Redis.listGetByIndex( show_key , show_index );
+			console.log( "Current Show = " + show_name );
+			resolve( show_name );
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.getCurrentShowInGenre = GET_CURRENT_SHOW_IN_GENRE;
+
+
+function UPDATE_DURATION( wEpisode ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			wEpisode.duration = wEpisode.remaining_time = await GetDuration( wEpisode.fp );
+			wEpisode.three_percent = Math.floor( ( wEpisode.duration - ( wEpisode.duration * 0.025 ) ) );
+			resolve( wEpisode );
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.updateDuration = UPDATE_DURATION;

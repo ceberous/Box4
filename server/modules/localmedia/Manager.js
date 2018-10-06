@@ -30,7 +30,7 @@ function INITIALIZE() {
 				await Sleep( 1000 );
 				// Continue if Config Says were Still Active
 				const wAS = await Redis.keyGet( "LAST_SS.ACTIVE_STATE" );
-				if ( wAS ) { 
+				if ( wAS ) {
 					if ( wAS === "LOCAL_MEDIA" ) { PLAY(); }
 					else { Reporter.log( "WE WERE TOLD TO QUIT" ); }
 				}
@@ -105,6 +105,7 @@ function STOP( wOptions ) {
 			Reporter.log( "stop()" );
 			const cur_time = MPLAYER_MAN.silentStop();
 			await UpdateLastPlayedTime( cur_time );
+			await Sleep( 1000 );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -134,7 +135,7 @@ function PREVIOUS( wOptions ) {
 			const previous = await Calculate.previous();
 			console.log( previous );
 			let JSON_FNP = JSON.stringify( previous );
-			await Redis.keySet( RC.NOW_PLAYING.global , JSON_FNP );			
+			await Redis.keySet( RC.NOW_PLAYING.global , JSON_FNP );
 			await LOCAL_MPLAY_WRAP( previous );
 			resolve();
 		}

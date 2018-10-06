@@ -8,7 +8,7 @@ const LocalMediaManager = require( path.join( MainFP , "server" , "modules" , "l
 
 const default_config = {
 	genre: "tvshows" ,
-	advance_show: "true" , 
+	advance_show: "true" ,
 	specific_show: "false" ,
 	specific_season: "false" ,
 	specific_episode: "false" ,
@@ -21,7 +21,7 @@ function wStart( wOptions ) {
 				if ( wOptions.genre ) {
 					final_options = wOptions;
 				}
-			}		
+			}
 			await Redis.keySetMulti( [
 				[ "set" , RC.CONFIG.GENRE , final_options.genre ] ,
 				[ "set" , RC.CONFIG.ADVANCE_SHOW , final_options.advance_show ] ,
@@ -34,10 +34,10 @@ function wStart( wOptions ) {
 		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
 }
-function wPause() { 
+function wPause() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await LocalMediaManager.pause(); 
+			await LocalMediaManager.pause();
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

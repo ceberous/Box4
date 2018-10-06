@@ -1,9 +1,9 @@
-// console.log = function( msg ){ 
+// console.log = function( msg ){
 // 	if ( msg === null ) {
-// 		console.trace(); 
+// 		console.trace();
 // 	}
-// 	else if ( msg === "null" ) { 
-// 		console.trace(); 
+// 	else if ( msg === "null" ) {
+// 		console.trace();
 // 	}
 // };
 
@@ -68,7 +68,7 @@ const pidusage = require( "pidusage" );
 	// Personal
 	let personal = require( "./personal.js" );
 	module.exports.personal = personal;
-	
+
 	// Constants
 	let constants = require( "./server/constants/generic.js" );
 	module.exports.constants = constants;
@@ -76,10 +76,10 @@ const pidusage = require( "pidusage" );
 	// Emitter
 	let emitter = new ( require( "events" ).EventEmitter );
 	module.exports.emitter = emitter;
-	
+
 	// Redis
 	let rc = require( "./server/constants/redis.js" );
-	module.exports.rc = rc;	
+	module.exports.rc = rc;
 	let redis = new RMU({
 		databaseNumber: config.redis.connection.database_number ,
 		port: config.redis.connection.port ,
@@ -93,7 +93,7 @@ const pidusage = require( "pidusage" );
 	// Initialize Reporting / Logging
 	await require( "./server/utils/Reporter.js" ).initialize();
 
-	await require( "./server/utils/Config.js" ).saveConfigToRedis();	
+	await require( "./server/utils/Config.js" ).saveConfigToRedis();
 
 	// State Manger
 	let StateManager = await require("./server/StateManager.js");
@@ -106,19 +106,19 @@ const pidusage = require( "pidusage" );
 	express_server = http.createServer( express_app );
 
 	// WebSocket
-	let web_socket_manager = require( "./server/WebSocketManager.js" );	
+	let web_socket_manager = require( "./server/WebSocketManager.js" );
 	let web_socket_server = new WebSocket.Server({ server: express_server });
 	web_socket_server.on( "connection" , web_socket_manager.onConnection );
 	module.exports.wss = web_socket_server;
 
 	express_server.listen( port , function() {
 		require( "./server/utils/Reporter.js" ).log(
-			"\n\tServer Started on :" + 
+			"\n\tServer Started on :" +
 			"\n\thttp://" + localIP + ":" + port +
-			"\n\t\t or" + 
+			"\n\t\t or" +
 			"\n\thttp://localhost:" + port
 		);
-	});	
+	});
 
 	process.on( "unhandledRejection" , async function( reason , p ) {
 		await require( "./server/utils/Reporter.js" ).error( reason );
@@ -132,6 +132,6 @@ const pidusage = require( "pidusage" );
 		await require( "./server/utils/Reporter.js" ).log( "\nShutting Down" );
 		//await MyBox4.buttons.press( 6 , {} , true );
 		process.exit( 1 );
-	});	
+	});
 
 })();

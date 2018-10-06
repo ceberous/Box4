@@ -20,7 +20,7 @@ function CURRENT_STATE_STOP() {
 				try { delete require.cache[ CURRENT_STATE ]; }
 				catch ( e ) {}
 				CURRENT_STATE = null;
-			}		
+			}
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -28,7 +28,7 @@ function CURRENT_STATE_STOP() {
 }
 
 async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
-	
+
 	Reporter.log( "PRESS_BUTTON( " + wButtonNum.toString() + " )" );
 	const wBTN_I = parseInt( wButtonNum );
 	if ( wBTN_I > 22 || wBTN_I < 0 ) { return "out of range"; }
@@ -67,10 +67,10 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 					if ( wOptions.mode === cached_mode ) { return; }
 				}
 			}
-			else { return; }	
+			else { return; }
 		}
 	}}}
-	
+
 	// Further Cleanup
 	await CURRENT_STATE_STOP();
 	require( "./utils/CEC_USB.js" ).activate();

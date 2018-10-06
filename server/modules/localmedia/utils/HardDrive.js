@@ -18,7 +18,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 		var findMountPoint = exec( findMountPointCMD , { silent:true , async: false } );
 		if ( findMountPoint.stderr ) { Reporter.log("error finding USB Hard Drive"); process.exit(1); }
 		return findMountPoint.stdout.trim();
-	}	
+	}
 	return new Promise( function( resolve , reject ) {
 		try {
 			//var findEventPathCMD = exec( "sudo blkid" , { silent: true , async: false } );
@@ -84,7 +84,7 @@ module.exports.findAndMountUSB_From_UUID = FIND_USB_STORAGE_PATH_FROM_UUID;
 function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			
+
 			// Scan Mount_Point
 			const x1 = require( "./ScanDirectory.js" ).scan( wMountPoint );
 			await Redis.keySet( RC.BASE + "SKELETON" , JSON.stringify( x1 ) );
@@ -97,9 +97,9 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 			await Redis.keySetMulti([
 				[ "set" , RC.BASE + "GENRES" + ".TOTAL" , total_genres ] ,
 				[ "set" , RC.BASE + "GENRES" + ".INDEX" , 0 ] ,
-			]);			
+			]);
 			for ( genre in x1 ) { // Each Genre
-				//Reporter.log( "\n--> " + genre );					
+				//Reporter.log( "\n--> " + genre );
 
 				const total_shows = Object.keys( x1[ genre ] ).length;
 				if ( total_shows < 1 ) { continue; }
@@ -111,7 +111,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 
 				for ( show in x1[ genre ] ) { // Each 'Show'
 					//Reporter.log( "\t--> " + show );
-
+					let show_key = RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".EPISODE_LIST";
 					const total_seasons = Object.keys( x1[ genre ][ show ] ).length;
 					if ( total_seasons < 1 ) { continue; }
 					await Redis.keySetMulti([
@@ -130,7 +130,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 							[ "set" , season_key + ".EPISODES.TOTAL" , episode_paths.length ] ,
 							[ "set" , season_key + ".EPISODES.INDEX" , 0 ] ,
 						]);
-						
+
 						for ( var j = 0; j < x1[ genre ][ show ][ season ].length; ++j ) {
 							//Reporter.log( "\t\t\t--> " + x1[ genre ][ show ][ season ][ j ].name );
 							//Reporter.log( "\t\t\t--> " + x1[ genre ][ show ][ season ][ j ].path );
@@ -138,8 +138,8 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 							//const duration = await GetDuration( x1[ genre ][ show ][ season ][ j ].path );
 							await Redis.hashSetMulti( passive_episode_key ,
 								"name" , x1[ genre ][ show ][ season ][ j ].name ,
-								"genre" , genre , 
-								"show" , show , 
+								"genre" , genre ,
+								"show" , show ,
 								"season_index" , season ,
 								"episode_index" , j ,
 								"fp" , x1[ genre ][ show ][ season ][ j ].path ,
@@ -151,7 +151,8 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 								"duration" , 0  ,
 								"passive_episode_key" , passive_episode_key
 							);
-							await Redis.listRPUSH( season_key + ".EPISODES" , passive_episode_key );
+							//await Redis.listRPUSH( season_key + ".EPISODES" , passive_episode_key );
+							await Redis.listRPUSH( show_key , passive_episode_key );
 						}
 
 					}
@@ -200,5 +201,5 @@ function REINITIALIZE_MOUNT_POINT() {
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
 	});
-} 
+}
 module.exports.reinitializeMountPoint = REINITIALIZE_MOUNT_POINT;
