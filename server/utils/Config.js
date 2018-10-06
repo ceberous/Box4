@@ -3,7 +3,7 @@ const path = require( "path" );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 
 
-const RESETS =  [ "YOUTUBE.LIVE.LATEST*"  /* , "YOUTUBE.STANDARD.LATEST*" */ , "YOUTUBE.NP_SESSION*" , "HARD_DRIVE.*" , "LOCAL_MEDIA.*" ];
+const RESETS =  [ "YOUTUBE.LIVE.LATEST*"  /* , "YOUTUBE.STANDARD.LATEST*" */ , "YOUTUBE.NP_SESSION*" , /*"HARD_DRIVE.*" , "LOCAL_MEDIA.*"*/ ];
 
 var SET_KEYS = {
 	"CONFIG.ARRIVED_HOME": "false" ,
@@ -51,9 +51,9 @@ function SAVE_CONFIG_TO_REDIS() {
 			if ( RESETS ) {
 				await Redis.deleteMultiplePatterns( RESETS );
 			}
-			
+
 			var wMulti = [];
-			
+
 			// 2.) Initialize Status of Everything to Offline
 			const StatusKeys = Redis.c.STATUS;
 			for ( var i = 0; i < StatusKeys.length; ++i ) {
@@ -80,7 +80,7 @@ function SAVE_CONFIG_TO_REDIS() {
 					}
 				}
 			}
-			
+
 			//console.log( wMulti );
 			await Redis.keySetMulti( wMulti );
 
@@ -94,7 +94,7 @@ module.exports.saveConfigToRedis = SAVE_CONFIG_TO_REDIS;
 
 function ADD_STATE_AND_SESSION_FILE_PATHS( wConfig ) {
 	for ( var button in wConfig ) {
-		if ( wConfig[ button ][ "label" ] ) { continue; }		
+		if ( wConfig[ button ][ "label" ] ) { continue; }
 		let indexing_type;
 		if ( wConfig[ button ][ "state" ] ) { indexing_type = "state"; }
 		else if ( wConfig[ button ][ "session" ] ) { indexing_type = "session"; }

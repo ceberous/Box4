@@ -105,7 +105,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 				if ( total_shows < 1 ) { continue; }
 				await Redis.keySetMulti([
 					[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS.TOTAL" , total_shows ] ,
-					[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS.INDEX" , 0 ] ,
+					[ "setnx" , RC.BASE + "GENRES." + genre + ".SHOWS.INDEX" , 0 ] ,
 				]);
 				await Redis.listSetFromArray( RC.BASE + "GENRES." + genre + ".SHOWS" , Object.keys( x1[ genre ] ) );
 
@@ -116,7 +116,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 					if ( total_seasons < 1 ) { continue; }
 					await Redis.keySetMulti([
 						[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".SEASONS.TOTAL" , total_seasons ] ,
-						[ "set" , RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".SEASONS.INDEX" , 0 ] ,
+						[ "setnx" , RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".SEASONS.INDEX" , 0 ] ,
 					]);
 					await Redis.listSetFromArray( RC.BASE + "GENRES." + genre + ".SHOWS." + show + ".SEASONS" , Array.apply( null , Array( total_seasons ) ).map(function ( x , i ) { return i; }) );
 
@@ -128,7 +128,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 						const episode_paths = x1[ genre ][ show ][ season ].map( x => x.path );
 						await Redis.keySetMulti([
 							[ "set" , season_key + ".EPISODES.TOTAL" , episode_paths.length ] ,
-							[ "set" , season_key + ".EPISODES.INDEX" , 0 ] ,
+							[ "setnx" , season_key + ".EPISODES.INDEX" , 0 ] ,
 						]);
 
 						for ( var j = 0; j < x1[ genre ][ show ][ season ].length; ++j ) {
@@ -136,21 +136,36 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 							//Reporter.log( "\t\t\t--> " + x1[ genre ][ show ][ season ][ j ].path );
 							const passive_episode_key =  RC.PASSIVE.BASE + season_details_part + ".EPISODES." + j.toString();
 							//const duration = await GetDuration( x1[ genre ][ show ][ season ][ j ].path );
-							await Redis.hashSetMulti( passive_episode_key ,
-								"name" , x1[ genre ][ show ][ season ][ j ].name ,
-								"genre" , genre ,
-								"show" , show ,
-								"season_index" , season ,
-								"episode_index" , j ,
-								"fp" , x1[ genre ][ show ][ season ][ j ].path ,
-								"completed" , false ,
-								"skipped" , false ,
-								"current_time" , 0 ,
-								"remaining_time" , 0 ,
-								"three_percent" , 0 ,
-								"duration" , 0  ,
-								"passive_episode_key" , passive_episode_key
-							);
+							// await Redis.hashSetMulti( passive_episode_key ,
+							// 	"name" , x1[ genre ][ show ][ season ][ j ].name ,
+							// 	"genre" , genre ,
+							// 	"show" , show ,
+							// 	"season_index" , season ,
+							// 	"episode_index" , j ,
+							// 	"fp" , x1[ genre ][ show ][ season ][ j ].path ,
+							// 	"completed" , false ,
+							// 	"skipped" , false ,
+							// 	"current_time" , 0 ,
+							// 	"remaining_time" , 0 ,
+							// 	"three_percent" , 0 ,
+							// 	"duration" , 0  ,
+							// 	"passive_episode_key" , passive_episode_key
+							// );
+							await Redis.keySetMulti([
+								[ "hsetnx" , passive_episode_key , "name" , x1[ genre ][ show ][ season ][ j ].name ] ,
+								[ "hsetnx" , passive_episode_key , "genre" , genre ] ,
+								[ "hsetnx" , passive_episode_key , "show" , show ] ,
+								[ "hsetnx" , passive_episode_key , "season_index" , season ] ,
+								[ "hsetnx" , passive_episode_key , "episode_index" , j ] ,
+								[ "hsetnx" , passive_episode_key , "fp" , x1[ genre ][ show ][ season ][ j ].path ] ,
+								[ "hsetnx" , passive_episode_key , "completed" , false ] ,
+								[ "hsetnx" , passive_episode_key , "skipped" , false ] ,
+								[ "hsetnx" , passive_episode_key , "current_time" , 0 ] ,
+								[ "hsetnx" , passive_episode_key , "remaining_time" , 0 ] ,
+								[ "hsetnx" , passive_episode_key , "three_percent" , 0 ] ,
+								[ "hsetnx" , passive_episode_key , "duration" , 0 ] ,
+								[ "hsetnx" , passive_episode_key , "passive_episode_key" , passive_episode_key ] ,
+							]);
 							//await Redis.listRPUSH( season_key + ".EPISODES" , passive_episode_key );
 							await Redis.listRPUSH( show_key , passive_episode_key );
 						}
@@ -170,34 +185,43 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 function REINITIALIZE_MOUNT_POINT() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			// 1.) Lookup mount point to see if valid , else build reference
-			var wLiveMountPoint = await Redis.keyGet( RC.MOUNT_POINT );
-			if ( !wLiveMountPoint ) {
+			// 1.) Lookup svaed point
+			let saved_mount_point = await Redis.keyGet( RC.MOUNT_POINT );
+			let current_uuid_mount_point;
+			const MOUNT_CONFIG = await Redis.keyGetDeJSON( "CONFIG.MEDIA_MOUNT_POINT" );
+			if ( MOUNT_CONFIG[ "UUID" ] ) {
+				Reporter.log( "UUID: " + MOUNT_CONFIG[ "UUID" ] );
+				current_uuid_mount_point = await FIND_USB_STORAGE_PATH_FROM_UUID( MOUNT_CONFIG[ "UUID" ] );
+				if ( !current_uuid_mount_point ) { Reporter.log( "Couldn't Locate Mount Point" ); resolve( "bad_mount_point" ); return; }
+				current_uuid_mount_point = current_uuid_mount_point + "/MEDIA_MANAGER/";
+			}
+			else if ( MOUNT_CONFIG[ "LOCAL_PATH" ] ) {
+				Reporter.log( "LOCAL_PATH: " + MOUNT_CONFIG[ "LOCAL_PATH" ] );
+				current_uuid_mount_point = MOUNT_CONFIG[ "LOCAL_PATH" ];
+			}
+			else { Reporter.log( "We Were Not Told Where to Find any Local Media" ); resolve( "no_local_media" ); return; }
+
+			if ( saved_mount_point ) {
+				if ( saved_mount_point === current_uuid_mount_point ) {
+					Reporter.log( "Current Path Matches Saved" );
+					resolve( saved_mount_point ); return;
+				}
+			}
+			else {
 				Reporter.log( "No Media Reference Found , Trying to Rebuild from --> " );
-				const MOUNT_CONFIG = await Redis.keyGetDeJSON( "CONFIG.MEDIA_MOUNT_POINT" );
-				if ( MOUNT_CONFIG[ "UUID" ] ) {
-					Reporter.log( "UUID: " + MOUNT_CONFIG[ "UUID" ] );
-					wLiveMountPoint = await FIND_USB_STORAGE_PATH_FROM_UUID( MOUNT_CONFIG[ "UUID" ] );
-					if ( !wLiveMountPoint ) { Reporter.log( "Couldn't Locate Mount Point" ); resolve( "bad_mount_point" ); return; }
-					wLiveMountPoint = wLiveMountPoint + "/MEDIA_MANAGER/";
-				}
-				else if ( MOUNT_CONFIG[ "LOCAL_PATH" ] ) {
-					Reporter.log( "LOCAL_PATH: " + MOUNT_CONFIG[ "LOCAL_PATH" ] );
-					wLiveMountPoint = MOUNT_CONFIG[ "LOCAL_PATH" ];
-				}
-				else { Reporter.log( "We Were Not Told Where to Find any Local Media" ); resolve( "no_local_media" ); return; }
-				// Reporter.log( wLiveMountPoint );
-				// const dirExists = FS.existsSync( wLiveMountPoint );
+
+				// Reporter.log( saved_mount_point );
+				// const dirExists = FS.existsSync( saved_mount_point );
 				// if ( !dirExists ) { Reporter.log( "Local Media Folder Doesn't Exist" ); resolve( "no_local_media" ); return; }
-				//const isEmpty = await exfs.isEmpty( wLiveMountPoint );
+				//const isEmpty = await exfs.isEmpty( saved_mount_point );
 				//if ( isEmpty ) { Reporter.log( "Local Media Folder is Empty" ); resolve( "no_local_media" ); return; }
 				// Cleanse and Prepare Mount_Point
-				await Redis.deleteMultiplePatterns( [ RC.BASE + "*" , "HARD_DRIVE.*" , "LAST_SS.LOCAL_MEDIA.*" ] );
+				await Redis.deleteMultiplePatterns( [ RC.BASE + "*" , /*"HARD_DRIVE.*"*/ ] );
 				//await wSleep( 2000 );
-				await REBUILD_REDIS_MOUNT_POINT_REFERENCE( wLiveMountPoint );
-				await Redis.keySet( RC.MOUNT_POINT , wLiveMountPoint );
+				await REBUILD_REDIS_MOUNT_POINT_REFERENCE( current_uuid_mount_point );
+				await Redis.keySet( RC.MOUNT_POINT , current_uuid_mount_point );
 			}
-			resolve( wLiveMountPoint );
+			resolve( saved_mount_point );
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
 	});

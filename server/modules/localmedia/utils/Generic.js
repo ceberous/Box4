@@ -109,15 +109,11 @@ module.exports.getLastPlayedInGenre = GET_LAST_PLAYED_IN_GENRE;
 function GET_CURRENT_SHOW_IN_GENRE( wGenre ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			// Show Index
 			let show_index_key = "LOCAL_MEDIA.GENRES." + wGenre + ".SHOWS.INDEX";
 			let show_index = await Redis.keyGet( show_index_key );
-			console.log( "Current Show Index = " + show_index.toString() );
 
-			// Show Key
 			let show_key = "LOCAL_MEDIA.GENRES." + wGenre + ".SHOWS";
 			let show_name = await Redis.listGetByIndex( show_key , show_index );
-			console.log( "Current Show = " + show_name );
 			resolve( show_name );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -125,12 +121,66 @@ function GET_CURRENT_SHOW_IN_GENRE( wGenre ) {
 }
 module.exports.getCurrentShowInGenre = GET_CURRENT_SHOW_IN_GENRE;
 
+function GET_CURRENT_SEASON_IN_SHOW( wGenre , wShow ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			let season_index = await Redis.keyGet( "LOCAL_MEDIA.GENRES." + wGenre + ".SHOWS." + wShow + ".SEASONS.INDEX" );
+			resolve( season_index );
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.getCurrentSeasonInShow = GET_CURRENT_SEASON_IN_SHOW;
+
+function GET_CURRENT_EPISODE_IN_SEASON( wGenre , wShow , wSeason ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			let episode_index = await Redis.keyGet( "LOCAL_MEDIA.GENRES." + wGenre + ".SHOWS." + wShow + ".SEASONS." + wSeason.toString() + ".EPISODES.INDEX" )
+			resolve( episode_index );
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.getCurrentEpisodeInSeason = GET_CURRENT_EPISODE_IN_SEASON;
+
+function GET_CURRENT_EPISODE_IN_SEASON( wGenre , wShow , wSeason ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			let episode_index = await Redis.keyGet( "LOCAL_MEDIA.GENRES." + wGenre + ".SHOWS." + wShow + ".SEASONS." + wSeason.toString() + ".EPISODES.INDEX" )
+			resolve( episode_index );
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.getCurrentEpisodeInSeason = GET_CURRENT_EPISODE_IN_SEASON;
+
+function GET_CURRENT_EPISODE_IN_GENRE( wGenre ) {
+	return new Promise( async function( resolve , reject ) {
+		try {
+			if ( !wGenre ) { resolve( [ undefined  ,undefined ] ); return; }
+			//console.log( wGenre );
+			let show = await GET_CURRENT_SHOW_IN_GENRE( wGenre );
+			//console.log( show );
+			let season_index = await GET_CURRENT_SEASON_IN_SHOW( wGenre , show );
+			//console.log( season_index );
+			let episode_index = await GET_CURRENT_EPISODE_IN_SEASON( wGenre , show , season_index );
+			//console.log( episode_index );
+			let key = RC.PASSIVE.BASE + "GENRES." + wGenre + ".SHOWS." + show + ".SEASONS." + season_index.toString() + ".EPISODES." + episode_index.toString();
+			//console.log( key );
+			let episode = await Redis.hashGetAll( key );
+			resolve( [ episode , key ] );
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.getCurrentEpisodeInGenre = GET_CURRENT_EPISODE_IN_GENRE;
 
 function UPDATE_DURATION( wEpisode ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			wEpisode.duration = wEpisode.remaining_time = await GetDuration( wEpisode.fp );
 			wEpisode.three_percent = Math.floor( ( wEpisode.duration - ( wEpisode.duration * 0.025 ) ) );
+			await Redis.hashSetMulti( wEpisode.passive_episode_key , "duration" , wEpisode.duration , "three_percent" , wEpisode.three_percent );
 			resolve( wEpisode );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
