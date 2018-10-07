@@ -157,7 +157,7 @@ function REBUILD_REDIS_MOUNT_POINT_REFERENCE( wMountPoint ) {
 								[ "hsetnx" , passive_episode_key , "show" , show ] ,
 								[ "hsetnx" , passive_episode_key , "season_index" , season ] ,
 								[ "hsetnx" , passive_episode_key , "episode_index" , j ] ,
-								[ "hsetnx" , passive_episode_key , "fp" , x1[ genre ][ show ][ season ][ j ].path ] ,
+								[ "hset" , passive_episode_key , "fp" , x1[ genre ][ show ][ season ][ j ].path ] ,
 								[ "hsetnx" , passive_episode_key , "completed" , false ] ,
 								[ "hsetnx" , passive_episode_key , "skipped" , false ] ,
 								[ "hsetnx" , passive_episode_key , "current_time" , 0 ] ,
@@ -188,6 +188,7 @@ function REINITIALIZE_MOUNT_POINT() {
 			// 1.) Lookup svaed point
 			let saved_mount_point = await Redis.keyGet( RC.MOUNT_POINT );
 			let current_uuid_mount_point;
+			let need_to_rebuild = false;
 			const MOUNT_CONFIG = await Redis.keyGetDeJSON( "CONFIG.MEDIA_MOUNT_POINT" );
 			if ( MOUNT_CONFIG[ "UUID" ] ) {
 				Reporter.log( "UUID: " + MOUNT_CONFIG[ "UUID" ] );
@@ -206,10 +207,11 @@ function REINITIALIZE_MOUNT_POINT() {
 					Reporter.log( "Current Path Matches Saved" );
 					resolve( saved_mount_point ); return;
 				}
+				else { need_to_rebuild = true; }
 			}
-			else {
-				Reporter.log( "No Media Reference Found , Trying to Rebuild from --> " );
 
+			if ( need_to_rebuild ) {
+				Reporter.log( "No Media Reference Found , Trying to Rebuild from --> " );
 				// Reporter.log( saved_mount_point );
 				// const dirExists = FS.existsSync( saved_mount_point );
 				// if ( !dirExists ) { Reporter.log( "Local Media Folder Doesn't Exist" ); resolve( "no_local_media" ); return; }
@@ -221,6 +223,7 @@ function REINITIALIZE_MOUNT_POINT() {
 				await REBUILD_REDIS_MOUNT_POINT_REFERENCE( current_uuid_mount_point );
 				await Redis.keySet( RC.MOUNT_POINT , current_uuid_mount_point );
 			}
+
 			resolve( saved_mount_point );
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
