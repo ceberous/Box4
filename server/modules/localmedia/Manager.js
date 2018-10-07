@@ -28,10 +28,12 @@ function INITIALIZE() {
 			wEmitter.on( "MPlayerOVER" , async function( wResults ) {
 				await UpdateLastPlayedTime( wResults );
 				await Sleep( 1000 );
-				// Continue if Config Says were Still Active
-				const wAS = await Redis.keyGet( "LAST_SS.ACTIVE_STATE" );
-				if ( wAS ) {
-					if ( wAS === "LOCAL_MEDIA" ) { PLAY(); }
+				const wAS = await Redis.keyGet( "LAST_SS.LOCAL_MEDIA_ACTIVE" );
+				if ( wAS !== undefined ) {
+					if ( wAS === true || wAS === "true" ) {
+						// Continue if Config Says were Still Active
+						PLAY();
+					}
 					else { Reporter.log( "WE WERE TOLD TO QUIT" ); }
 				}
 				else { Reporter.log( "WE WERE TOLD TO QUIT" ); }
@@ -49,11 +51,7 @@ function LOCAL_MPLAY_WRAP( now_playing ) {
 		try {
 			if ( !now_playing ) { resolve(); return; }
 			Reporter.log( "STARTING --> MPLAYER" );
-			await MPLAYER_MAN.playFilePath( now_playing.fp );
-			if ( now_playing.current_time > 0 ) {
-				await Sleep( 1000 );
-				MPLAYER_MAN.seekSeconds( now_playing.current_time );
-			}
+			await MPLAYER_MAN.playFilePath( now_playing.fp , now_playing.current_time );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -132,7 +130,8 @@ function PREVIOUS( wOptions ) {
 		try {
 			Reporter.log( "previous()" );
 			await STOP();
-			const previous = await Calculate.previous();
+			let previous = await Calculate.previous();
+			previous.current_time = 0;
 			console.log( previous );
 			let JSON_FNP = JSON.stringify( previous );
 			await Redis.keySet( RC.NOW_PLAYING.global , JSON_FNP );
@@ -147,6 +146,7 @@ module.exports.previous	= PREVIOUS;
 function SHUTDOWN_ALL() {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			await Redis.keySet( "LAST_SS.LOCAL_MEDIA_ACTIVE" , false );
 			await STOP();
 			await Sleep( 3000 );
 			resolve();

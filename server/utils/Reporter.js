@@ -114,7 +114,7 @@ function REMOTE_LOG( wMSG ) {
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
 			if ( !msg_config ) { resolve(); return; }
 			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );
-			await reporter.log( wMSG );
+			await discordBot.createMessage( personal.discord.channels.log , wMSG );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -127,7 +127,7 @@ function REMOTE_POST( wMSG ) {
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
 			if ( !msg_config ) { resolve(); return; }
 			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );
-			await reporter.post( wMSG );
+			await discordBot.createMessage( personal.discord.channels.now_playing , wMSG );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -140,7 +140,7 @@ function REMOTE_ERROR( wMSG ) {
 			let msg_config = LOCAL_GET_MESSAGE_CUSTOM();
 			if ( !msg_config ) { resolve(); return; }
 			wMSG = REMOTE_PREFACE_MESSAGE( wMSG  , msg_config[ 0 ] );
-			await reporter.error( wMSG );
+			await discordBot.createMessage( personal.discord.channels.error , wMSG );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -149,7 +149,8 @@ function REMOTE_ERROR( wMSG ) {
 
 module.exports.remote = {
 	log: REMOTE_LOG ,
-	error: REMOTE_ERROR
+	error: REMOTE_ERROR ,
+	post: REMOTE_POST ,
 };
 
 function LOG( wMSG ) {

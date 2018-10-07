@@ -30,11 +30,11 @@ function cleanupChildPROC() {
 	if ( EMIT_OVER_EVENT ) { wEmitter.emit( "MPlayerOVER" , wPROC_TIME ); }
 	Reporter.log( "Media is Over !!!" );
 }
-function wPlayFilePath( wFP ) {
+function wPlayFilePath( wFP , wSeconds ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			EMIT_OVER_EVENT = true;
-			
+
 			process.env.mplayerFP = fixPathSpace( wFP );
 			Reporter.log( process.env.mplayerFP );
 
@@ -42,7 +42,7 @@ function wPlayFilePath( wFP ) {
 				stdio: [ "pipe" , 1 , 2 , "ipc" ], // === 2 way communication
 				//stdio: [ null , null , 2 , "ipc" ], // === 1 way , from child to parent only
 				env: process.env
-			}; 
+			};
 
 			wPROC = spawn( "node" , [ mplayerWrapperScript_FP ] , wOptions );
 			wPROC.on( "message" , function( wMessage ) {
@@ -50,9 +50,19 @@ function wPlayFilePath( wFP ) {
 				if ( wMessage.status ) { /* console.log( wMessage.status ); */  wPROC_STATUS = wMessage.status; wPROC_DURATION = Math.floor( wMessage.status.duration ); }
 				if ( wMessage.time ) { var x1 = Math.floor( wMessage.time ); wPROC_TIME = ( x1 >= 1 ) ? x1 : wPROC_TIME; }
 			});
+
+			// If Continuing
+			await Sleep( 1000 );
+			if ( wSeconds ) {
+				let intx1 = parseInt( wSeconds );
+				if ( intx1 > 0 ) {
+					wSeekSeconds( wSeconds );
+				}
+			}
+
 			// Disable Subtitles **hack**
-			await Sleep( 5000 );
-			XDoToolWrapper.pressKeyboardKey( "v" ); 
+			await Sleep( 4000 );
+			XDoToolWrapper.pressKeyboardKey( "v" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -65,14 +75,14 @@ function wStop( wIgnoreOverEvent ) { if ( wPROC !== null ) {
 	if ( wIgnoreOverEvent ) { IGNORE_OVER_EVENT = true; console.log( "\nignore event === true\n" ); }
 	try { wPROC.send( "stop" ); }
 	catch(e){ /*console.log(e);*/ }
-	wPROC = null; 
+	wPROC = null;
 	return wPROC_TIME;
 }}
 function wSilentStop() {
 	EMIT_OVER_EVENT = false;
 	try { wPROC.send( "stop" ); }
 	catch(e){ /*console.log(e);*/ }
-	wPROC = null; 
+	wPROC = null;
 	return wPROC_TIME;
 }
 function wSeekSeconds( wSeconds ) { if ( wPROC !== null ) { Reporter.log( "Seeking --> " + wSeconds.toString() ); wPROC.send( "seekSeconds/" + wSeconds.toString() ); } }

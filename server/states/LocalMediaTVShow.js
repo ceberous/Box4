@@ -27,6 +27,7 @@ function wStart( wOptions ) {
 				[ "set" , RC.CONFIG.ADVANCE_SHOW , final_options.advance_show ] ,
 				[ "set" , RC.CONFIG.SPECIFIC_SHOW , final_options.specific_show ] ,
 				[ "set" , RC.CONFIG.SPECIFIC_EPISODE , final_options.specific_episode ] ,
+				[ "set" , "LAST_SS.LOCAL_MEDIA_ACTIVE" , true ]
 			]);
 			await LocalMediaManager.play( final_options );
 			resolve();
@@ -56,7 +57,7 @@ function wResume() {
 function wStop() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await LocalMediaManager.stop();
+			await LocalMediaManager.shutdown();
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

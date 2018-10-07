@@ -12,7 +12,6 @@ var CURRENT_STATE_BUTTON = 0;
 var CURRENT_STATE_FP = null;
 var CURRENT_STATE_MODE = null;
 var CURRENT_STATE_NAME = null;
-var CURRENT_STATE_IS_SESSION = false;
 var CURRENT_STATE_OPTIONS = null;
 function CURRENT_STATE_STOP() {
 	return new Promise( async function( resolve , reject ) {
@@ -58,8 +57,8 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	// Else , Button Number indicates new state or session, Launch State or Session By Number
 	let launching_fp = BTN_MAP[ wButtonNum ].fp;
 	CURRENT_STATE_BUTTON = wButtonNum;
-	if ( BTN_MAP[ wButtonNum ][ "session" ] ) { CURRENT_STATE_IS_SESSION = true; CURRENT_STATE_NAME = BTN_MAP[ wButtonNum ][ "session" ]; }
-	else { CURRENT_STATE_IS_SESSION = false; CURRENT_STATE_NAME = BTN_MAP[ wButtonNum ][ "state" ]; }
+	CURRENT_STATE_NAME = BTN_MAP[ wButtonNum ][ "state" ];
+	await Redis.keySet( RC.ACTIVE_STATE , CURRENT_STATE_NAME );
 	await Redis.keySet( RC.FP , launching_fp );
 	if ( wOptions.mode ) { await Redis.keySet( RC.MODE , wOptions.mode ); }
 
@@ -86,6 +85,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	CURRENT_STATE_FP = launching_fp;
 	CURRENT_STATE_MODE = wOptions.mode;
 	CURRENT_STATE_OPTIONS = wOptions;
+
 	CURRENT_STATE = require( launching_fp );
 	await CURRENT_STATE.start( wOptions );
 

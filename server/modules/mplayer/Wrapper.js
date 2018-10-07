@@ -62,6 +62,6 @@ process.on( "message" , function( wData ) {
 			player.fullscreen();
 			break;
 		default:
-			break;						
+			break;
 	}
 });
