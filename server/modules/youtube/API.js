@@ -28,11 +28,11 @@ function filterJSONResults( wResults ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
 
-			// Stop Guard to Build Up Full Playlist. 
-			if ( FINAL_RESULTS[ FINAL_RESULTS.length - 1 ][ "nextPageToken" ] ) { 
-				await getPlaylistJSON( FINAL_RESULTS[ FINAL_RESULTS.length - 1 ][ "nextPageToken" ] ); 
+			// Stop Guard to Build Up Full Playlist.
+			if ( FINAL_RESULTS[ FINAL_RESULTS.length - 1 ][ "nextPageToken" ] ) {
+				await getPlaylistJSON( FINAL_RESULTS[ FINAL_RESULTS.length - 1 ][ "nextPageToken" ] );
 			}
-			
+
 			for ( var i = 0; i < FINAL_RESULTS.length; ++i ) {
 				if ( FINAL_RESULTS[ i ][ "items" ] ) {
 					for ( var j = 0; j < FINAL_RESULTS[ i ][ "items" ].length; ++j ) {
@@ -80,7 +80,7 @@ module.exports.getPlaylist = function( wPlaylistID ) {
 		try {
 			ENUMERATING_ID = null;
 			FINAL_RESULTS = [];
-			FINAL_PARSED = [];	
+			FINAL_PARSED = [];
 			ENUMERATING_ID = wPlaylistID || "PLcW8xNfZoh7ew0Eru-09bjr-l60IBYYgq";
 			await getPlaylistJSON();
 			//await storeIntoRedis();
@@ -159,13 +159,13 @@ function GET_FOLLOWERS() {
 			await browser.close();
 			console.log( token );
 
-			// Then , 
+			// Then ,
 			// console.log( GET_FOLLOWERS_URL );
 			// request( GET_FOLLOWERS_URL , async function ( err , response , body ) {
 			// 	if ( err ) { console.log( err ); reject( err ); return; }
 			// 	body = JSON.parse( body );
 			// 	resolve( body );
-			// });			
+			// });
 			resolve([]);
 		}
 		catch( error ) { console.log( error ); reject( error ); }

@@ -22,7 +22,7 @@ function ADD_TO_QUE( wVideoID ) {
 				if ( wVideoID.length > 10 ) {
 					await Redis.setAdd( RC.QUE , wVideoID );
 				}
-			}			
+			}
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -64,7 +64,7 @@ function GET_NEXT_IN_QUE() {
 		try {
 			var next_video = await Redis.setGetRandomMembers( RC.QUE , 1 );
 			if ( !next_video ) { next_video = "empty" }
-			else { next_video = next_video[ 0 ]; }		
+			else { next_video = next_video[ 0 ]; }
 			resolve( next_video );
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

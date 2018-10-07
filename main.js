@@ -88,10 +88,11 @@ const pidusage = require( "pidusage" );
 	});
 	await redis.init();
 	module.exports.redis = redis;
-	config.buttons = require( "./server/utils/Config.js" ).addStateAndSessionFilePaths( config.buttons );
 
 	// Initialize Reporting / Logging
 	await require( "./server/utils/Reporter.js" ).initialize();
+
+	config.buttons = require( "./server/utils/Config.js" ).addStateAndSessionFilePaths( config.buttons );
 
 	await require( "./server/utils/Config.js" ).saveConfigToRedis();
 
