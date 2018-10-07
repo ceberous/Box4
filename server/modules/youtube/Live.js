@@ -5,7 +5,7 @@ const { map } = require( "p-iteration" );
 const path = require( "path" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
-const Redis = require( path.join( MainFP , "main.js" ) ).redis;
+const Redis = require( path.join( MainFP , "main.js" ) ).Redis;
 const RC = Redis.c.YOUTUBE.LIVE;
 
 function GET_LIVE_VIDEOS() {
@@ -72,7 +72,7 @@ module.exports.getFollowers = GET_FOLLOWERS;
 function ADD_FOLLOWER( wChannelID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.sadd( RC.FOLLOWERS , wChannelID );
+			await Redis.setAdd( RC.FOLLOWERS , wChannelID );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -83,7 +83,7 @@ module.exports.addFollower = ADD_FOLLOWER;
 function REMOVE_FOLLOWER( wChannelID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.srem( RC.FOLLOWERS , wChannelID );
+			await Redis.setRemove( RC.FOLLOWERS , wChannelID );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -105,7 +105,7 @@ module.exports.getBlacklist = GET_BLACKLIST;
 function BLACKLIST_VID( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.sadd( RC.BLACKLIST , wVideoID );
+			await Redis.setAdd( RC.BLACKLIST , wVideoID );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -116,7 +116,7 @@ module.exports.blacklistVID = BLACKLIST_VID;
 function REMOVE_BLACKLIST_VID( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await redis.srem( RC.BLACKLIST , wVideoID );
+			await Redis.setRemove( RC.BLACKLIST , wVideoID );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
