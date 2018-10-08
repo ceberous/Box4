@@ -96,13 +96,14 @@ module.exports.pressButtonMaster = PRESS_BUTTON;
 // ======================================================================
 // ======================================================================
 const BTN_MAN 			= require( ".//modules/buttons/Manager.js" );
-const MOPIDY_MAN 		= require( "./modules/mopidy/Manager.js" );
+//const MOPIDY_MAN 		= require( "./modules/mopidy/Manager.js" );
 //const SCHEDULE_MAN 		= require( "./scheduleManager.js" );
 // ======================================================================
 // ======================================================================
 
 ( async ()=> {
 	await Reporter.log( "Initializing stuff" );
+	await require( "./modules/mopidy/Manager.js" ).initialize();
 	await require( "./modules/localmedia/Manager.js" ).initialize();
 	await require( "./modules/youtube/Manager.js" ).initialize();
 	await Reporter.log( "we are done with Initialization" );
