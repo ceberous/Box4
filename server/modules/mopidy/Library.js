@@ -39,11 +39,12 @@ function UPDATE_CACHE() {
 					if ( Personal.spotify.genres[ genre ].indexOf( playlists[ i ].uri ) !== -1 ) {
 						await Redis.setAdd( RC.GENRES[ genre ].PLAYLISTS , playlists[ i ].uri );
 						//await Redis.listSetFromArray( RC.GENRES[ genre ].TRACKS , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
-						await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS  , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
+						await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
 						//await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + "." + playlists[ i ].uri , playlists[ i ].tracks.map( x => x.uri ) );
 					}
 				}
 			}
+
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

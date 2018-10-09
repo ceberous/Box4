@@ -218,7 +218,7 @@ function REINITIALIZE_MOUNT_POINT() {
 				//const isEmpty = await exfs.isEmpty( saved_mount_point );
 				//if ( isEmpty ) { Reporter.log( "Local Media Folder is Empty" ); resolve( "no_local_media" ); return; }
 				// Cleanse and Prepare Mount_Point
-				await Redis.deleteMultiplePatterns( [ RC.BASE + "*" , /*"HARD_DRIVE.*"*/ ] );
+				await Redis.deleteMultiplePatterns( [ "LOCAL_MEDIA.*.SEASONS*" ] );
 				//await wSleep( 2000 );
 				await REBUILD_REDIS_MOUNT_POINT_REFERENCE( current_uuid_mount_point );
 				await Redis.keySet( RC.MOUNT_POINT , current_uuid_mount_point );
