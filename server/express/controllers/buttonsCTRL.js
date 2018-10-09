@@ -29,3 +29,7 @@ module.exports.press19 = function( req , res ) { wPressButtonMaster( 19 , req.qu
 module.exports.press20 = function( req , res ) { wPressButtonMaster( 20 , req.query ); sendJSONResponse( res , 200 , { buttonPress: ButtonNames[ 20 ].name } ); }
 module.exports.press21 = function( req , res ) { wPressButtonMaster( 21 , req.query ); sendJSONResponse( res , 200 , { buttonPress: ButtonNames[ 21 ].name } ); }
 module.exports.press22 = function( req , res ) { wPressButtonMaster( 22 , req.query ); sendJSONResponse( res , 200 , { buttonPress: ButtonNames[ 22 ].name } ); }
+module.exports.press23 = function( req , res ) { wPressButtonMaster( 23 , req.query ); sendJSONResponse( res , 200 , { buttonPress: ButtonNames[ 23 ].name } ); }
+module.exports.press24 = function( req , res ) { wPressButtonMaster( 24 , req.query ); sendJSONResponse( res , 200 , { buttonPress: ButtonNames[ 24 ].name } ); }
+module.exports.press25 = function( req , res ) { wPressButtonMaster( 25 , req.query ); sendJSONResponse( res , 200 , { buttonPress: ButtonNames[ 25 ].name } ); }
+module.exports.press26 = function( req , res ) { wPressButtonMaster( 26 , req.query ); sendJSONResponse( res , 200 , { buttonPress: ButtonNames[ 26 ].name } ); }

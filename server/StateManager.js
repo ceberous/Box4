@@ -34,7 +34,7 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 
 	Reporter.log( "PRESS_BUTTON( " + wButtonNum.toString() + " )" );
 	const wBTN_I = parseInt( wButtonNum );
-	if ( wBTN_I > 22 || wBTN_I < 0 ) { return "out of range"; }
+	if ( wBTN_I > 26 || wBTN_I < 0 ) { return "out of range"; }
 	wOptions = wOptions || BTN_MAP[ wButtonNum ][ "options" ];
 
 	// If Closing Command

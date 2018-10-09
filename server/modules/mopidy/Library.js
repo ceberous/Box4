@@ -30,6 +30,7 @@ const DAY = 86400000;
 function UPDATE_CACHE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			await Redis.deleteMultiplePatterns( [ "MOPIDY.GENERES.*" ] );
 			let playlists = await GET_PLAYLISTS();
 			//console.log( playlists );
 			for ( let i = 0; i < playlists.length; ++i ) {
@@ -37,8 +38,9 @@ function UPDATE_CACHE() {
 					// If There Is a Label for This Playlist , store in right redis key
 					if ( Personal.spotify.genres[ genre ].indexOf( playlists[ i ].uri ) !== -1 ) {
 						await Redis.setAdd( RC.GENRES[ genre ].PLAYLISTS , playlists[ i ].uri );
-						await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS , playlists[ i ].tracks.map( x => x.uri ) );
-						//await Redis.setSetFromArray( RC.GENRES[ genre ].PLAYLISTS + "." + playlists[ i ].uri , playlists[ i ].tracks.map( x => x.uri ) );
+						//await Redis.listSetFromArray( RC.GENRES[ genre ].TRACKS , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
+						await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS  , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
+						//await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + "." + playlists[ i ].uri , playlists[ i ].tracks.map( x => x.uri ) );
 					}
 				}
 			}

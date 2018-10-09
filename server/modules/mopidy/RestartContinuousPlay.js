@@ -7,32 +7,28 @@ const RC = Redis.c.MOPIDY;
 const mopidy = require( path.join( MainFP , "server" , "modules" , "mopidy" , "Manager.js" ) ).mopidy;
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
 
-const TracklistManger_FP = require( path.join( MainFP , "server" , "modules" , "mopidy" , "Tracklist.js" ) );
-const PlaybackManger_FP = require( path.join( MainFP , "server" , "modules" , "mopidy" , "Playback.js" ) );
+const TracklistManger_FP = path.join( MainFP , "server" , "modules" , "mopidy" , "Tracklist.js" );
+const PlaybackManger_FP = path.join( MainFP , "server" , "modules" , "mopidy" , "Playback.js" );
 
-const R_KEY_BASE = "MOPIDY.CACHE."
-const R_LAST_SS_BASE = "LAST_SS.MOPIDY.";
-const R_CONTINOUS_PLAY = R_LAST_SS_BASE + "CONTINUOUS_PLAY";
-module.exports.restart =  function() {
+module.exports.restart = function() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-
-			let now_playing_button_genre = await Redis.keyGet( R_CONTINOUS_PLAY );
-			if ( now_playing_button_genre === null ) { now_playing_button_genre = "UNKNOWN"; }
-			console.log( "RESTARTING LIVE RANDOM GENRE LIST -- " + now_playing_button_genre );
-
-			const R_K1 = R_KEY_BASE + now_playing_button_genre;
-			let random_list = await Redis.setPopRandomMembers( R_K1 , 25 );
-			random_list = random_list.map( x => JSON.parse( x ) );
-			// for ( var i = 0; i < random_list.length; ++i ) {
-			// 	random_list[ i ] = JSON.parse( random_list[ i ] );
-			// }
+			let genre = await Redis.keyGet( RC.CONTINUOUS_GENRE );
+			if ( genre === null ) { genre = "classic"; }
+			console.log( "RESTARTING LIVE RANDOM GENRE LIST -- " + genre );
+			let list = await Redis.setPopRandomMembers( RC.GENRES[ genre ].TRACKS , 25 );
+			await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
+			if ( list.length < 1 ) {
+				await Redis.setSetDifferenceStore( RC.GENRES[ genre ].TRACKS , RC.GENRES[ genre ].TRACKS , RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
+				await Redis.keyDel( RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
+				list = await Redis.setPopRandomMembers( RC.GENRES[ genre ].TRACKS , 25 );
+			}
+			list = list.map( x => JSON.parse( x ) );
 			await require( TracklistManger_FP ).clearList();
-			await require( TracklistManger_FP ).loadList( random_list );
+			await require( TracklistManger_FP ).loadList( list );
 			await require( PlaybackManger_FP ).play();
 			await Sleep( 2000 );
 			await require( PlaybackManger_FP ).getState();
-
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }

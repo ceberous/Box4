@@ -3,7 +3,7 @@ const path = require( "path" );
 const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 
 
-const RESETS =  [ "YOUTUBE.LIVE.LATEST*"  /* , "YOUTUBE.STANDARD.LATEST*" */ , "YOUTUBE.NP_SESSION*" , /*"HARD_DRIVE.*" , "LOCAL_MEDIA.*"*/ ];
+const RESETS =  [ "YOUTUBE.LIVE.LATEST*" , "MOPIDY.GENRES*" ,  /* , "YOUTUBE.STANDARD.LATEST*" */ , "YOUTUBE.NP_SESSION*" , /*"HARD_DRIVE.*" , "LOCAL_MEDIA.*"*/ ];
 
 var SET_KEYS = {
 	"CONFIG.ARRIVED_HOME": "false" ,
