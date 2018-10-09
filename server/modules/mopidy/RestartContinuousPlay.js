@@ -17,9 +17,9 @@ module.exports.restart = function() {
 			if ( genre === null ) { genre = "classic"; }
 			console.log( "RESTARTING LIVE RANDOM GENRE LIST -- " + genre );
 			let list = await Redis.setPopRandomMembers( RC.GENRES[ genre ].TRACKS , 25 );
-			await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
+			await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + ".RECYCLED" , list );
 			if ( list.length < 1 ) {
-				await Redis.setSetDifferenceStore( RC.GENRES[ genre ].TRACKS , RC.GENRES[ genre ].TRACKS , RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
+				await Redis.setStoreUnion( RC.GENRES[ genre ].TRACKS , RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
 				await Redis.keyDel( RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
 				list = await Redis.setPopRandomMembers( RC.GENRES[ genre ].TRACKS , 25 );
 			}
