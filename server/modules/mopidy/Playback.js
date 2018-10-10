@@ -129,7 +129,7 @@ function INITIALIZE() {
 		try {
 			await Sleep( 1000 );
 			let state = await GET_STATE();
-			if ( state ) { if ( state === "PLAYING" ) { await STOP(); } }
+			if ( state ) { if ( state === "PLAYING" ) { STOP(); } }
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

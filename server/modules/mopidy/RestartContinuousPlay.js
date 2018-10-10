@@ -6,11 +6,11 @@ const RC = Redis.c.MOPIDY;
 
 const mopidy = require( path.join( MainFP , "server" , "modules" , "mopidy" , "Manager.js" ) ).mopidy;
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
+const ShuffleArray = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).shuffleArray;
 
 const TracklistManger_FP = path.join( MainFP , "server" , "modules" , "mopidy" , "Tracklist.js" );
 const PlaybackManger_FP = path.join( MainFP , "server" , "modules" , "mopidy" , "Playback.js" );
 
-const GenericUtils_FP = path.join( MainFP , "server" , "utils" , "Generic.js" );
 
 module.exports.restart = function() {
 	return new Promise( async function( resolve , reject ) {
@@ -26,7 +26,7 @@ module.exports.restart = function() {
 				list = await Redis.setPopRandomMembers( RC.GENRES[ genre ].TRACKS , 25 );
 			}
 			list = list.map( x => JSON.parse( x ) );
-			list = require( GenericUtils_FP ).shuffleArray( list );
+			list = ShuffleArray( list );
 			await require( TracklistManger_FP ).clearList();
 			await require( TracklistManger_FP ).loadList( list );
 			await require( PlaybackManger_FP ).play();
