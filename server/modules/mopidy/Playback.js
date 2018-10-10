@@ -128,7 +128,8 @@ function INITIALIZE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
 			await Sleep( 1000 );
-			Reporter.log( await GET_STATE() );
+			let state = await GET_STATE();
+			if ( state ) { if ( state === "PLAYING" ) { await STOP(); } }
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

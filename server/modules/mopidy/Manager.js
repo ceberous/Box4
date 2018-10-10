@@ -41,6 +41,7 @@ Mopidy.prototype._handleWebSocketError = async function ( error ) {
 	mopidy.off();
 	mopidy = null;
 	await Redis.keySet( "STATUS.MOPIDY" , "OFFLINE" );
+	INITIALIZE_RESOLVE();
 	return;
 };
 function tryToConnectMopidy( wPort ) {

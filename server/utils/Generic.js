@@ -14,6 +14,28 @@ const Reporter = require( MainFPMJS , "server" , "utils" , "Reporter.js" );
 function W_SLEEP( ms ) { return new Promise( resolve => setTimeout( resolve , ms ) ); }
 module.exports.sleep = W_SLEEP;
 
+function getRandomFromRange( wMin , wMax ) { return Math.floor( Math.random() * ( wMax - wMin + 1 ) ) + wMin; }
+function getRandomPropertyKey( wOBJ ) { var keys = Object.keys( wOBJ ); return keys[ keys.length * Math.random() << 0 ]; }
+function getRandomArrayItem( wArray ) { return wArray[ Math.floor( Math.random() * wArray.length ) ]; }
+Math.seed = function( s ) { return function() { s = Math.sin( s ) * 10000; return s - Math.floor( s ); }; };
+function reSeedMathRandom() {
+	let wRanSeedStart = getRandomFromRange( 1 , 100 );
+	let random1 = Math.seed( wRanSeedStart );
+	let random2 = Math.seed( random1() );
+	Math.random = Math.seed( random2() );
+}
+module.exports.reSeedMathRandom = reSeedMathRandom;
+function shuffleArray( array ) {
+	reSeedMathRandom();
+    for ( let i = array.length - 1; i > 0; i-- ) {
+    	reSeedMathRandom();
+        const j = Math.floor( Math.random() * ( i + 1 ) );
+        [ array[ i ] , array[ j ] ] = [ array[ j ] , array[ i ] ];
+    }
+    return array;
+}
+module.exports.shuffleArray = shuffleArray;
+
 function GET_NOW_TIME() {
 	const today = new Date();
 	var day = today.getDate();
@@ -154,7 +176,7 @@ function REBOOT_ROUTER() {
 				  resolve();
 				});
 
-			});	
+			});
 
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -199,7 +221,7 @@ function CLOSE_EVERYTHING() {
 				exec( "sudo pkill -9 firefox" , { silent: true ,  async: false } );
 				exec( "sudo pkill -9 mplayer" , { silent: true ,  async: false } );
 				resolve();
-			} , 2000 );	
+			} , 2000 );
 		}
 		catch( error ) { console.log( error ); reject( error ); }
 	});

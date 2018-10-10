@@ -30,9 +30,9 @@ const RMU = require( "redis-manager-utils" );
 const pidusage = require( "pidusage" );
 
 //Compute statistics every second:
-setInterval(function () {
-	pidusage( process.pid , function ( err , stats ) {
-	console.log( stats.memory + " === " + stats.cpu );
+//setInterval(function () {
+	//pidusage( process.pid , function ( err , stats ) {
+	//console.log( stats.memory + " === " + stats.cpu );
 	// => {
 	//   cpu: 10.0,            // percentage (from 0 to 100*vcore)
 	//   memory: 357306368,    // bytes
@@ -42,8 +42,8 @@ setInterval(function () {
 	//   elapsed: 6650000,     // ms since the start of the process
 	//   timestamp: 864000000  // ms since epoch
 	// }
-	});
-}, 1000 );
+	//});
+//}, 1000 );
 
 ( async ()=> {
 
@@ -129,9 +129,8 @@ setInterval(function () {
 	});
 
 	process.on( "SIGINT" , async function () {
-		//wEmitter.emit( "closeEverything" );
 		await require( "./server/utils/Reporter.js" ).log( "\nShutting Down" );
-		//await MyBox4.buttons.press( 6 , {} , true );
+		await require( "./server/StateManager.js" ).pressButtonMaster( 6 , {} , true );
 		process.exit( 1 );
 	});
 

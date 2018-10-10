@@ -7,6 +7,7 @@ const RC = Redis.c.MOPIDY;
 
 const mopidy = require( path.join( MainFP , "server" , "modules" , "mopidy" , "Manager.js" ) ).mopidy;
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
+const ShuffleArray = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).shuffleArray;
 
 function GET_PLAYLISTS() {
 	return new Promise( async function( resolve , reject ) {
@@ -23,7 +24,6 @@ function GET_PLAYLISTS() {
 	});
 }
 
-
 // Addd in Different "relax" lables later to be manually started via web-panel
 const HOUR = 3600000;
 const DAY = 86400000;
@@ -39,8 +39,12 @@ function UPDATE_CACHE() {
 					if ( Personal.spotify.genres[ genre ].indexOf( playlists[ i ].uri ) !== -1 ) {
 						await Redis.setAdd( RC.GENRES[ genre ].PLAYLISTS , playlists[ i ].uri );
 						//await Redis.listSetFromArray( RC.GENRES[ genre ].TRACKS , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
-						await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
+						await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS , ShuffleArray( playlists[ i ].tracks.map( x => JSON.stringify( x ) ) ) );
 						//await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + "." + playlists[ i ].uri , playlists[ i ].tracks.map( x => x.uri ) );
+					}
+					else {
+						await Redis.setAdd( RC.GENRES[ "unknown" ].PLAYLISTS , playlists[ i ].uri );
+						await Redis.setSetFromArray( RC.GENRES[ "unknown" ].TRACKS , ShuffleArray( playlists[ i ].tracks.map( x => JSON.stringify( x ) ) ) );
 					}
 				}
 			}
