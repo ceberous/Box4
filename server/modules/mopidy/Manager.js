@@ -6,6 +6,7 @@ const RC = Redis.c.MOPIDY;
 
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const Sleep = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).sleep;
+function tryIgnoreError( wFunc ) { try { wFunc(); } catch( error ) { return; } }
 
 const Mopidy = require( "mopidy" );
 const Utils_FP = path.join( MainFP , "server" , "modules" , "mopidy" , "Utils.js" );

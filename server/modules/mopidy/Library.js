@@ -34,6 +34,7 @@ function UPDATE_CACHE() {
 			let playlists = await GET_PLAYLISTS();
 			//console.log( playlists );
 			for ( let i = 0; i < playlists.length; ++i ) {
+				let found = false;
 				for ( genre in Personal.spotify.genres ) {
 					// If There Is a Label for This Playlist , store in right redis key
 					if ( Personal.spotify.genres[ genre ].indexOf( playlists[ i ].uri ) !== -1 ) {
@@ -41,11 +42,13 @@ function UPDATE_CACHE() {
 						//await Redis.listSetFromArray( RC.GENRES[ genre ].TRACKS , playlists[ i ].tracks.map( x => JSON.stringify( x ) ) );
 						await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS , ShuffleArray( playlists[ i ].tracks.map( x => JSON.stringify( x ) ) ) );
 						//await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + "." + playlists[ i ].uri , playlists[ i ].tracks.map( x => x.uri ) );
+						found = true;
 					}
-					else {
-						await Redis.setAdd( RC.GENRES[ "unknown" ].PLAYLISTS , playlists[ i ].uri );
-						await Redis.setSetFromArray( RC.GENRES[ "unknown" ].TRACKS , ShuffleArray( playlists[ i ].tracks.map( x => JSON.stringify( x ) ) ) );
-					}
+				}
+				if ( !found ) {
+					console.log( playlists[ i ].uri + " === " + playlists[ i ].name );
+					await Redis.setAdd( RC.GENRES[ "unknown" ].PLAYLISTS , playlists[ i ].uri );
+					await Redis.setSetFromArray( RC.GENRES[ "unknown" ].TRACKS , ShuffleArray( playlists[ i ].tracks.map( x => JSON.stringify( x ) ) ) );
 				}
 			}
 
