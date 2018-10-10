@@ -77,7 +77,7 @@ mopidy.on( "event:trackPlaybackEnded" , async function ( wEvent ) {
 		var wCTIDX = await require( PlaybackManger_FP ).getCurrentTrackIndex();
 		console.log( "PLAYBACK --> CURRENT_INDEX --> " + wCTIDX );
 		if ( wCTIDX === null ) {
-			var still_live = await Redis.keyGet( PlaybackManger_FP );
+			var still_live = await Redis.keyGet( RC.CONTINUOUS_GENRE );
 			if ( still_live !== null && still_live !== "STOPPED" ) {
 				await require( RestartContinousPlay_FP ).restart();
 			}
