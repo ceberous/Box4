@@ -33,7 +33,7 @@ let INITIALIZE_RESOLVE;
 
 // http://localhost:6690/moped/#/
 
-var mopidy = null;
+let mopidy = null;
 Mopidy.prototype._handleWebSocketError = async function ( error ) {
 	Reporter.log( "WebSocket ERROR" );
 	Reporter.log( "Binary not Running ???" );
@@ -60,10 +60,8 @@ tryToConnectMopidy( 6690 );
 mopidy.on( "state:online" , GLOBAL_INITIALIZE );
 module.exports.mopidy = mopidy;
 
-var LAST_EVENT_TIME = 0;
+let LAST_EVENT_TIME = 0;
 const EVENT_TIME_EASEMENT = 5000;
-const R_LAST_SS_BASE = "LAST_SS.MOPIDY.";
-const R_CONTINUOUS_PLAY = R_LAST_SS_BASE + "CONTINUOUS_PLAY";
 mopidy.on( "event:trackPlaybackEnded" , async function ( wEvent ) {
 	Reporter.log( "PLAYBACK --> ENDED" );
 	await Sleep( 1000 );
@@ -74,10 +72,10 @@ mopidy.on( "event:trackPlaybackEnded" , async function ( wEvent ) {
 		await Sleep( EVENT_TIME_EASEMENT );
 	}
 	else {
-		var wCTIDX = await require( PlaybackManger_FP ).getCurrentTrackIndex();
+		let wCTIDX = await require( PlaybackManger_FP ).getCurrentTrackIndex();
 		console.log( "PLAYBACK --> CURRENT_INDEX --> " + wCTIDX );
 		if ( wCTIDX === null ) {
-			var still_live = await Redis.keyGet( RC.CONTINUOUS_GENRE );
+			let still_live = await Redis.keyGet( RC.CONTINUOUS_GENRE );
 			if ( still_live !== null && still_live !== "STOPPED" ) {
 				await require( RestartContinousPlay_FP ).restart();
 			}
@@ -86,12 +84,11 @@ mopidy.on( "event:trackPlaybackEnded" , async function ( wEvent ) {
 	}
 });
 
-const R_NOW_PLAYING = R_LAST_SS_BASE + "NOW_PLAYING";
 mopidy.on( "event:trackPlaybackStarted" , async function ( wEvent ) {
 	await Sleep( 1000 );
-	var wCT = await require( PlaybackManger_FP ).getCurrentTrack();
+	let wCT = await require( PlaybackManger_FP ).getCurrentTrack();
 	if ( wCT === null ) { return; }
-	await Redis.keySet( R_NOW_PLAYING , JSON.stringify( wCT ) );
+	await Redis.keySet( RC.NOW_PLAYING , JSON.stringify( wCT ) );
 	console.log("");
 	Reporter.log( "PLAYBACK --> STARTED || CURRENT-TRACK --> " );
 	Reporter.log( "Title = " + wCT[ "name" ] );
@@ -150,12 +147,4 @@ function INITIALIZE() {
 		catch( error ) { console.log( error ); reject( error ); }
 	});
 }
-
 module.exports.initialize = INITIALIZE;
-
-// process.on( "SIGINT" , async function () {
-// 	Reporter.log( "Shutting Down" );
-// 	await GLOBAL_SHUTDOWN();
-// 	// await Sleep( 1000 );
-// 	// process.exit(1);
-// });

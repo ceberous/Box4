@@ -18,13 +18,7 @@ module.exports.restart = function() {
 			let genre = await Redis.keyGet( RC.CONTINUOUS_GENRE );
 			if ( genre === null ) { genre = "classic"; }
 			console.log( "RESTARTING LIVE RANDOM GENRE LIST -- " + genre );
-			let list = await Redis.setPopRandomMembers( RC.GENRES[ genre ].TRACKS , 25 );
-			await Redis.setSetFromArray( RC.GENRES[ genre ].TRACKS + ".RECYCLED" , list );
-			if ( list.length < 1 ) {
-				await Redis.setStoreUnion( RC.GENRES[ genre ].TRACKS , RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
-				await Redis.keyDel( RC.GENRES[ genre ].TRACKS + ".RECYCLED" );
-				list = await Redis.setPopRandomMembers( RC.GENRES[ genre ].TRACKS , 25 );
-			}
+			let list = await Redis.nextInCircularSet( RC.GENRES[ genre ].TRACKS , 25 );
 			list = list.map( x => JSON.parse( x ) );
 			list = ShuffleArray( list );
 			await require( TracklistManger_FP ).clearList();
