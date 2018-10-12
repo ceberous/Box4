@@ -5,7 +5,7 @@ const { map } = require( "p-iteration" );
 const path = require( "path" );
 const MainFP = process.mainModule.paths[ 0 ].split( "node_modules" )[ 0 ].slice( 0 , -1 );
 const Reporter = require( path.join( MainFP , "server" , "utils" , "Reporter.js" ) );
-const Redis = require( path.join( MainFP , "main.js" ) ).Redis;
+const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.YOUTUBE.LIVE;
 
 function GET_LIVE_VIDEOS() {
@@ -39,7 +39,7 @@ function GET_LIVE_VIDEOS() {
 	}
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await Redis.delKey( RC.LATEST );
+			await Redis.keyDel( RC.LATEST );
 
 			current_followers = await Redis.setGetFull( RC.FOLLOWERS );
 			current_blacklist = await Redis.setGetFull( RC.BLACKLIST );

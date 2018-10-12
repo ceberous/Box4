@@ -230,7 +230,7 @@ module.exports.closeEverything = CLOSE_EVERYTHING;
 
 
 function CLOSE_COMMON() {
-	return new Promise( async function( resolve , reject ) {
+	return new Promise( function( resolve , reject ) {
 		try {
 			exec( "sudo pkill -9 firefox" , { silent: true ,  async: false } );
 			exec( "sudo pkill -9 mplayer" , { silent: true ,  async: false } );
@@ -240,3 +240,15 @@ function CLOSE_COMMON() {
 	});
 }
 module.exports.closeCommon = CLOSE_COMMON;
+
+const ServerOnlineMP3_FP = path.join( MainFP , "server" , "sounds" , "server_online.mp3" );
+function PLAY_SERVER_ONLINE_SOUND() {
+	return new Promise( function( resolve , reject ) {
+		try {
+			exec( "mpg123 " + ServerOnlineMP3_FP , { silent: true ,  async: false } );
+			resolve()
+		}
+		catch( error ) { console.log( error ); reject( error ); }
+	});
+}
+module.exports.playServerOnlineSound = PLAY_SERVER_ONLINE_SOUND;

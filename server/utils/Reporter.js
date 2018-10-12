@@ -49,6 +49,7 @@ const CALLER_COLOR_TABLE = {
 	"/server/modules/mopidy/Tracklist.js" : [ "[MOPIDY_TRACKLIST] --> " , "white" , "bgBlue" ] ,
 	"/server/modules/mopidy/Utils.js" : [ "[MOPIDY_UTILS] --> " , "white" , "bgBlue" ] ,
 	"/server/modules/mopidy/RestartContinuousPlay.js" : [ "[MOPIDY_CONTINOUS_PLAY] --> " , "white" , "bgBlue" ] ,
+	"/server/states/YoutubeLive.js" : [ "[STATE_YOUTUBE_LIVE] --> " , "white" , "bgRed" ] ,
 	"/server/states/YoutubeStandard.js" : [ "[STATE_YOUTUBE_STANDARD] --> " , "white" , "bgRed" ] ,
 	"/server/states/TwitchLive.js" : [ "[STATE_TWITCH_LIVE] --> " , "white" , "bgMagenta" ] ,
 	"/server/states/LocalMediaTVShow.js" : [ "[STATE_LOCALMEDIA_TVSHOW] --> " , "magenta" , "bgBlack" ] ,

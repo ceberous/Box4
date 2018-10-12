@@ -108,4 +108,5 @@ const BTN_MAN 			= require( ".//modules/buttons/Manager.js" );
 	await require( "./modules/youtube/Manager.js" ).initialize();
 	await Reporter.log( "we are done with Initialization" );
 	console.log( await require( "./utils/Generic.js" ).getStatusReport() );
+	require( "./utils/Generic.js" ).playServerOnlineSound();
 })();

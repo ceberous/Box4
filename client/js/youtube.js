@@ -44,7 +44,7 @@ var YTIFrameManager = {
 
 	showVideo: function(wVideo) {
 
-		if ( !wVideo ){ var wVideo = { id: "o2Qmc8Sb6Ws" }; } 
+		if ( !wVideo ){ var wVideo = { id: "o2Qmc8Sb6Ws" }; }
 		var wThis = $(window);
 		var wOptions = { version: 3 , height: wThis.height() , width: wThis.width() , loop: 1 , videoId: wVideo };
 		if ( YTIFrameManager.playlist ) { wOptions.videoId = YTIFrameManager.playlist[0] }
@@ -138,7 +138,7 @@ var YTIFrameManager = {
 	startNextVideoInterval: function() {
 		setInterval( function() {
 			YTIFrameManager.wPlayer.nextVideo();
-		} , nextVideoTime );	
+		} , nextVideoTime );
 
 	},
 
@@ -193,7 +193,7 @@ $(document).ready( function() {
 				else {
 					YTIFrameManager.wPlayer.pauseVideo();
 				}
-				break;				
+				break;
 			case "next":
 				if ( x1.options ) {
 					console.log( "next video === " + x1.options );
@@ -203,7 +203,7 @@ $(document).ready( function() {
 				break;
 			case "previous":
 				YTIFrameManager.wPlayer.previousVideo();
-				break;				
+				break;
 			case "shutdown":
 				YTIFrameManager.wPlayer.destroy();
 				break;
@@ -214,6 +214,6 @@ $(document).ready( function() {
 
 	socket.onerror = function (error) {
 		console.log( "WebSocket error: " + error);
-	};	
+	};
 
 });
