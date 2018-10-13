@@ -51,7 +51,8 @@ function wPause() {
 function wStop() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await FFManager.close();
+			try { await FFManager.close(); }
+			catch() {}
 			FFManager = undefined;
 			resolve();
 		}

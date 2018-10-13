@@ -5,16 +5,17 @@ const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.YOUTUBE;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
-const Live_FP = path.join( MainFP , "server" , "modules" , "youtube" , "Live.js" );
 let FFManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
+const Live_FP = path.join( MainFP , "server" , "modules" , "youtube" , "Live.js" );
 
-function wStart() {
+function wStart( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			let mute = wOptions.mute || true;
 			//await require( "../youtubeManager.js" ).updateStandard();
 			let live_videos = await require( Live_FP ).getLiveVideos();
 			if ( !live_videos ) { resolve( "No Live Videos" ); return; }
-			await SetStagedFFClientTask( { message: "Youtube" , playlist: live_videos  } );
+			await SetStagedFFClientTask( { message: "Youtube" , playlist: live_videos , mute: mute } );
 			await FFManager.youtube();
 			resolve();
 		}
@@ -35,7 +36,8 @@ function wPause() {
 function wStop() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await FFManager.close();
+			try { await FFManager.close(); }
+			catch( error ) { }
 			FFManager = undefined;
 			resolve();
 		}
@@ -46,8 +48,7 @@ function wStop() {
 function wNext() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let final_vid = await GET_NEXT_VIDEO();
-			wEmitter.emit( "sendFFClientMessage" , "next" , final_vid );
+			wEmitter.emit( "sendFFClientMessage" , "next" );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -57,8 +58,7 @@ function wNext() {
 function wPrevious() { // ehhhh needs fixed
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let final_vid = await GET_NEXT_VIDEO();
-			wEmitter.emit( "sendFFClientMessage" , "next" , final_vid );
+			wEmitter.emit( "sendFFClientMessage" , "previous" );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

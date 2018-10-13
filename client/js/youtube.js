@@ -124,6 +124,9 @@ var YTIFrameManager = {
 			if ( YTIFrameManager.position === "BACKGROUND" ) {
 				YTIFrameManager.wPlayer.mute();
 			}
+			if ( YTIFrameManager.mute === true ) {
+				YTIFrameManager.wPlayer.mute();
+			}
 			if ( YTIFrameManager.mode === "LIVE" ) {
 				YTIFrameManager.wPlayer.setShuffle( true );
 				YTIFrameManager.wPlayer.setLoop(true);
@@ -155,6 +158,7 @@ function waitForYoutubeReady( x1 ) {
 			if ( x1.playlist_id ) { YTIFrameManager.playlist_id = x1.playlist_id }
 			else { YTIFrameManager.playlist = x1.playlist; }
 			YTIFrameManager.mode = x1.mode;
+			YTIFrameManager.mute = x1.mute || true;
 			YTIFrameManager.position = x1.position;
 			YTIFrameManager.init();
 		}

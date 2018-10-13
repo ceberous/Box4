@@ -241,7 +241,7 @@ function CLOSE_COMMON() {
 }
 module.exports.closeCommon = CLOSE_COMMON;
 
-const ServerOnlineMP3_FP = path.join( MainFP , "server" , "sounds" , "server_online.mp3" );
+const ServerOnlineMP3_FP = path.join( MainFP , "server" , "sounds" , "VoHiYo.mp3" );
 function PLAY_SERVER_ONLINE_SOUND() {
 	return new Promise( function( resolve , reject ) {
 		try {

@@ -66,7 +66,7 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 			let feedparser = new FeedParser( [ wFP_Options ] );
 
 			let wResults = [];
-		
+
 			let req = request( wFeedURL );
 			req.on( "error" , function ( error ) { Reporter.error(error); resolve(); return; } );
 			req.on( "response" , function ( res ) {
@@ -87,7 +87,7 @@ function STANDARD_FOLLOWERS_FETCH_XML( channelID ) {
 
 function STANDARD_FOLLOWERS_GET_LATEST() {
 	return new Promise( async function( resolve , reject ) {
-		try { 
+		try {
 			let current_followers = await Redis.setGetFull( RC.FOLLOWERS );
 			if ( !current_followers ) { Reporter.log( "No Standard Followers" ); resolve( "no followers" ); return; }
 			if ( current_followers.length < 0 ) { Reporter.log( "No Standard Followers" ); resolve( "no followers" ); return; }
@@ -140,7 +140,7 @@ function STANDARD_FOLLOWERS_GET_LATEST() {
 								"remaining_time" , all_new[ i ][ "remaining_time" ] ,
 								"duration" , all_new[ i ][ "duration" ] ,
 							);
-						}		
+						}
 					}
 				}
 			}
@@ -225,7 +225,7 @@ module.exports.blacklistVID = BLACKLIST_VID;
 function REMOVE_BLACKLIST_VID( wVideoID ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await Redis.setRemove( RC.BLACKLIST , wVideoID );			
+			await Redis.setRemove( RC.BLACKLIST , wVideoID );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -261,7 +261,7 @@ module.exports.getVideoInfo = GET_VIDEO_INFO;
 function UPDATE_VIDEO_INFO( wVideoID , wKey , wValue ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await Redis.redis.hset( RC.LATEST + "." + wVideoID , wKey , wValue );			
+			await Redis.redis.hset( RC.LATEST + "." + wVideoID , wKey , wValue );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -291,10 +291,10 @@ function GET_NEXT_VIDEO() {
 			// Reporter.log( finalVideo );
 			// Reporter.log( finalMode );
 			// // WutFace https://stackoverflow.com/questions/17060672/ttl-for-a-set-member
-			// await Redis.setMulti( [ 
+			// await Redis.setMulti( [
 			// 	[ "sadd" , RC.ALREADY_WATCHED , finalVideo ] ,
-			// 	[ "set" , RC.NOW_PLAYING_ID , finalVideo ] , 
-			// 	[ "set" , RC.NOW_PLAYING_MODE , finalMode ] 
+			// 	[ "set" , RC.NOW_PLAYING_ID , finalVideo ] ,
+			// 	[ "set" , RC.NOW_PLAYING_MODE , finalMode ]
 			// ]);
 
 			var finalVideo = await Redis.listRPOP( RC.QUE , 1 );

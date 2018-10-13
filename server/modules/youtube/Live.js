@@ -22,7 +22,7 @@ function GET_LIVE_VIDEOS() {
 				let wResults = [];
 				request( wURL , function ( err , response , body ) {
 					if ( err ) { console.log( err ); reject( err ); return; }
-					try { let $ = cheerio.load( body ); }
+					try { var $ = cheerio.load( body ); }
 					catch(err) { reject( "cheerio load failed" ); return; }
 					$( ".yt-lockup-title > a" ).each( function () {
 						let wID = $( this ).attr( "href" );
