@@ -45,7 +45,7 @@ function FIND_USB_STORAGE_PATH_FROM_UUID( wUUID ) {
 				// console.log( uuid );
 				var q1 = getPath();
 				q1 = q1.replace( "x20" , " " )
-				console.log( q1 );
+				Reporter.log( "UUID: " + wUUID + " @@ " + q1 );
 				if ( q1 === "" ) {
 
 					Reporter.log( "USB Drive Plugged IN , but unmounted" );

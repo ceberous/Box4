@@ -11,15 +11,15 @@ let FFManager = require( path.join( MainFP , "server" , "modules" , "firefox" , 
 function wStart( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			console.log( "Here in TwitchLive State" );
-			console.log( wOptions );
+			Reporter.log( "Here in TwitchLive State" );
+			Reporter.log( wOptions );
 			let current_live;
 			if ( wOptions ) {
 				if ( wOptions.user ) { current_live.push( wOptions.user ); }
 				else { current_live = await UpdateLiveUsers(); }
 			}
 			else { current_live = await UpdateLiveUsers(); }
-			console.log( current_live );
+			Reporter.log( current_live );
 			if ( current_live.length < 1 ) { resolve(); return; }
 			await FFManager.twitch( current_live[ 0 ] );
 			resolve();
@@ -54,10 +54,9 @@ function wStop() {
 function wNext() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await Redis.increment( RC.LIVE_USERS_INDEX );
-			let index = Redis.keyGet( RC.LIVE_USERS_INDEX );
-			let next_user = Redis.listGetByIndex( RC.LIVE_USERS , index );
-			if ( next_user ) { next_user = { user: next_user }; }
+			let next_user = Redis.nextInCircularList( RC.LIVE_USERS );
+			if ( next_user ) { next_user = { user: next_user[ 0 ] }; }
+			await Redis.keySet( RC.CURRENT_LIVE_WATCHING_USER , next_user[ 0 ] );
 			await wStart( next_user );
 			resolve();
 		}
