@@ -2,6 +2,7 @@ const colors = require("colors");
 const StackTrace = require( "stacktrace-js" );
 const Sleep = require( "./Generic.js" ).sleep;
 const NowTime = require( "./Generic.js" ).time;
+const GetCaller = require( "./Generic" ).getCaller;
 const personal = require( "../../main.js" ).personal;
 //const Reporter = require( "lilreporter" );
 //let reporter;
@@ -10,31 +11,14 @@ const DiscordCommands = require( "./DiscordCommands.js" );
 let discordBot;
 let discordCommandsBox = {};
 
-function getStackTrace () {
-    let stack = new Error().stack || "";
-    stack = stack.split( "\n" ).map( function ( line ) { return line.trim(); } );
-    return stack.splice( stack[ 0 ] == "Error" ? 2 : 1 );
-}
-
-function GET_CALLER() {
-
-	// let stack = StackTrace.getSync();
-	// let filtered = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) === -1 );
-	// if ( !filtered[ 0 ] ) { console.log( stack ); /*console.trace();*/ return "unknown"; }
-	// let name = filtered[ 0 ].fileName.split( "/Box4" )[ 1 ];
-	// return name;
-
-	let stack = getStackTrace();
-	let name = stack[ stack.length - 1 ].split( "/Box4" )[ 1 ].split( ":" )[ 0 ];
-	return name;
-}
-
 const CALLER_COLOR_TABLE = {
 	"unknown": [ "[UNKNOWN] --> " , "black" , "bgWhite" ] ,
 	"/main.js": [ "[MAIN] --> " , "black" , "bgRed" ] ,
 	"/server/utils/XDoTool.js": [ "[XDO_TOOL] --> " , "blue" , "bgRed" ] ,
+	"/server/utils/ScheduleManager.js": [ "[SCHEDULE_MANAGER] --> " , "yellow" , "bgGreen" ] ,
 	"/server/WebSocketManager.js": [ "[WebSocket] --> " , "rainbow" ] ,
 	"/server/StateManager.js" : [ "[STATE_MAN] --> " , "black" , "bgWhite" ] ,
+
 	"/server/modules/mplayer/Manager.js" : [ "[MPLAYER_MAN] --> " , "black" , "bgMagenta" ] ,
 	"/server/modules/localmedia/Manager.js" : [ "[LOCALMEDIA] --> " , "magenta" , "bgBlack" ] ,
 	"/server/modules/localmedia/utils/HardDrive.js" : [ "[LOCALMEDIA].hardDrive() --> " , "magenta" , "bgBlack" ] ,
@@ -49,6 +33,9 @@ const CALLER_COLOR_TABLE = {
 	"/server/modules/mopidy/Tracklist.js" : [ "[MOPIDY_TRACKLIST] --> " , "white" , "bgBlue" ] ,
 	"/server/modules/mopidy/Utils.js" : [ "[MOPIDY_UTILS] --> " , "white" , "bgBlue" ] ,
 	"/server/modules/mopidy/RestartContinuousPlay.js" : [ "[MOPIDY_CONTINOUS_PLAY] --> " , "white" , "bgBlue" ] ,
+	"/server/modules/twitch/API.js" : [ "[TWITCH_API] --> " , "white" , "bgMagenta" ] ,
+	"/server/modules/twitch/Utils.js" : [ "[TWITCH_UTILS] --> " , "white" , "bgMagenta" ] ,
+
 	"/server/states/YoutubeLive.js" : [ "[STATE_YOUTUBE_LIVE] --> " , "white" , "bgRed" ] ,
 	"/server/states/YoutubeStandard.js" : [ "[STATE_YOUTUBE_STANDARD] --> " , "white" , "bgRed" ] ,
 	"/server/states/TwitchLive.js" : [ "[STATE_TWITCH_LIVE] --> " , "white" , "bgMagenta" ] ,
@@ -60,7 +47,7 @@ const CALLER_COLOR_TABLE = {
 };
 
 function LOCAL_GET_MESSAGE_CUSTOM( wMSG ) {
-	let caller = GET_CALLER();
+	let caller = GetCaller();
 	if ( !CALLER_COLOR_TABLE[ caller ] ) { return undefined; }
 	return CALLER_COLOR_TABLE[ caller ];
 }

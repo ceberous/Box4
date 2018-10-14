@@ -252,3 +252,24 @@ function PLAY_SERVER_ONLINE_SOUND() {
 	});
 }
 module.exports.playServerOnlineSound = PLAY_SERVER_ONLINE_SOUND;
+
+function getStackTrace () {
+	let stack = new Error().stack || "";
+	stack = stack.split( "\n" ).map( function ( line ) { return line.trim(); } );
+	return stack.splice( stack[ 0 ] == "Error" ? 2 : 1 );
+}
+module.exports.getStackTrace = getStackTrace;
+
+function GET_CALLER() {
+
+	// let stack = StackTrace.getSync();
+	// let filtered = stack.filter( x => x.fileName.indexOf( "Reporter.js" ) === -1 );
+	// if ( !filtered[ 0 ] ) { console.log( stack ); /*console.trace();*/ return "unknown"; }
+	// let name = filtered[ 0 ].fileName.split( "/Box4" )[ 1 ];
+	// return name;
+
+	let stack = getStackTrace();
+	let name = stack[ stack.length - 1 ].split( "/Box4" )[ 1 ].split( ":" )[ 0 ];
+	return name;
+}
+module.exports.getCaller = GET_CALLER;

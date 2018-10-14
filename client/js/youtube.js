@@ -1,3 +1,7 @@
+var socket = null;
+var webSocketConnectionString = "ws://" + socketServerAddress + ":" + socketPORT;
+var shuffle_interval = 40000;
+
 // https://developers.google.com/youtube/iframe_api_reference
 var YTIFrameManager = {
 
@@ -11,7 +15,7 @@ var YTIFrameManager = {
 		console.log( "inside init()" );
 		//YTIFrameManager.playlist = YTIFrameManager.buildPlaylistArray( true );
 		YTIFrameManager.showVideo();
-		//if ( nextVideoTime > 0 ) { YTIFrameManager.startNextVideoInterval(); }
+		//if ( shuffle_interval > 0 ) { YTIFrameManager.startNextVideoInterval(); }
 
 	},
 
@@ -121,42 +125,43 @@ var YTIFrameManager = {
 			YTIFrameManager.wPlayer.cuePlaylist( YTIFrameManager.playlist );
 		}
 		setTimeout( function() {
-			if ( YTIFrameManager.position === "BACKGROUND" ) {
-				YTIFrameManager.wPlayer.mute();
-			}
 			if ( YTIFrameManager.mute === true ) {
 				YTIFrameManager.wPlayer.mute();
 			}
-			if ( YTIFrameManager.mode === "LIVE" ) {
+			if ( YTIFrameManager.shuffle === true ) {
 				YTIFrameManager.wPlayer.setShuffle( true );
-				YTIFrameManager.wPlayer.setLoop(true);
+			}
+			if ( YTIFrameManager.loop === true ) {
+				YTIFrameManager.wPlayer.setLoop( true );
+			}
+			if ( YTIFrameManager.shuffle_interval !== undefined ) {
 				YTIFrameManager.startNextVideoInterval();
 			}
-			//socket.send( "youtubeReadyForFullScreenGlitch" );
-			socket.send( JSON.stringify( { message: "youtubeReadyForFullScreenGlitch" } ) );
-			//$( ".ytp-fullscreen-button.ytp-button" ).click();
+			setTimeout( function() {
+				socket.send( JSON.stringify( { message: "youtubeReadyForFullScreenGlitch" } ) );
+			} , 1000 );
 		} , 1000 );
 	},
 
 	startNextVideoInterval: function() {
-		setInterval( function() {
-			YTIFrameManager.wPlayer.nextVideo();
-		} , nextVideoTime );
-
+		setTimeout( function() {
+			setInterval( function() {
+				YTIFrameManager.wPlayer.nextVideo();
+			} , YTIFrameManager.shuffle_interval );
+		} , 1000 );
 	},
 
 };
 
-var socket = null;
-var webSocketConnectionString = "ws://" + socketServerAddress + ":" + socketPORT;
-var nextVideoTime = 40000;
+
 
 function waitForYoutubeReady( x1 ) {
 	function readyYoutube(){
 		if( ( typeof YT !== "undefined" ) && YT && YT.Player ) {
-			nextVideoTime = x1.nextVideoTime;
 			if ( x1.playlist_id ) { YTIFrameManager.playlist_id = x1.playlist_id }
 			else { YTIFrameManager.playlist = x1.playlist; }
+			YTIFrameManager.shuffle = x1.shuffle || false;
+			YTIFrameManager.shuffle_interval = x1.shuffle_interval || shuffle_interval;
 			YTIFrameManager.mode = x1.mode;
 			YTIFrameManager.mute = x1.mute || true;
 			YTIFrameManager.position = x1.position;

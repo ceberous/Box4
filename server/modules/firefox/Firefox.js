@@ -29,7 +29,7 @@ function CREATE_NEW( wURL ) {
 			if ( FFManager ) { await FFManager.close(); FFManager = undefined; }
 			FFManager = new FirefoxWrapper();
 			await FFManager.launch();
-			await FFManager.openNewTab( wURL );			
+			await FFManager.openNewTab( wURL );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -39,6 +39,7 @@ function CREATE_NEW( wURL ) {
 function CLOSE() {
 	return new Promise( function( resolve , reject ) {
 		try {
+			if ( !FFManager ) { resolve(); return; }
 			FFManager.close();
 			resolve();
 		}
@@ -61,6 +62,7 @@ module.exports.youtube = YOUTUBE;
 function YOUTUBE_FULLSCREEN() {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			if ( !FFManager ) { resolve(); return; }
 			//FFManager.x.fullScreen();
 			FFManager.x.centerMouse();
 			await FFManager.sleep( 500 );
@@ -70,7 +72,7 @@ function YOUTUBE_FULLSCREEN() {
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
-	});	
+	});
 }
 module.exports.youtubeFullScreen = YOUTUBE_FULLSCREEN;
 
@@ -90,11 +92,12 @@ module.exports.twitch = TWITCH;
 function TWITCH_FULLSCREEN() {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			if ( !FFManager ) { resolve(); return; }
 			FFManager.x.centerMouse();
 			await FFManager.sleep( 500 );
 			FFManager.x.leftClick();
 			await FFManager.sleep( 500 );
-			FFManager.x.pressKeyboardKey( "F11" );			
+			FFManager.x.pressKeyboardKey( "F11" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
@@ -105,7 +108,8 @@ module.exports.twitchFullScreen = TWITCH_FULLSCREEN;
 function TWITCH_PAUSE() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			FFManager.x.pressKeyboardKey( "space" );		
+			if ( !FFManager ) { resolve(); return; }
+			FFManager.x.pressKeyboardKey( "space" );
 			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }

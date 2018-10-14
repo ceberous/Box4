@@ -3,15 +3,18 @@ const colors = require("colors");
 const wEmitter = require( "../../../main.js" ).emitter;
 //var wGet_Last_SS = require( "../../clientManager.js" ).get_Last_SS;
 
-const wMopidyGetCachedPlaylists 	= require( "../../modules/mopidy/Manager.js" ).getCachedPlaylists;
-const wMopidyPause 					= require( "../../modules/mopidy/Manager.js" ).pause;
-const wMopidyResume 				= require( "../../modules/mopidy/Manager.js" ).resume;
-const wMopidyStop 					= require( "../../modules/mopidy/Manager.js" ).stop;
-const wMopidyPreviousSong 			= require( "../../modules/mopidy/Manager.js" ).previousSong;
-const wMopidyNextSong 				= require( "../../modules/mopidy/Manager.js" ).nextSong;
-const wMopidyStartPlaylist 			= require( "../../modules/mopidy/Manager.js" ).loadPlaylistID;
-const wMopidyStartNewTask 			= require( "../../modules/mopidy/Manager.js" ).startNewTask;
-const wMopidyUpdatePlaylistGenre 	= require( "../../modules/mopidy/Manager.js" ).updatePlaylistGenre;
+// Can't Require , only can stub out const FilPath ,
+// this gets loaded early by express and the way mopidy gets loaded is
+
+// const wMopidyGetCachedPlaylists 	= require( "../../modules/mopidy/Manager.js" ).getCachedPlaylists;
+// const wMopidyPause 					= require( "../../modules/mopidy/Manager.js" ).pause;
+// const wMopidyResume 				= require( "../../modules/mopidy/Manager.js" ).resume;
+// const wMopidyStop 					= require( "../../modules/mopidy/Manager.js" ).stop;
+// const wMopidyPreviousSong 			= require( "../../modules/mopidy/Manager.js" ).previousSong;
+// const wMopidyNextSong 				= require( "../../modules/mopidy/Manager.js" ).nextSong;
+// const wMopidyStartPlaylist 			= require( "../../modules/mopidy/Manager.js" ).loadPlaylistID;
+// const wMopidyStartNewTask 			= require( "../../modules/mopidy/Manager.js" ).startNewTask;
+// const wMopidyUpdatePlaylistGenre 	= require( "../../modules/mopidy/Manager.js" ).updatePlaylistGenre;
 
 function wcl( wSTR ) { console.log( colors.white.bgBlue( "[CLIENT_CTRL] --> " + wSTR ) ); }
 

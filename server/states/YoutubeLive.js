@@ -15,7 +15,15 @@ function wStart( wOptions ) {
 			//await require( "../youtubeManager.js" ).updateStandard();
 			let live_videos = await require( Live_FP ).getLiveVideos();
 			if ( !live_videos ) { resolve( "No Live Videos" ); return; }
-			await SetStagedFFClientTask( { message: "Youtube" , playlist: live_videos , mute: mute } );
+			await SetStagedFFClientTask({
+				message: "Youtube" ,
+				playlist: live_videos ,
+				mute: mute ,
+				loop: true ,
+				shuffle: true ,
+				//shuffle_interval: 40000
+				shuffle_interval: 3000
+			});
 			await FFManager.youtube();
 			resolve();
 		}

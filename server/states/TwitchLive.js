@@ -5,23 +5,24 @@ const Redis = require( path.join( MainFP , "main.js" ) ).redis;
 const RC = Redis.c.TWITCH;
 const wEmitter = require( path.join( MainFP , "main.js" ) ).emitter;
 const SetStagedFFClientTask = require( path.join( MainFP , "server" , "utils" , "Generic.js" ) ).setStagedFFClientTask;
-const UpdateLiveUsers = require( path.join( MainFP , "server" , "modules" , "twitch" , "API.js" ) ).updateLiveUsers;
+const UpdateLiveFollowersCache = require( path.join( MainFP , "server" , "modules" , "twitch" , "Utils.js" ) ).updateLiveFollowersCache;
 let FFManager = require( path.join( MainFP , "server" , "modules" , "firefox" , "Firefox.js" ) );
 
 function wStart( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			Reporter.log( "Here in TwitchLive State" );
-			Reporter.log( wOptions );
 			let current_live;
 			if ( wOptions ) {
-				if ( wOptions.user ) { current_live.push( wOptions.user ); }
-				else { current_live = await UpdateLiveUsers(); }
+				if ( wOptions.user ) { current_live = wOptions.user }
 			}
-			else { current_live = await UpdateLiveUsers(); }
-			Reporter.log( current_live );
+			if ( !current_live ) {
+				await UpdateLiveFollowersCache();
+				current_live = await Redis.redis.zpopmin( RC.LIVE_USERS );
+			}
+			if ( !current_live ) { resolve(); return; }
 			if ( current_live.length < 1 ) { resolve(); return; }
-			await FFManager.twitch( current_live[ 0 ] );
+			Reporter.log( "Starting twitch.tv/ " + current_live );
+			//await FFManager.twitch( current_live[ 0 ] );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }

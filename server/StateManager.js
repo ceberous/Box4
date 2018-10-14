@@ -66,16 +66,16 @@ async function PRESS_BUTTON( wButtonNum , wOptions , wMasterClose ) {
 	let previous_state = await Redis.keyGetMulti( RC.FP , RC.MODE );
 
 	// However , if This is a Repeat of our Previous State , Just Assume Misclick and Exit
-	if ( previous_state ) { if ( previous_state[ 0 ] ) { if ( previous_state[ 1 ] ) {
-		if ( previous_state[ 0 ] === launching_fp ) {
-			if ( wOptions ) {
-				if ( wOptions.mode ) {
-					if ( wOptions.mode === CURRENT_STATE_MODE ) { return; }
-				}
-			}
-			else { return; }
-		}
-	}}}
+	// if ( previous_state ) { if ( previous_state[ 0 ] ) { if ( previous_state[ 1 ] ) {
+	// 	if ( previous_state[ 0 ] === launching_fp ) {
+	// 		if ( wOptions ) {
+	// 			if ( wOptions.mode ) {
+	// 				if ( wOptions.mode === CURRENT_STATE_MODE ) { return; }
+	// 			}
+	// 		}
+	// 		else { return; }
+	// 	}
+	// }}}
 
 	// Further Cleanup
 	await CURRENT_STATE_STOP();
@@ -103,10 +103,10 @@ const BTN_MAN 			= require( ".//modules/buttons/Manager.js" );
 
 ( async ()=> {
 	await Reporter.log( "Initializing stuff" );
-	await require( "./modules/mopidy/Manager.js" ).initialize();
-	await require( "./modules/localmedia/Manager.js" ).initialize();
-	await require( "./modules/youtube/Manager.js" ).initialize();
+	//await require( "./modules/mopidy/Manager.js" ).initialize();
+	//await require( "./modules/localmedia/Manager.js" ).initialize();
+	//await require( "./modules/youtube/Manager.js" ).initialize();
 	await Reporter.log( "we are done with Initialization" );
-	console.log( await require( "./utils/Generic.js" ).getStatusReport() );
+	//console.log( await require( "./utils/Generic.js" ).getStatusReport() );
 	require( "./utils/Generic.js" ).playServerOnlineSound();
 })();
