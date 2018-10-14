@@ -16,9 +16,11 @@ function RESET_LIVE_SCORES( live_followers ) {
 			let multi = [];
 			for ( let i = 0; i < Personal.followers.length; ++i ) {
 				if ( live_followers.indexOf( Personal.followers[ i ] ) !== -1 ) {
-					multi.push( [ "zadd" , RC.LIVE_USERS , ( i + 1 ) , Personal.followers[ i ] ] );
+					//multi.push( [ "zadd" , RC.LIVE_USERS , ( i + 1 ) , Personal.followers[ i ] ] );
+					multi.push( [ "rpush" , RC.LIVE_USERS , Personal.followers[ i ] ] );
 				}
 			}
+			multi.push( [ "del" , RC.LIVE_USERS_INDEX ] );
 			await Redis.keySetMulti( multi );
 			resolve();
 		}
@@ -33,7 +35,7 @@ function UPDATE_LIVE_FOLLOWERS_CACHE() {
 			let live_followers = await API.getLiveFollowers();
 			console.log( live_followers );
 			await RESET_LIVE_SCORES( live_followers );
-			resolve( live_followers );
+			resolve();
 		}
 		catch( error ) { console.log( error ); reject( error ); }
 	});

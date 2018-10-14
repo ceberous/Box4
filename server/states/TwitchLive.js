@@ -11,19 +11,20 @@ let FFManager = require( path.join( MainFP , "server" , "modules" , "firefox" , 
 function wStart( wOptions ) {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let current_live;
+			let first_user;
 			if ( wOptions ) {
-				if ( wOptions.user ) { current_live = wOptions.user }
+				if ( wOptions.user ) { first_user = wOptions.user }
 			}
-			if ( !current_live ) {
+			if ( !first_user ) {
 				await UpdateLiveFollowersCache();
-				current_live = await Redis.zpopmin( RC.LIVE_USERS );
-				if ( current_live ) { current_live = current_live[ 0 ]; }
+				first_user = await Redis.nextInCircularList( RC.LIVE_USERS );
+				if ( first_user ) { first_user = first_user[ 0 ]; }
 			}
-			if ( !current_live ) { resolve(); return; }
-			if ( current_live.length < 1 ) { resolve(); return; }
-			Reporter.log( "Starting https://twitch.tv/" + current_live );
-			await FFManager.twitch( current_live );
+			if ( !first_user ) { resolve(); return; }
+			if ( first_user.length < 1 ) { resolve(); return; }
+			Reporter.log( "Starting https://twitch.tv/" + first_user );
+			await Redis.keySet( RC.CURRENT_LIVE_WATCHING_USER , first_user );
+			await FFManager.twitch( first_user );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
@@ -33,8 +34,6 @@ function wStart( wOptions ) {
 function wPause() {
 	return new Promise( function( resolve , reject ) {
 		try {
-			//FFManager.raw.x.pressKeyboardKey( "space" );
-			//FFManager.call( "x" , "pressKeyboardKey" , "space" );
 			FFManager.twitchPause();
 			resolve();
 		}
@@ -56,11 +55,8 @@ function wStop() {
 function wNext() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			let next_user = await Redis.zpopmin( RC.LIVE_USERS );
-			if ( next_user ) { next_user = next_user[ 0 ]; }
-			let next_user = Redis.nextInCircularList( RC.LIVE_USERS );
+			let next_user = await Redis.nextInCircularList( RC.LIVE_USERS );
 			if ( next_user ) { next_user = { user: next_user[ 0 ] }; }
-			await Redis.keySet( RC.CURRENT_LIVE_WATCHING_USER , next_user[ 0 ] );
 			await wStart( next_user );
 			resolve();
 		}
@@ -71,10 +67,8 @@ function wNext() {
 function wPrevious() {
 	return new Promise( async function( resolve , reject ) {
 		try {
-			await Redis.decrement( RC.LIVE_USERS_INDEX );
-			let index = Redis.keyGet( RC.LIVE_USERS_INDEX );
-			let next_user = Redis.listGetByIndex( RC.LIVE_USERS , index );
-			if ( next_user ) { next_user = { user: next_user }; }
+			let next_user = await Redis.previousInCircularList( RC.LIVE_USERS );
+			if ( next_user ) { next_user = { user: next_user[ 0 ] }; }
 			await wStart( next_user );
 			resolve();
 		}
