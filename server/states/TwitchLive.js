@@ -56,6 +56,8 @@ function wStop() {
 function wNext() {
 	return new Promise( async function( resolve , reject ) {
 		try {
+			let next_user = await Redis.zpopmin( RC.LIVE_USERS );
+			if ( next_user ) { next_user = next_user[ 0 ]; }
 			let next_user = Redis.nextInCircularList( RC.LIVE_USERS );
 			if ( next_user ) { next_user = { user: next_user[ 0 ] }; }
 			await Redis.keySet( RC.CURRENT_LIVE_WATCHING_USER , next_user[ 0 ] );
