@@ -31,6 +31,7 @@ function UPDATE_LIVE_FOLLOWERS_CACHE() {
 		try {
 			await Redis.keyDel( RC.LIVE_USERS );
 			let live_followers = await API.getLiveFollowers();
+			console.log( live_followers );
 			await RESET_LIVE_SCORES( live_followers );
 			resolve( live_followers );
 		}

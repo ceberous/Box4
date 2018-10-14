@@ -23,7 +23,7 @@
     "mplayer": "^2.1.0",
     "p-iteration": "^1.1.7",
     "pidusage": "^2.0.17",
-    "redis-manager-utils": "^1.1.4",
+    "redis-manager-utils": "^1.1.5",
     "request": "^2.88.0",
     "shelljs": "^0.8.2",
     "stacktrace-js": "^2.0.0",

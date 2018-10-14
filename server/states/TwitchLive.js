@@ -17,12 +17,13 @@ function wStart( wOptions ) {
 			}
 			if ( !current_live ) {
 				await UpdateLiveFollowersCache();
-				current_live = await Redis.redis.zpopmin( RC.LIVE_USERS );
+				current_live = await Redis.zpopmin( RC.LIVE_USERS );
+				if ( current_live ) { current_live = current_live[ 0 ]; }
 			}
 			if ( !current_live ) { resolve(); return; }
 			if ( current_live.length < 1 ) { resolve(); return; }
-			Reporter.log( "Starting twitch.tv/ " + current_live );
-			//await FFManager.twitch( current_live[ 0 ] );
+			Reporter.log( "Starting https://twitch.tv/" + current_live );
+			await FFManager.twitch( current_live );
 			resolve();
 		}
 		catch( error ) { Reporter.log( error ); reject( error ); }
