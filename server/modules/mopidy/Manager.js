@@ -37,9 +37,12 @@ let mopidy = null;
 Mopidy.prototype._handleWebSocketError = async function ( error ) {
 	Reporter.log( "WebSocket ERROR" );
 	Reporter.log( "Binary not Running ???" );
-	this._cleanup();
-	this.close();
-	mopidy.off();
+	try{ this._cleanup(); }
+	catch( error ) {}
+	try{ this.close(); }
+	catch( error ) {}
+	try{ mopidy.off(); }
+	catch( error ) {}
 	mopidy = null;
 	await Redis.keySet( "STATUS.MOPIDY" , "OFFLINE" );
 	INITIALIZE_RESOLVE();
